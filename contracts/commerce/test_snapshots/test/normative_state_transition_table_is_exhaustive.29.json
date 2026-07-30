@@ -1,6 +1,6 @@
 {
   "generators": {
-    "address": 6,
+    "address": 7,
     "nonce": 0,
     "mux_id": 0
   },
@@ -67,7 +67,7 @@
                   "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAITA4"
                 },
                 {
-                  "u64": "110"
+                  "u64": "1100"
                 },
                 {
                   "string": "compile a proof"
@@ -96,8 +96,31 @@
                   "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
                 },
                 {
-                  "i128": "100"
+                  "i128": "77"
                 },
+                {
+                  "bytes": ""
+                }
+              ]
+            }
+          },
+          "sub_invocations": []
+        }
+      ]
+    ],
+    [
+      [
+        "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+        {
+          "function": {
+            "contract_fn": {
+              "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDR4",
+              "function_name": "reject",
+              "args": [
+                {
+                  "u64": "1"
+                },
+                "void",
                 {
                   "bytes": ""
                 }
@@ -111,16 +134,12 @@
     [],
     [],
     [],
-    [],
-    [],
-    [],
-    [],
     []
   ],
   "ledger": {
     "protocol_version": 27,
     "sequence_number": 0,
-    "timestamp": 110,
+    "timestamp": 100,
     "network_id": "0000000000000000000000000000000000000000000000000000000000000000",
     "base_reserve": 0,
     "min_persistent_entry_ttl": 4096,
@@ -217,6 +236,26 @@
               "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
               "key": {
                 "ledger_key_nonce": {
+                  "nonce": "2032731177588607455"
+                }
+              },
+              "durability": "temporary",
+              "val": "void"
+            }
+          },
+          "ext": "v0"
+        },
+        "live_until": 6311999
+      },
+      {
+        "entry": {
+          "last_modified_ledger_seq": 0,
+          "data": {
+            "contract_data": {
+              "ext": "v0",
+              "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+              "key": {
+                "ledger_key_nonce": {
                   "nonce": "4837995959683129791"
                 }
               },
@@ -253,7 +292,7 @@
                       "symbol": "budget"
                     },
                     "val": {
-                      "i128": "100"
+                      "i128": "77"
                     }
                   },
                   {
@@ -291,7 +330,7 @@
                       "symbol": "expires_at"
                     },
                     "val": {
-                      "u64": "110"
+                      "u64": "1100"
                     }
                   },
                   {
@@ -323,7 +362,7 @@
                     "val": {
                       "vec": [
                         {
-                          "symbol": "Open"
+                          "symbol": "Rejected"
                         }
                       ]
                     }

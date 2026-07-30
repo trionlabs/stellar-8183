@@ -140,7 +140,7 @@ jobs:
         with:
           subject-path: artifacts/release/stellar_8183_sla_hook.wasm
       - name: Publish GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             artifacts/release/*.wasm

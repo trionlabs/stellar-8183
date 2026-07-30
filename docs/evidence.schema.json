@@ -1,0 +1,1059 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/trionlabs/stellar-8183/blob/main/docs/evidence.schema.json",
+  "title": "Soroban Agentic Commerce v0.1.0 testnet evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "generated_at",
+    "release",
+    "network",
+    "build",
+    "token",
+    "contracts",
+    "identities",
+    "scenarios",
+    "artifacts",
+    "attestation",
+    "sdk",
+    "demo",
+    "assertions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "status": {
+      "enum": ["deployment", "verified"]
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "tag", "source_repository", "source_commit"],
+      "properties": {
+        "version": {
+          "const": "0.1.0"
+        },
+        "tag": {
+          "const": "v0.1.0"
+        },
+        "source_repository": {
+          "const": "https://github.com/trionlabs/stellar-8183"
+        },
+        "source_commit": {
+          "description": "The source/build/deployment commit, which must be the immediate parent of the evidence-only tagged commit.",
+          "$ref": "#/$defs/gitCommit"
+        },
+        "release_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://github\\.com/trionlabs/stellar-8183/releases/"
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "passphrase",
+        "rpc_url",
+        "protocol_version",
+        "observed_at",
+        "first_ledger",
+        "last_ledger"
+      ],
+      "properties": {
+        "name": {
+          "const": "testnet"
+        },
+        "passphrase": {
+          "const": "Test SDF Network ; September 2015"
+        },
+        "rpc_url": {
+          "const": "https://soroban-testnet.stellar.org"
+        },
+        "protocol_version": {
+          "const": 27
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "first_ledger": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "last_ledger": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "build": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rustc",
+        "stellar_cli",
+        "soroban_sdk",
+        "node",
+        "pnpm",
+        "stellar_sdk",
+        "source_repo_metadata",
+        "clean_builds_identical"
+      ],
+      "properties": {
+        "rustc": {
+          "const": "1.96.0"
+        },
+        "stellar_cli": {
+          "type": "string",
+          "pattern": "^(?:stellar\\s+)?27\\.0\\.0(?:\\s|$)"
+        },
+        "soroban_sdk": {
+          "const": "27.0.3"
+        },
+        "node": {
+          "type": "string",
+          "pattern": "^v?22\\."
+        },
+        "pnpm": {
+          "const": "11.9.0"
+        },
+        "stellar_sdk": {
+          "const": "16.2.0"
+        },
+        "source_repo_metadata": {
+          "const": "github:trionlabs/stellar-8183"
+        },
+        "clean_builds_identical": {
+          "const": true
+        }
+      }
+    },
+    "token": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_code", "issuer", "contract_id", "decimals"],
+      "properties": {
+        "asset_code": {
+          "const": "USDC"
+        },
+        "issuer": {
+          "const": "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+        },
+        "contract_id": {
+          "const": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA"
+        },
+        "decimals": {
+          "const": 7
+        }
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kernel", "sla_hook", "hook_admission_transaction"],
+      "properties": {
+        "kernel": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/deployedContract"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "constructor": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["admin", "token"],
+                  "properties": {
+                    "admin": {
+                      "$ref": "#/$defs/gAddress"
+                    },
+                    "token": {
+                      "const": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "sla_hook": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/deployedContract"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "constructor": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kernel", "review_secs"],
+                  "properties": {
+                    "kernel": {
+                      "$ref": "#/$defs/cAddress"
+                    },
+                    "review_secs": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "hook_admission_transaction": {
+          "$ref": "#/$defs/transaction"
+        }
+      }
+    },
+    "identities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["admin", "client", "provider", "evaluator", "facilitator"],
+      "properties": {
+        "admin": {
+          "$ref": "#/$defs/gAddress"
+        },
+        "client": {
+          "$ref": "#/$defs/gAddress"
+        },
+        "provider": {
+          "$ref": "#/$defs/gAddress"
+        },
+        "evaluator": {
+          "$ref": "#/$defs/gAddress"
+        },
+        "facilitator": {
+          "$ref": "#/$defs/gAddress"
+        }
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "$ref": "#/$defs/scenario"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/$defs/artifact"
+      },
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "const": "kernel_wasm"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "const": "sla_hook_wasm"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "const": "sdk_tarball"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "const": "raw_testnet_capture"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "const": "demo_recording"
+              }
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      ]
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sep", "verified"],
+      "properties": {
+        "sep": {
+          "const": "SEP-55"
+        },
+        "kernel_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "sla_hook_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "verified": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sdk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package",
+        "version",
+        "tarball_sha256",
+        "provenance_verified"
+      ],
+      "properties": {
+        "package": {
+          "const": "@trionlabs/stellar-8183"
+        },
+        "version": {
+          "const": "0.1.0"
+        },
+        "registry_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://www\\.npmjs\\.com/package/"
+        },
+        "tarball_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "provenance_verified": {
+          "type": "boolean"
+        }
+      }
+    },
+    "demo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recording_sha256", "published"],
+      "properties": {
+        "recording_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "recording_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "published": {
+          "type": "boolean"
+        }
+      }
+    },
+    "assertions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "all_local_tests_passed",
+        "clean_builds_identical",
+        "deployed_wasm_matches",
+        "distinct_role_addresses",
+        "facilitator_is_transaction_source",
+        "role_auth_entries_verified",
+        "exact_balance_accounting",
+        "refund_non_hookable",
+        "no_secrets_in_artifacts",
+        "schema_valid"
+      ],
+      "properties": {
+        "all_local_tests_passed": {
+          "const": true
+        },
+        "clean_builds_identical": {
+          "const": true
+        },
+        "deployed_wasm_matches": {
+          "const": true
+        },
+        "distinct_role_addresses": {
+          "const": true
+        },
+        "facilitator_is_transaction_source": {
+          "const": true
+        },
+        "role_auth_entries_verified": {
+          "const": true
+        },
+        "exact_balance_accounting": {
+          "const": true
+        },
+        "refund_non_hookable": {
+          "const": true
+        },
+        "no_secrets_in_artifacts": {
+          "const": true
+        },
+        "schema_valid": {
+          "const": true
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "scenarios": {
+          "type": "array",
+          "contains": {
+            "type": "object",
+            "required": ["kind"],
+            "properties": {
+              "kind": {
+                "const": "completion"
+              }
+            }
+          },
+          "minContains": 1
+        }
+      }
+    },
+    {
+      "properties": {
+        "scenarios": {
+          "type": "array",
+          "contains": {
+            "type": "object",
+            "required": ["kind"],
+            "properties": {
+              "kind": {
+                "const": "refund"
+              }
+            }
+          },
+          "minContains": 1
+        }
+      }
+    },
+    {
+      "properties": {
+        "scenarios": {
+          "type": "array",
+          "contains": {
+            "type": "object",
+            "required": ["kind"],
+            "properties": {
+              "kind": {
+                "const": "open_rejection"
+              }
+            }
+          },
+          "minContains": 1
+        }
+      }
+    },
+    {
+      "properties": {
+        "scenarios": {
+          "type": "array",
+          "contains": {
+            "type": "object",
+            "required": ["kind"],
+            "properties": {
+              "kind": {
+                "const": "evaluator_rejection"
+              }
+            }
+          },
+          "minContains": 1
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "deployment"
+          }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "artifacts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "release_url": false
+              }
+            }
+          },
+          "release": {
+            "type": "object",
+            "properties": {
+              "release_url": false
+            }
+          },
+          "attestation": {
+            "type": "object",
+            "properties": {
+              "kernel_url": false,
+              "sla_hook_url": false,
+              "verified": {
+                "const": false
+              }
+            }
+          },
+          "sdk": {
+            "type": "object",
+            "properties": {
+              "registry_url": false,
+              "provenance_verified": {
+                "const": false
+              }
+            }
+          },
+          "demo": {
+            "type": "object",
+            "properties": {
+              "recording_url": false,
+              "published": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "verified"
+          }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "type": "object",
+            "required": ["release_url"],
+            "properties": {
+              "release_url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://github\\.com/trionlabs/stellar-8183/releases/"
+              }
+            }
+          },
+          "attestation": {
+            "type": "object",
+            "required": ["kernel_url", "sla_hook_url"],
+            "properties": {
+              "kernel_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "sla_hook_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "verified": {
+                "const": true
+              }
+            }
+          },
+          "sdk": {
+            "type": "object",
+            "required": ["registry_url"],
+            "properties": {
+              "registry_url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://www\\.npmjs\\.com/package/"
+              },
+              "provenance_verified": {
+                "const": true
+              }
+            }
+          },
+          "demo": {
+            "type": "object",
+            "required": ["recording_url"],
+            "properties": {
+              "recording_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "published": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "gAddress": {
+      "type": "string",
+      "pattern": "^G[A-Z2-7]{55}$"
+    },
+    "cAddress": {
+      "type": "string",
+      "pattern": "^C[A-Z2-7]{55}$"
+    },
+    "stellarAddress": {
+      "type": "string",
+      "pattern": "^[CG][A-Z2-7]{55}$"
+    },
+    "amount": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "path", "media_type", "bytes", "sha256"],
+      "properties": {
+        "name": {
+          "enum": [
+            "kernel_wasm",
+            "sla_hook_wasm",
+            "sdk_tarball",
+            "raw_testnet_capture",
+            "demo_recording"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "media_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "release_url": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "deployedContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_id",
+        "local_wasm_sha256",
+        "fetched_wasm_sha256",
+        "deployment_transaction",
+        "explorer_url",
+        "constructor"
+      ],
+      "properties": {
+        "contract_id": {
+          "$ref": "#/$defs/cAddress"
+        },
+        "local_wasm_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "fetched_wasm_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "deployment_transaction": {
+          "$ref": "#/$defs/transaction"
+        },
+        "explorer_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "constructor": {
+          "type": "object"
+        }
+      }
+    },
+    "resourceCost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "instructions",
+        "read_bytes",
+        "write_bytes",
+        "resource_fee_stroops",
+        "inclusion_fee_stroops"
+      ],
+      "properties": {
+        "instructions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "read_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "write_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "resource_fee_stroops": {
+          "$ref": "#/$defs/amount"
+        },
+        "inclusion_fee_stroops": {
+          "$ref": "#/$defs/amount"
+        }
+      }
+    },
+    "balanceChange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "address",
+        "before_base_units",
+        "after_base_units",
+        "delta_base_units"
+      ],
+      "properties": {
+        "address": {
+          "$ref": "#/$defs/stellarAddress"
+        },
+        "before_base_units": {
+          "$ref": "#/$defs/amount"
+        },
+        "after_base_units": {
+          "$ref": "#/$defs/amount"
+        },
+        "delta_base_units": {
+          "$ref": "#/$defs/amount"
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_id", "name", "decoded"],
+      "properties": {
+        "contract_id": {
+          "$ref": "#/$defs/cAddress"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decoded": {
+          "type": "object"
+        }
+      }
+    },
+    "transaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step",
+        "hash",
+        "ledger",
+        "closed_at",
+        "result",
+        "explorer_url",
+        "source",
+        "authorizers",
+        "contract_id",
+        "function",
+        "arguments_sha256",
+        "envelope_sha256",
+        "resources",
+        "events",
+        "balance_changes"
+      ],
+      "properties": {
+        "step": {
+          "enum": [
+            "deploy_kernel",
+            "deploy_sla_hook",
+            "admit_hook",
+            "create_job",
+            "set_provider",
+            "set_budget",
+            "fund",
+            "submit",
+            "complete",
+            "reject",
+            "claim_refund",
+            "keep_alive"
+          ]
+        },
+        "hash": {
+          "$ref": "#/$defs/sha256"
+        },
+        "ledger": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "closed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "result": {
+          "const": "SUCCESS"
+        },
+        "explorer_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "source": {
+          "$ref": "#/$defs/gAddress"
+        },
+        "authorizers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/stellarAddress"
+          }
+        },
+        "contract_id": {
+          "$ref": "#/$defs/cAddress"
+        },
+        "function": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arguments_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "envelope_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "resources": {
+          "$ref": "#/$defs/resourceCost"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/event"
+          }
+        },
+        "balance_changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/balanceChange"
+          }
+        }
+      }
+    },
+    "jobSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "after_step",
+        "id",
+        "client",
+        "provider",
+        "evaluator",
+        "description_sha256",
+        "budget_base_units",
+        "expires_at",
+        "state",
+        "hook",
+        "deliverable_hash",
+        "decision_hash"
+      ],
+      "properties": {
+        "after_step": {
+          "type": "string",
+          "minLength": 1
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "client": {
+          "$ref": "#/$defs/stellarAddress"
+        },
+        "provider": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/stellarAddress"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evaluator": {
+          "$ref": "#/$defs/stellarAddress"
+        },
+        "description_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "budget_base_units": {
+          "$ref": "#/$defs/amount"
+        },
+        "expires_at": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "state": {
+          "enum": [
+            "Open",
+            "Funded",
+            "Submitted",
+            "Completed",
+            "Rejected",
+            "Expired"
+          ]
+        },
+        "hook": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/cAddress"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deliverable_hash": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decision_hash": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "job_id",
+        "description",
+        "transactions",
+        "job_snapshots",
+        "final_state",
+        "assertions"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]*$"
+        },
+        "kind": {
+          "enum": [
+            "completion",
+            "refund",
+            "open_rejection",
+            "evaluator_rejection"
+          ]
+        },
+        "job_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "transactions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/transaction"
+          }
+        },
+        "job_snapshots": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/jobSnapshot"
+          }
+        },
+        "final_state": {
+          "enum": ["Completed", "Rejected", "Expired"]
+        },
+        "assertions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

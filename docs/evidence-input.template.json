@@ -1,0 +1,30 @@
+{
+  "network": {
+    "protocol_version": 27,
+    "observed_at": "<REQUIRED: ISO-8601 time of the fresh network observation>"
+  },
+  "build": {
+    "rustc": "1.96.0",
+    "stellar_cli": "<REQUIRED: full stellar 27.0.0 version output>",
+    "soroban_sdk": "27.0.3",
+    "node": "<REQUIRED: Node 22 version output>",
+    "pnpm": "11.9.0",
+    "stellar_sdk": "16.2.0",
+    "source_repo_metadata": "github:trionlabs/stellar-8183"
+  },
+  "sla_review_secs": "<REQUIRED: deployed positive integer>",
+  "artifacts": {
+    "kernel_wasm": "artifacts/release/stellar_8183_commerce.wasm",
+    "kernel_rebuild_wasm": "<REQUIRED: independent clean-build kernel Wasm path>",
+    "kernel_fetched_wasm": "artifacts/testnet/kernel.fetched.wasm",
+    "sla_hook_wasm": "artifacts/release/stellar_8183_sla_hook.wasm",
+    "sla_hook_rebuild_wasm": "<REQUIRED: independent clean-build SLA-hook Wasm path>",
+    "sla_hook_fetched_wasm": "artifacts/testnet/sla-hook.fetched.wasm",
+    "sdk_tarball": "<REQUIRED: pnpm-packed SDK tarball path>",
+    "demo_recording": "<REQUIRED: reviewed secret-free MP4 path>"
+  },
+  "operator_assertions": {
+    "all_local_tests_passed": true,
+    "no_secrets_in_artifacts": true
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0.0",
+  "status": "deployment",
+  "generated_at": "<REQUIRED: ISO-8601 timestamp>",
+  "release": {
+    "version": "0.1.0",
+    "tag": "v0.1.0",
+    "source_repository": "https://github.com/trionlabs/stellar-8183",
+    "source_commit": "<REQUIRED: 40-character source/build/deployment commit; immediate parent of tagged evidence commit>"
+  },
+  "network": {
+    "name": "testnet",
+    "passphrase": "Test SDF Network ; September 2015",
+    "rpc_url": "https://soroban-testnet.stellar.org",
+    "protocol_version": "<REQUIRED: query at run time; expected 27>",
+    "observed_at": "<REQUIRED: ISO-8601 timestamp>",
+    "first_ledger": "<REQUIRED: integer>",
+    "last_ledger": "<REQUIRED: integer>"
+  },
+  "build": {
+    "rustc": "1.96.0",
+    "stellar_cli": "<REQUIRED: full stellar 27.0.0 version output>",
+    "soroban_sdk": "27.0.3",
+    "node": "<REQUIRED: Node 22 version>",
+    "pnpm": "11.9.0",
+    "stellar_sdk": "16.2.0",
+    "source_repo_metadata": "github:trionlabs/stellar-8183",
+    "clean_builds_identical": true
+  },
+  "token": {
+    "asset_code": "USDC",
+    "issuer": "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5",
+    "contract_id": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
+    "decimals": 7
+  },
+  "contracts": {
+    "kernel": {
+      "contract_id": "<REQUIRED: deployed C-address>",
+      "local_wasm_sha256": "<REQUIRED: lowercase SHA-256>",
+      "fetched_wasm_sha256": "<REQUIRED: lowercase SHA-256>",
+      "deployment_transaction": "<REQUIRED: transaction object from schema>",
+      "explorer_url": "<REQUIRED: Stellar Expert testnet contract URL>",
+      "constructor": {
+        "admin": "<REQUIRED: admin G-address>",
+        "token": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA"
+      }
+    },
+    "sla_hook": {
+      "contract_id": "<REQUIRED: deployed C-address>",
+      "local_wasm_sha256": "<REQUIRED: lowercase SHA-256>",
+      "fetched_wasm_sha256": "<REQUIRED: lowercase SHA-256>",
+      "deployment_transaction": "<REQUIRED: transaction object from schema>",
+      "explorer_url": "<REQUIRED: Stellar Expert testnet contract URL>",
+      "constructor": {
+        "kernel": "<REQUIRED: kernel C-address>",
+        "review_secs": "<REQUIRED: positive integer>"
+      }
+    },
+    "hook_admission_transaction": "<REQUIRED: transaction object from schema>"
+  },
+  "identities": {
+    "admin": "<REQUIRED: G-address>",
+    "client": "<REQUIRED: G-address>",
+    "provider": "<REQUIRED: G-address>",
+    "evaluator": "<REQUIRED: G-address>",
+    "facilitator": "<REQUIRED: G-address>"
+  },
+  "scenarios": [
+    {
+      "id": "completion",
+      "kind": "completion",
+      "job_id": "<REQUIRED: positive integer>",
+      "description": "Create without provider, negotiate, fund 1 test USDC, submit, and complete",
+      "transactions": "<REQUIRED: ordered transaction objects>",
+      "job_snapshots": "<REQUIRED: decoded snapshot after every step>",
+      "final_state": "Completed",
+      "assertions": ["<REQUIRED: exact USDC and authorization assertions>"]
+    },
+    {
+      "id": "refund",
+      "kind": "refund",
+      "job_id": "<REQUIRED: positive integer>",
+      "description": "Fund, reach ledger-time expiry, and claim a permissionless refund",
+      "transactions": "<REQUIRED: ordered transaction objects>",
+      "job_snapshots": "<REQUIRED: decoded snapshot after every step>",
+      "final_state": "Expired",
+      "assertions": ["<REQUIRED: full refund and no hook callback>"]
+    },
+    {
+      "id": "open-rejection",
+      "kind": "open_rejection",
+      "job_id": "<REQUIRED: positive integer>",
+      "description": "Client rejects an unfunded Open job",
+      "transactions": "<REQUIRED: ordered transaction objects>",
+      "job_snapshots": "<REQUIRED: decoded snapshot after every step>",
+      "final_state": "Rejected",
+      "assertions": ["<REQUIRED: client authorization and zero value movement>"]
+    },
+    {
+      "id": "evaluator-rejection",
+      "kind": "evaluator_rejection",
+      "job_id": "<REQUIRED: positive integer>",
+      "description": "Evaluator rejects a funded or submitted job",
+      "transactions": "<REQUIRED: ordered transaction objects>",
+      "job_snapshots": "<REQUIRED: decoded snapshot after every step>",
+      "final_state": "Rejected",
+      "assertions": [
+        "<REQUIRED: evaluator authorization and full client refund>"
+      ]
+    }
+  ],
+  "artifacts": [
+    "<REQUIRED: kernel Wasm artifact object named kernel_wasm>",
+    "<REQUIRED: SLA hook Wasm artifact object named sla_hook_wasm>",
+    "<REQUIRED: npm tarball artifact object named sdk_tarball>",
+    "<REQUIRED: raw capture artifact object named raw_testnet_capture>",
+    "<REQUIRED: terminal recording artifact object named demo_recording>"
+  ],
+  "attestation": {
+    "sep": "SEP-55",
+    "verified": false
+  },
+  "sdk": {
+    "package": "@trionlabs/stellar-8183",
+    "version": "0.1.0",
+    "tarball_sha256": "<REQUIRED: lowercase SHA-256>",
+    "provenance_verified": false
+  },
+  "demo": {
+    "recording_sha256": "<REQUIRED: lowercase SHA-256 of secret-free recording>",
+    "published": false
+  },
+  "assertions": {
+    "all_local_tests_passed": true,
+    "clean_builds_identical": true,
+    "deployed_wasm_matches": true,
+    "distinct_role_addresses": true,
+    "facilitator_is_transaction_source": true,
+    "role_auth_entries_verified": true,
+    "exact_balance_accounting": true,
+    "refund_non_hookable": true,
+    "no_secrets_in_artifacts": true,
+    "schema_valid": true
+  }
+}

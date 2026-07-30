@@ -1,0 +1,16 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+.context/
+.stellar/
+.npmrc
+node_modules/
+dist/
+coverage/
+target/
+artifacts/
+deployments/private/
+*.log
+*.cast
+*.mp4

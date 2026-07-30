@@ -3,6 +3,8 @@ resolver = "2"
 members = [
   "contracts/interfaces",
   "contracts/commerce",
+  "contracts/sla-hook",
+  "contracts/test-hooks",
 ]
 
 [workspace.package]

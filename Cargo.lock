@@ -1632,6 +1632,8 @@ version = "0.1.0"
 dependencies = [
  "soroban-sdk",
  "stellar-8183-interfaces",
+ "stellar-8183-sla-hook",
+ "stellar-8183-test-hooks",
 ]
 
 [[package]]
@@ -1639,6 +1641,22 @@ name = "stellar-8183-interfaces"
 version = "0.1.0"
 dependencies = [
  "soroban-sdk",
+]
+
+[[package]]
+name = "stellar-8183-sla-hook"
+version = "0.1.0"
+dependencies = [
+ "soroban-sdk",
+ "stellar-8183-interfaces",
+]
+
+[[package]]
+name = "stellar-8183-test-hooks"
+version = "0.1.0"
+dependencies = [
+ "soroban-sdk",
+ "stellar-8183-interfaces",
 ]
 
 [[package]]

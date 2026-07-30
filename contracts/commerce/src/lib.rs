@@ -4,8 +4,9 @@ use soroban_sdk::{
     contract, contractimpl, contracttype, token, Address, Bytes, BytesN, Env, String,
 };
 use stellar_8183_interfaces::{
-    AdminProp, AdminSet, BudgetSet, Error, Job, JobCreated, JobDone, JobExpire, JobFunded,
-    JobReject, JobState, JobSubmit, PayRelease, ProvSet, Refunded,
+    Action, AdminProp, AdminSet, BudgetSet, Error, HookArg, HookClient, HookCtx, HookSet, Job,
+    JobCreated, JobDone, JobExpire, JobFunded, JobReject, JobState, JobSubmit, PayRelease, ProvSet,
+    Refunded,
 };
 
 pub use stellar_8183_interfaces;
@@ -21,6 +22,7 @@ enum DataKey {
     Token,
     NextId,
     Job(u64),
+    Hook(Address),
 }
 
 #[contract]
@@ -49,8 +51,10 @@ impl Commerce {
         if expires_at <= env.ledger().timestamp() {
             return Err(Error::BadExpiry);
         }
-        if hook.is_some() {
-            return Err(Error::HookDenied);
+        if let Some(ref hook_addr) = hook {
+            if !hook_allowed(&env, hook_addr) {
+                return Err(Error::HookDenied);
+            }
         }
         client.require_auth();
 
@@ -99,9 +103,29 @@ impl Commerce {
         let actor = job.client.clone();
         actor.require_auth();
 
+        call_before(
+            &env,
+            &job,
+            Action::SetProv,
+            &actor,
+            HookArg::Provider(provider.clone()),
+            &opt,
+        );
         job.provider = Some(provider.clone());
         put_job(&env, &job);
         ProvSet { id, provider }.publish(&env);
+        call_after(
+            &env,
+            &job,
+            Action::SetProv,
+            &actor,
+            HookArg::Provider(
+                job.provider
+                    .clone()
+                    .expect("provider was set immediately above"),
+            ),
+            &opt,
+        );
         bump_job(&env, id, false);
         Ok(())
     }
@@ -130,6 +154,14 @@ impl Commerce {
         }
         actor.require_auth();
 
+        call_before(
+            &env,
+            &job,
+            Action::SetBudget,
+            &actor,
+            HookArg::Budget(amount),
+            &opt,
+        );
         job.budget = amount;
         put_job(&env, &job);
         BudgetSet {
@@ -138,6 +170,14 @@ impl Commerce {
             amount,
         }
         .publish(&env);
+        call_after(
+            &env,
+            &job,
+            Action::SetBudget,
+            &actor,
+            HookArg::Budget(amount),
+            &opt,
+        );
         bump_job(&env, id, false);
         Ok(())
     }
@@ -161,6 +201,7 @@ impl Commerce {
         let actor = job.client.clone();
         actor.require_auth();
 
+        call_before(&env, &job, Action::Fund, &actor, HookArg::None, &opt);
         job.state = JobState::Funded;
         put_job(&env, &job);
         let escrow = env.current_contract_address();
@@ -171,6 +212,7 @@ impl Commerce {
             amount: job.budget,
         }
         .publish(&env);
+        call_after(&env, &job, Action::Fund, &actor, HookArg::None, &opt);
         bump_job(&env, id, false);
         Ok(())
     }
@@ -182,6 +224,14 @@ impl Commerce {
         let actor = job.provider.clone().ok_or(Error::NoProvider)?;
         actor.require_auth();
 
+        call_before(
+            &env,
+            &job,
+            Action::Submit,
+            &actor,
+            HookArg::Work(work_hash.clone()),
+            &opt,
+        );
         job.state = JobState::Submitted;
         job.work_hash = Some(work_hash.clone());
         put_job(&env, &job);
@@ -191,6 +241,14 @@ impl Commerce {
             work_hash: work_hash.clone(),
         }
         .publish(&env);
+        call_after(
+            &env,
+            &job,
+            Action::Submit,
+            &actor,
+            HookArg::Work(work_hash),
+            &opt,
+        );
         bump_job(&env, id, false);
         Ok(())
     }
@@ -208,6 +266,14 @@ impl Commerce {
         let provider = job.provider.clone().ok_or(Error::NoProvider)?;
         actor.require_auth();
 
+        call_before(
+            &env,
+            &job,
+            Action::Complete,
+            &actor,
+            HookArg::Decision(reason.clone()),
+            &opt,
+        );
         job.state = JobState::Completed;
         job.decision = reason.clone();
         put_job(&env, &job);
@@ -218,8 +284,8 @@ impl Commerce {
         );
         JobDone {
             id,
-            evaluator: actor,
-            reason,
+            evaluator: actor.clone(),
+            reason: reason.clone(),
         }
         .publish(&env);
         PayRelease {
@@ -228,6 +294,14 @@ impl Commerce {
             amount: job.budget,
         }
         .publish(&env);
+        call_after(
+            &env,
+            &job,
+            Action::Complete,
+            &actor,
+            HookArg::Decision(reason),
+            &opt,
+        );
         Ok(())
     }
 
@@ -242,6 +316,14 @@ impl Commerce {
         };
         actor.require_auth();
 
+        call_before(
+            &env,
+            &job,
+            Action::Reject,
+            &actor,
+            HookArg::Decision(reason.clone()),
+            &opt,
+        );
         job.state = JobState::Rejected;
         job.decision = reason.clone();
         put_job(&env, &job);
@@ -260,10 +342,18 @@ impl Commerce {
         }
         JobReject {
             id,
-            rejector: actor,
-            reason,
+            rejector: actor.clone(),
+            reason: reason.clone(),
         }
         .publish(&env);
+        call_after(
+            &env,
+            &job,
+            Action::Reject,
+            &actor,
+            HookArg::Decision(reason),
+            &opt,
+        );
         Ok(())
     }
 
@@ -286,7 +376,7 @@ impl Commerce {
         );
         Refunded {
             id,
-            client: job.client,
+            client: job.client.clone(),
             amount: job.budget,
         }
         .publish(&env);
@@ -335,6 +425,23 @@ impl Commerce {
         Ok(())
     }
 
+    pub fn set_hook(env: Env, hook: Address, allowed: bool) {
+        get_admin(&env).require_auth();
+        let key = DataKey::Hook(hook.clone());
+        if allowed {
+            env.storage().persistent().set(&key, &true);
+            bump_key(&env, &key, true);
+        } else {
+            env.storage().persistent().remove(&key);
+        }
+        HookSet { hook, allowed }.publish(&env);
+        bump_core(&env, false);
+    }
+
+    pub fn is_hook(env: Env, hook: Address) -> bool {
+        hook_allowed(&env, &hook)
+    }
+
     pub fn get_token(env: Env) -> Address {
         get_token(&env)
     }
@@ -376,6 +483,13 @@ fn get_token(env: &Env) -> Address {
         .instance()
         .get(&DataKey::Token)
         .expect("contract is initialized")
+}
+
+fn hook_allowed(env: &Env, hook: &Address) -> bool {
+    env.storage()
+        .persistent()
+        .get(&DataKey::Hook(hook.clone()))
+        .unwrap_or(false)
 }
 
 fn require_state(job: &Job, expected: JobState) -> Result<(), Error> {
@@ -448,6 +562,34 @@ fn validate_opt(opt: &Bytes) -> Result<(), Error> {
         Err(Error::OptTooLong)
     } else {
         Ok(())
+    }
+}
+
+fn make_ctx(job: &Job, action: Action, actor: &Address, arg: HookArg, opt: &Bytes) -> HookCtx {
+    HookCtx {
+        job_id: job.id,
+        action,
+        actor: actor.clone(),
+        client: job.client.clone(),
+        provider: job.provider.clone(),
+        evaluator: job.evaluator.clone(),
+        budget: job.budget,
+        expiry: job.expires_at,
+        state: job.state,
+        arg,
+        opt: opt.clone(),
+    }
+}
+
+fn call_before(env: &Env, job: &Job, action: Action, actor: &Address, arg: HookArg, opt: &Bytes) {
+    if let Some(ref hook) = job.hook {
+        HookClient::new(env, hook).before_action(&make_ctx(job, action, actor, arg, opt));
+    }
+}
+
+fn call_after(env: &Env, job: &Job, action: Action, actor: &Address, arg: HookArg, opt: &Bytes) {
+    if let Some(ref hook) = job.hook {
+        HookClient::new(env, hook).after_action(&make_ctx(job, action, actor, arg, opt));
     }
 }
 

@@ -4,7 +4,8 @@ use soroban_sdk::{
     contract, contractimpl, contracttype, token, Address, Bytes, BytesN, Env, String,
 };
 use stellar_8183_interfaces::{
-    BudgetSet, Error, Job, JobCreated, JobFunded, JobState, JobSubmit, ProvSet,
+    AdminProp, AdminSet, BudgetSet, Error, Job, JobCreated, JobDone, JobExpire, JobFunded,
+    JobReject, JobState, JobSubmit, PayRelease, ProvSet, Refunded,
 };
 
 pub use stellar_8183_interfaces;
@@ -16,6 +17,7 @@ const OPT_MAX: u32 = 1_024;
 #[derive(Clone)]
 enum DataKey {
     Admin,
+    Pending,
     Token,
     NextId,
     Job(u64),
@@ -193,6 +195,105 @@ impl Commerce {
         Ok(())
     }
 
+    pub fn complete(
+        env: Env,
+        id: u64,
+        reason: Option<BytesN<32>>,
+        opt: Bytes,
+    ) -> Result<(), Error> {
+        validate_opt(&opt)?;
+        let mut job = read_job(&env, id)?;
+        require_state(&job, JobState::Submitted)?;
+        let actor = job.evaluator.clone();
+        let provider = job.provider.clone().ok_or(Error::NoProvider)?;
+        actor.require_auth();
+
+        job.state = JobState::Completed;
+        job.decision = reason.clone();
+        put_job(&env, &job);
+        token::Client::new(&env, &get_token(&env)).transfer(
+            &env.current_contract_address(),
+            &provider,
+            &job.budget,
+        );
+        JobDone {
+            id,
+            evaluator: actor,
+            reason,
+        }
+        .publish(&env);
+        PayRelease {
+            id,
+            provider,
+            amount: job.budget,
+        }
+        .publish(&env);
+        Ok(())
+    }
+
+    pub fn reject(env: Env, id: u64, reason: Option<BytesN<32>>, opt: Bytes) -> Result<(), Error> {
+        validate_opt(&opt)?;
+        let mut job = read_job(&env, id)?;
+        let previous = job.state;
+        let actor = match previous {
+            JobState::Open => job.client.clone(),
+            JobState::Funded | JobState::Submitted => job.evaluator.clone(),
+            _ => return Err(Error::BadState),
+        };
+        actor.require_auth();
+
+        job.state = JobState::Rejected;
+        job.decision = reason.clone();
+        put_job(&env, &job);
+        if previous.has_funds() {
+            token::Client::new(&env, &get_token(&env)).transfer(
+                &env.current_contract_address(),
+                &job.client,
+                &job.budget,
+            );
+            Refunded {
+                id,
+                client: job.client.clone(),
+                amount: job.budget,
+            }
+            .publish(&env);
+        }
+        JobReject {
+            id,
+            rejector: actor,
+            reason,
+        }
+        .publish(&env);
+        Ok(())
+    }
+
+    /// Permissionless and deliberately not hookable.
+    pub fn claim_refund(env: Env, id: u64) -> Result<(), Error> {
+        let mut job = read_job(&env, id)?;
+        if !job.state.has_funds() {
+            return Err(Error::BadState);
+        }
+        if env.ledger().timestamp() < job.expires_at {
+            return Err(Error::BadExpiry);
+        }
+
+        job.state = JobState::Expired;
+        put_job(&env, &job);
+        token::Client::new(&env, &get_token(&env)).transfer(
+            &env.current_contract_address(),
+            &job.client,
+            &job.budget,
+        );
+        Refunded {
+            id,
+            client: job.client,
+            amount: job.budget,
+        }
+        .publish(&env);
+        JobExpire { id }.publish(&env);
+        Ok(())
+    }
+
     pub fn get_job(env: Env, id: u64) -> Result<Job, Error> {
         read_job(&env, id)
     }
@@ -200,6 +301,37 @@ impl Commerce {
     pub fn keep_alive(env: Env, id: u64) -> Result<(), Error> {
         read_job(&env, id)?;
         bump_job(&env, id, true);
+        Ok(())
+    }
+
+    pub fn propose_admin(env: Env, admin: Address) {
+        let old_admin = get_admin(&env);
+        old_admin.require_auth();
+        env.storage().instance().set(&DataKey::Pending, &admin);
+        AdminProp {
+            old_admin,
+            pending: admin,
+        }
+        .publish(&env);
+        bump_core(&env, false);
+    }
+
+    pub fn accept_admin(env: Env) -> Result<(), Error> {
+        let pending: Address = env
+            .storage()
+            .instance()
+            .get(&DataKey::Pending)
+            .ok_or(Error::NoPending)?;
+        let old_admin = get_admin(&env);
+        pending.require_auth();
+        env.storage().instance().set(&DataKey::Admin, &pending);
+        env.storage().instance().remove(&DataKey::Pending);
+        AdminSet {
+            old_admin,
+            new_admin: pending,
+        }
+        .publish(&env);
+        bump_core(&env, false);
         Ok(())
     }
 

@@ -1,0 +1,57 @@
+{
+  "name": "@trionlabs/stellar-8183",
+  "version": "0.1.0",
+  "description": "TypeScript SDK and safe relayed-auth workflow for Soroban Agentic Commerce",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trionlabs/stellar-8183.git",
+    "directory": "packages/sdk"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "bindings:check": "bash scripts/generate-bindings.sh --check",
+    "bindings:generate": "bash scripts/generate-bindings.sh",
+    "check": "pnpm bindings:check && pnpm format:check && pnpm typecheck && pnpm test && pnpm pack:check",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "tsc --noEmit -p tsconfig.test.json",
+    "pack:check": "pnpm clean && pnpm build && node scripts/pack-check.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.test.json"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "16.2.0",
+    "buffer": "6.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

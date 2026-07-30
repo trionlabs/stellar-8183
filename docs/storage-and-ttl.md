@@ -7,7 +7,7 @@ exception. A Unix expiry timestamp does not keep a Soroban ledger entry live.
 
 | Data                       | Storage class         | Keying                              | Reason                                                                                |
 | -------------------------- | --------------------- | ----------------------------------- | ------------------------------------------------------------------------------------- |
-| Admin, token, next job ID  | Instance              | Fixed keys in the contract instance | Small deployment-wide configuration loaded on every invocation                        |
+| Admin, pending admin, token, next job ID | Instance              | Fixed keys in the contract instance | Small deployment-wide configuration loaded on every invocation                        |
 | Job                        | Persistent            | One `Job(id)` entry per job         | Escrow state must be recoverable and jobs must not create an unbounded instance entry |
 | Escrow funds               | SEP-41 token contract | Kernel contract address             | Value is held by the token contract, not serialized into kernel storage               |
 
@@ -27,7 +27,10 @@ The implementation derives the current network maximum through
 - Instance extension uses the same half-maximum threshold and extends both the
   contract instance and its Wasm code.
 - `keep_alive(id)` is permissionless and force-extends the named job plus
-  instance/code.
+  instance/code, even after settlement.
+- Automatic mutation-time job bumps stop after Completed, Rejected, or Expired.
+  Settled history therefore does not consume maximum rent forever solely
+  because it is read.
 - Reads do not silently charge rent by extending a job. A caller that wants an
   archival record kept hot invokes `keep_alive`.
 
@@ -67,6 +70,8 @@ and
 - Mutations above the half-maximum threshold do not perform a redundant bump.
 - Mutations below the threshold extend the job and instance/code.
 - `keep_alive` force-extends a known job and rejects an unknown job.
-- A later terminal-path milestone must demonstrate that an archived funded job
-  can be restored and refunded exactly once after expiry.
+- The native host advances a funded job past its storage TTL and demonstrates
+  restoration followed by an exact, one-time refund after expiry.
+- Terminal transitions do not aggressively extend job TTL.
+- `keep_alive` works for nonterminal and terminal jobs.
 - Production resource limits remain enabled for conformance tests.

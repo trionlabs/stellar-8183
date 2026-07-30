@@ -1,0 +1,471 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v0.1.0"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing release tag whose evidence will be finalized
+        required: true
+        default: v0.1.0
+        type: string
+      recording_url:
+        description: Public URL of the demo recording attached to that release
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      attestations: write
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate provisional deployment evidence
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REPOSITORY}" = "trionlabs/stellar-8183"
+          test "${GITHUB_REF}" = "refs/tags/v0.1.0"
+          test -f deployments/testnet.json
+          test -f deployments/testnet.raw.json
+          npx --yes \
+            --package=ajv-cli@5.0.0 \
+            --package=ajv-formats@3.0.1 \
+            ajv validate \
+            --spec=draft2020 \
+            --strict=true \
+            -c ajv-formats \
+            --all-errors \
+            --errors=text \
+            -s docs/evidence.schema.json \
+            -d deployments/testnet.json
+          node scripts/validate-evidence.mjs \
+            deployments/testnet.json \
+            deployments/testnet.raw.json
+          tag_commit="$(git rev-parse HEAD)"
+          source_commit="$(jq -r '.release.source_commit' deployments/testnet.json)"
+          test "${source_commit}" = "$(git rev-parse HEAD^)"
+          test "$(
+            git diff --name-only "${source_commit}" "${tag_commit}"
+          )" = "$(
+            printf '%s\n' \
+              deployments/testnet.json \
+              deployments/testnet.raw.json
+          )"
+          jq -e \
+            --arg source_commit "${source_commit}" \
+            '.status == "deployment"
+              and .release.tag == "v0.1.0"
+              and .release.source_commit == $source_commit
+              and .attestation.verified == false
+              and .sdk.provenance_verified == false
+              and .demo.published == false' \
+            deployments/testnet.json >/dev/null
+      - uses: stellar/stellar-cli@v27.0.0
+        with:
+          version: 27.0.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Verify exact tagged source
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy --workspace --all-targets --all-features -- -D warnings
+          cargo test --workspace --all-features
+      - run: ./scripts/verify-release.sh
+      - run: ./scripts/release-build.sh
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm bindings:check
+      - run: pnpm check
+      - name: Match release build to deployed Wasm
+        run: |
+          set -euo pipefail
+          kernel_sha="$(
+            sha256sum artifacts/release/stellar_8183_commerce.wasm |
+              cut -d " " -f 1
+          )"
+          hook_sha="$(
+            sha256sum artifacts/release/stellar_8183_sla_hook.wasm |
+              cut -d " " -f 1
+          )"
+          test "${kernel_sha}" = "$(
+            jq -r '.contracts.kernel.local_wasm_sha256' deployments/testnet.json
+          )"
+          test "${kernel_sha}" = "$(
+            jq -r '.contracts.kernel.fetched_wasm_sha256' deployments/testnet.json
+          )"
+          test "${hook_sha}" = "$(
+            jq -r '.contracts.sla_hook.local_wasm_sha256' deployments/testnet.json
+          )"
+          test "${hook_sha}" = "$(
+            jq -r '.contracts.sla_hook.fetched_wasm_sha256' deployments/testnet.json
+          )"
+          cp deployments/testnet.json \
+            artifacts/release/evidence.deployment.json
+          cp deployments/testnet.raw.json \
+            artifacts/release/evidence.raw.json
+      - name: Build checksums
+        run: |
+          cd artifacts/release
+          sha256sum *.wasm > SHA256SUMS
+          sha256sum evidence.deployment.json \
+            > evidence.deployment.json.sha256
+          sha256sum evidence.raw.json \
+            > evidence.raw.json.sha256
+      - name: Transfer exact Wasm to npm verification
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-wasm
+          path: artifacts/release/*.wasm
+          if-no-files-found: error
+          retention-days: 1
+      - name: Attest kernel
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: artifacts/release/stellar_8183_commerce.wasm
+      - name: Attest SLA hook
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: artifacts/release/stellar_8183_sla_hook.wasm
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/release/*.wasm
+            artifacts/release/SHA256SUMS
+            artifacts/release/evidence.deployment.json*
+            artifacts/release/evidence.raw.json*
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+
+  npm:
+    if: github.event_name == 'push'
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: stellar/stellar-cli@v27.0.0
+        with:
+          version: 27.0.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-wasm
+          path: artifacts/release
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @trionlabs/stellar-8183 check
+      - name: Pack and match the recorded tarball
+        id: package
+        run: |
+          set -euo pipefail
+          package_dir="${RUNNER_TEMP}/stellar-8183-package"
+          mkdir -p "${package_dir}"
+          pnpm --filter @trionlabs/stellar-8183 pack \
+            --pack-destination "${package_dir}"
+          tarball="$(find "${package_dir}" -maxdepth 1 -type f -name '*.tgz')"
+          test -n "${tarball}"
+          test "$(printf '%s\n' "${tarball}" | wc -l)" -eq 1
+          actual_sha="$(sha256sum "${tarball}" | cut -d " " -f 1)"
+          expected_sha="$(
+            jq -r '.sdk.tarball_sha256' deployments/testnet.json
+          )"
+          test "${actual_sha}" = "${expected_sha}"
+          printf 'tarball=%s\n' "${tarball}" >> "${GITHUB_OUTPUT}"
+      - name: Publish the exact verified tarball
+        run: >-
+          pnpm publish "${{ steps.package.outputs.tarball }}"
+          --access public
+          --ignore-scripts
+          --no-git-checks
+          --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  finalize-evidence:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      attestations: read
+      contents: write
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag }}
+      RECORDING_URL: ${{ inputs.recording_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          ref: ${{ inputs.release_tag }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: stellar/stellar-cli@v27.0.0
+        with:
+          version: 27.0.0
+      - name: Verify every public artifact and finalize evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          test "${GITHUB_REPOSITORY}" = "trionlabs/stellar-8183"
+          test "${RELEASE_TAG}" = "v0.1.0"
+          test -f deployments/testnet.json
+          test -f deployments/testnet.raw.json
+
+          work_dir="$(
+            mktemp -d "${RUNNER_TEMP}/stellar-8183-finalize.XXXXXX"
+          )"
+          release_dir="${work_dir}/release"
+          npm_dir="${work_dir}/npm"
+          mkdir -p "${release_dir}" "${npm_dir}"
+
+          npx --yes \
+            --package=ajv-cli@5.0.0 \
+            --package=ajv-formats@3.0.1 \
+            ajv validate \
+            --spec=draft2020 \
+            --strict=true \
+            -c ajv-formats \
+            --all-errors \
+            --errors=text \
+            -s docs/evidence.schema.json \
+            -d deployments/testnet.json
+          node scripts/validate-evidence.mjs \
+            deployments/testnet.json \
+            deployments/testnet.raw.json
+
+          tag_commit="$(git rev-parse HEAD)"
+          source_commit="$(jq -r '.release.source_commit' deployments/testnet.json)"
+          test "${source_commit}" = "$(git rev-parse HEAD^)"
+          test "$(
+            git diff --name-only "${source_commit}" "${tag_commit}"
+          )" = "$(
+            printf '%s\n' \
+              deployments/testnet.json \
+              deployments/testnet.raw.json
+          )"
+          jq -e \
+            --arg source_commit "${source_commit}" \
+            '.status == "deployment"
+              and .release.source_commit == $source_commit
+              and .release.tag == "v0.1.0"' \
+            deployments/testnet.json >/dev/null
+
+          release_json="$(
+            gh release view "${RELEASE_TAG}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --json isDraft,isPrerelease,publishedAt,tagName,url
+          )"
+          release_url="$(
+            jq -r '.url' <<<"${release_json}"
+          )"
+          test "${release_url}" = \
+            "https://github.com/trionlabs/stellar-8183/releases/tag/v0.1.0"
+          jq -e \
+            '.tagName == "v0.1.0"
+              and .isDraft == false
+              and .isPrerelease == false' \
+            <<<"${release_json}" >/dev/null
+          run_started_at="$(
+            gh api \
+              "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+              --jq '.run_started_at'
+          )"
+          generated_at="$(
+            date -u -d "${run_started_at}" '+%Y-%m-%dT%H:%M:%S.000Z'
+          )"
+
+          gh release download "${RELEASE_TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --pattern 'evidence.deployment.json*' \
+            --pattern 'evidence.raw.json*' \
+            --pattern 'stellar_8183_*.wasm' \
+            --dir "${release_dir}"
+          cmp deployments/testnet.json \
+            "${release_dir}/evidence.deployment.json"
+          cmp deployments/testnet.raw.json \
+            "${release_dir}/evidence.raw.json"
+          (
+            cd "${release_dir}"
+            sha256sum --check evidence.deployment.json.sha256
+            sha256sum --check evidence.raw.json.sha256
+          )
+
+          kernel_wasm="${release_dir}/stellar_8183_commerce.wasm"
+          hook_wasm="${release_dir}/stellar_8183_sla_hook.wasm"
+          kernel_sha="$(sha256sum "${kernel_wasm}" | cut -d " " -f 1)"
+          hook_sha="$(sha256sum "${hook_wasm}" | cut -d " " -f 1)"
+          test "${kernel_sha}" = "$(
+            jq -r '.contracts.kernel.local_wasm_sha256' deployments/testnet.json
+          )"
+          test "${kernel_sha}" = "$(
+            jq -r '.contracts.kernel.fetched_wasm_sha256' deployments/testnet.json
+          )"
+          test "${hook_sha}" = "$(
+            jq -r '.contracts.sla_hook.local_wasm_sha256' deployments/testnet.json
+          )"
+          test "${hook_sha}" = "$(
+            jq -r '.contracts.sla_hook.fetched_wasm_sha256' deployments/testnet.json
+          )"
+          stellar contract info meta --wasm "${kernel_wasm}" |
+            grep -F 'source_repo: github:trionlabs/stellar-8183' >/dev/null
+          stellar contract info meta --wasm "${hook_wasm}" |
+            grep -F 'source_repo: github:trionlabs/stellar-8183' >/dev/null
+
+          for wasm in "${kernel_wasm}" "${hook_wasm}"; do
+            gh attestation verify "${wasm}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --signer-workflow \
+                "${GITHUB_REPOSITORY}/.github/workflows/release.yml" \
+              --source-ref "refs/tags/${RELEASE_TAG}" \
+              --source-digest "${tag_commit}" \
+              --deny-self-hosted-runners >/dev/null
+          done
+
+          kernel_attestation_url="https://api.github.com/repos/"
+          kernel_attestation_url+="${GITHUB_REPOSITORY}/attestations/"
+          kernel_attestation_url+="sha256:${kernel_sha}"
+          hook_attestation_url="https://api.github.com/repos/"
+          hook_attestation_url+="${GITHUB_REPOSITORY}/attestations/"
+          hook_attestation_url+="sha256:${hook_sha}"
+
+          package="$(
+            jq -r '.sdk.package' deployments/testnet.json
+          )"
+          version="$(
+            jq -r '.sdk.version' deployments/testnet.json
+          )"
+          package_spec="${package}@${version}"
+          test "$(npm view "${package_spec}" version)" = "${version}"
+          npm_attestations="$(
+            npm view "${package_spec}" dist.attestations --json
+          )"
+          jq -e \
+            '.url
+              | startswith("https://registry.npmjs.org/-/npm/v1/attestations/")' \
+            <<<"${npm_attestations}" >/dev/null
+          jq -e \
+            '.provenance.predicateType
+              == "https://slsa.dev/provenance/v1"' \
+            <<<"${npm_attestations}" >/dev/null
+
+          npm_tarball_url="$(
+            npm view "${package_spec}" dist.tarball
+          )"
+          curl --fail --location \
+            --proto '=https' \
+            --proto-redir '=https' \
+            "${npm_tarball_url}" \
+            --output "${npm_dir}/package.tgz"
+          test "$(
+            sha256sum "${npm_dir}/package.tgz" | cut -d " " -f 1
+          )" = "$(jq -r '.sdk.tarball_sha256' deployments/testnet.json)"
+
+          (
+            cd "${npm_dir}"
+            npm init --yes >/dev/null
+            npm install \
+              --ignore-scripts \
+              --no-audit \
+              --no-fund \
+              "${package_spec}" >/dev/null
+            npx --yes npm@11.12.1 audit signatures
+            node --input-type=module \
+              -e "await import('@trionlabs/stellar-8183')"
+          )
+          npm_url="https://www.npmjs.com/package/"
+          npm_url+="${package}/v/${version}"
+
+          recording_name="${RECORDING_URL##*/}"
+          test -n "${recording_name}"
+          curl --fail --location \
+            --retry 3 \
+            --proto '=https' \
+            --proto-redir '=https' \
+            "${RECORDING_URL}" \
+            --output "${work_dir}/${recording_name}"
+          test "$(
+            sha256sum "${work_dir}/${recording_name}" | cut -d " " -f 1
+          )" = "$(jq -r '.demo.recording_sha256' deployments/testnet.json)"
+
+          verified_evidence="${work_dir}/evidence.verified.json"
+          node scripts/promote-evidence.mjs \
+            --input deployments/testnet.json \
+            --output "${verified_evidence}" \
+            --generated-at "${generated_at}" \
+            --release-url "${release_url}" \
+            --kernel-attestation-url "${kernel_attestation_url}" \
+            --sla-hook-attestation-url "${hook_attestation_url}" \
+            --npm-url "${npm_url}" \
+            --recording-url "${RECORDING_URL}"
+
+          npx --yes \
+            --package=ajv-cli@5.0.0 \
+            --package=ajv-formats@3.0.1 \
+            ajv validate \
+            --spec=draft2020 \
+            --strict=true \
+            -c ajv-formats \
+            --all-errors \
+            --errors=text \
+            -s docs/evidence.schema.json \
+            -d "${verified_evidence}"
+          node scripts/validate-evidence.mjs \
+            "${verified_evidence}" \
+            deployments/testnet.raw.json
+
+          (
+            cd "${work_dir}"
+            sha256sum evidence.verified.json \
+              > evidence.verified.json.sha256
+          )
+          gh release upload "${RELEASE_TAG}" \
+            "${verified_evidence}" \
+            "${verified_evidence}.sha256" \
+            --repo "${GITHUB_REPOSITORY}"
+
+          published_evidence="${release_url/tag/download}"
+          published_evidence+="/evidence.verified.json"
+          published_checksum="${published_evidence}.sha256"
+          public_dir="${work_dir}/public"
+          mkdir "${public_dir}"
+          curl --fail --location \
+            --retry 5 \
+            --retry-all-errors \
+            --proto '=https' \
+            --proto-redir '=https' \
+            "${published_evidence}" \
+            --output "${public_dir}/evidence.verified.json"
+          curl --fail --location \
+            --retry 5 \
+            --retry-all-errors \
+            --proto '=https' \
+            --proto-redir '=https' \
+            "${published_checksum}" \
+            --output "${public_dir}/evidence.verified.json.sha256"
+          (
+            cd "${public_dir}"
+            sha256sum --check evidence.verified.json.sha256
+          )
+          cmp "${verified_evidence}" "${public_dir}/evidence.verified.json"

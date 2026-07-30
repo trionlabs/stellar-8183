@@ -125,7 +125,7 @@ jobs:
           sha256sum evidence.raw.json \
             > evidence.raw.json.sha256
       - name: Transfer exact Wasm to npm verification
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-wasm
           path: artifacts/release/*.wasm

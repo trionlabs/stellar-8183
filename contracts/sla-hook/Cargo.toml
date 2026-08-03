@@ -1,5 +1,5 @@
 [package]
-name = "stellar-8183-commerce"
+name = "stellar-8183-sla-hook"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -16,5 +16,3 @@ stellar-8183-interfaces = { path = "../interfaces" }
 
 [dev-dependencies]
 soroban-sdk = { workspace = true, features = ["testutils"] }
-stellar-8183-sla-hook = { path = "../sla-hook" }
-stellar-8183-test-hooks = { path = "../test-hooks" }

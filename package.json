@@ -1,0 +1,26 @@
+{
+  "name": "stellar-8183-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Soroban implementation of ERC-8183 Agentic Commerce",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "bindings:check": "pnpm --filter @trionlabs/stellar-8183 bindings:check",
+    "bindings:generate": "pnpm --filter @trionlabs/stellar-8183 bindings:generate",
+    "build": "pnpm -r build",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm pack:check",
+    "clean": "pnpm -r clean",
+    "format": "pnpm -r format",
+    "format:check": "pnpm -r format:check",
+    "lint": "pnpm -r lint",
+    "pack:check": "pnpm --filter @trionlabs/stellar-8183 pack:check",
+    "test": "pnpm -r test && pnpm test:evidence",
+    "test:evidence": "node --test scripts/*.test.mjs",
+    "typecheck": "pnpm -r typecheck"
+  }
+}

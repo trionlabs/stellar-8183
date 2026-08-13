@@ -175,7 +175,7 @@ function verifyScenarioArguments(invocation, raw, context, sdk) {
       raw.hash,
       "create_job.client",
     );
-    requireNativeEqual(args[1], undefined, raw.hash, "create_job.provider");
+    requireNativeEqual(args[1], null, raw.hash, "create_job.provider");
     requireNativeEqual(
       args[2],
       identities.evaluator,

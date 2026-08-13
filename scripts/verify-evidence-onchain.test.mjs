@@ -227,6 +227,90 @@ test("verifies an existing-contract invocation and rejects operation sources", (
   );
 });
 
+test("accepts Soroban Option::None as the null create_job provider", () => {
+  const contractId = sdk.StrKey.encodeContract(Buffer.alloc(32, 13));
+  const hookId = sdk.StrKey.encodeContract(Buffer.alloc(32, 14));
+  const evaluator = sdk.Keypair.fromRawEd25519Seed(
+    Buffer.alloc(32, 15),
+  ).publicKey();
+  const description = "Test live create_job decoding";
+  const expiresAt = 1234n;
+  const args = [
+    sdk.nativeToScVal(source, { type: "address" }),
+    sdk.xdr.ScVal.scvVoid(),
+    sdk.nativeToScVal(evaluator, { type: "address" }),
+    sdk.nativeToScVal(expiresAt, { type: "u64" }),
+    sdk.nativeToScVal(description, { type: "string" }),
+    sdk.nativeToScVal(hookId, { type: "address" }),
+  ];
+  const raw = {
+    hash: "4".repeat(64),
+    label: "completion.create_job",
+    method: "create_job",
+    source,
+    contractId,
+    authorizers: [],
+    argumentsSha256: hashArguments(args),
+  };
+  const operation = normalizedOperation(
+    sdk.Operation.invokeContractFunction({
+      contract: contractId,
+      function: raw.method,
+      args,
+    }),
+  );
+  const argumentContext = {
+    kind: "scenario",
+    scenario: {
+      job_id: 1,
+      job_snapshots: [
+        {
+          expires_at: expiresAt.toString(),
+          description_sha256: createHash("sha256")
+            .update(description)
+            .digest("hex"),
+        },
+      ],
+    },
+    transactionIndex: 0,
+    identities: { client: source, evaluator },
+    hookId,
+  };
+
+  assert.doesNotThrow(() =>
+    verifyInvokeOperation(
+      operation,
+      raw,
+      sdk,
+      networkPassphrase,
+      undefined,
+      argumentContext,
+    ),
+  );
+
+  const providerArgs = [...args];
+  providerArgs[1] = sdk.nativeToScVal(contract, { type: "address" });
+  const providerOperation = normalizedOperation(
+    sdk.Operation.invokeContractFunction({
+      contract: contractId,
+      function: raw.method,
+      args: providerArgs,
+    }),
+  );
+  assert.throws(
+    () =>
+      verifyInvokeOperation(
+        providerOperation,
+        { ...raw, argumentsSha256: hashArguments(providerArgs) },
+        sdk,
+        networkPassphrase,
+        undefined,
+        argumentContext,
+      ),
+    /create_job.provider/,
+  );
+});
+
 test("binds retained event XDR, decoded events, and return value to raw evidence", () => {
   const { result, raw } = resultEvidenceFixture();
   assert.doesNotThrow(() => verifyResultEvidence(result, raw, sdk));

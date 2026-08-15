@@ -1,0 +1,1870 @@
+{
+  "artifacts": [
+    {
+      "bytes": 16968,
+      "media_type": "application/wasm",
+      "name": "kernel_wasm",
+      "path": "artifacts/release/stellar_8183_commerce.wasm",
+      "sha256": "a39783cc9fe7f6acf39b6dc86f460a3ed172c098e9a9655cddfbd851b60ae43f"
+    },
+    {
+      "bytes": 7549,
+      "media_type": "application/wasm",
+      "name": "sla_hook_wasm",
+      "path": "artifacts/release/stellar_8183_sla_hook.wasm",
+      "sha256": "14ef819cc362420d9ae543202774f094d794d4004889c86078e9a47cb7f94120"
+    },
+    {
+      "bytes": 52673,
+      "media_type": "application/gzip",
+      "name": "sdk_tarball",
+      "path": "artifacts/testnet/package/trionlabs-stellar-8183-0.1.0.tgz",
+      "sha256": "8c9b558c553c3d4c5b1c951dfc62d6fc25a5fb86ea2e1922744c614f6b30441d"
+    },
+    {
+      "bytes": 82421,
+      "media_type": "application/json",
+      "name": "raw_testnet_capture",
+      "path": "deployments/testnet.raw.json",
+      "sha256": "5c9b07c0b24a8d68eb03fced0225ca1646582b3c79ac288fd35dcd4cee3b454b"
+    },
+    {
+      "bytes": 14670851,
+      "media_type": "video/mp4",
+      "name": "demo_recording",
+      "path": "artifacts/testnet/demo.mp4",
+      "sha256": "0a2bbda60747d790ac542df4608e17835fa9ea6c72d42b953a7ae426e357f5fd"
+    }
+  ],
+  "assertions": {
+    "all_local_tests_passed": true,
+    "clean_builds_identical": true,
+    "deployed_wasm_matches": true,
+    "distinct_role_addresses": true,
+    "exact_balance_accounting": true,
+    "facilitator_is_transaction_source": true,
+    "no_secrets_in_artifacts": true,
+    "refund_non_hookable": true,
+    "role_auth_entries_verified": true,
+    "schema_valid": true
+  },
+  "attestation": {
+    "sep": "SEP-55",
+    "verified": false
+  },
+  "build": {
+    "clean_builds_identical": true,
+    "node": "v22.22.0",
+    "pnpm": "11.9.0",
+    "rustc": "1.96.0",
+    "soroban_sdk": "27.0.3",
+    "source_repo_metadata": "github:trionlabs/stellar-8183",
+    "stellar_cli": "stellar 27.0.0 (5a7c5fe76530bf4248477ac812fc757146b98cc4)\nstellar-xdr 27.0.0 (5262803470be965e42f80023d12fba12808c774a)\nxdr (68fa1ac55692f68ad2a2ca549d0a283273554439)",
+    "stellar_sdk": "16.2.0"
+  },
+  "contracts": {
+    "hook_admission_transaction": {
+      "arguments_sha256": "e2f07d3d39f28abf67a2529f21916a421e98010fa38009a44d99e037e9bed6dd",
+      "authorizers": [],
+      "balance_changes": [],
+      "closed_at": "2026-07-30T03:14:11.000Z",
+      "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+      "envelope_sha256": "7e7dac4cd9ddad7cdc74f4cf3b0a5d6d195b85d7cebbbfcba51d6b9796c18910",
+      "events": [
+        {
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "decoded": {
+            "data": {
+              "allowed": true
+            },
+            "topics": [
+              "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5"
+            ]
+          },
+          "name": "hook_set"
+        }
+      ],
+      "explorer_url": "https://stellar.expert/explorer/testnet/tx/be29383be0c9d1e0e3313dcfa57f5dcd59dd04428063990b460bcc73d36fd71d",
+      "function": "set_hook",
+      "hash": "be29383be0c9d1e0e3313dcfa57f5dcd59dd04428063990b460bcc73d36fd71d",
+      "ledger": 3872429,
+      "resources": {
+        "inclusion_fee_stroops": "100",
+        "instructions": 1264999,
+        "read_bytes": 0,
+        "resource_fee_stroops": "388719",
+        "write_bytes": 128
+      },
+      "result": "SUCCESS",
+      "source": "GCYJPIAPCI7HYGXBVKVZSVH37EQ3L3CZ47LSRMIUXWC55BZ2O7HQQIAZ",
+      "step": "admit_hook"
+    },
+    "kernel": {
+      "constructor": {
+        "admin": "GCYJPIAPCI7HYGXBVKVZSVH37EQ3L3CZ47LSRMIUXWC55BZ2O7HQQIAZ",
+        "token": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA"
+      },
+      "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+      "deployment_transaction": {
+        "arguments_sha256": "4cb98e428f0462f49409e7ec571bb9518111beb8372f510a387788e1bb2a35d7",
+        "authorizers": [],
+        "balance_changes": [],
+        "closed_at": "2026-07-30T03:13:36.000Z",
+        "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+        "envelope_sha256": "e291bbfe641e31f9852bc28b5e441002926d1950e03eaf9fc985ce9a8fdfe69d",
+        "events": [],
+        "explorer_url": "https://stellar.expert/explorer/testnet/tx/c4873c115d8c2351e47a36aeaa8951813d5a8bad7f4fe4ea72dc69d7da3d7f45",
+        "function": "__constructor",
+        "hash": "c4873c115d8c2351e47a36aeaa8951813d5a8bad7f4fe4ea72dc69d7da3d7f45",
+        "ledger": 3872422,
+        "resources": {
+          "inclusion_fee_stroops": "100",
+          "instructions": 1676471,
+          "read_bytes": 0,
+          "resource_fee_stroops": "892620",
+          "write_bytes": 288
+        },
+        "result": "SUCCESS",
+        "source": "GCYJPIAPCI7HYGXBVKVZSVH37EQ3L3CZ47LSRMIUXWC55BZ2O7HQQIAZ",
+        "step": "deploy_kernel"
+      },
+      "explorer_url": "https://stellar.expert/explorer/testnet/contract/CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+      "fetched_wasm_sha256": "a39783cc9fe7f6acf39b6dc86f460a3ed172c098e9a9655cddfbd851b60ae43f",
+      "local_wasm_sha256": "a39783cc9fe7f6acf39b6dc86f460a3ed172c098e9a9655cddfbd851b60ae43f"
+    },
+    "sla_hook": {
+      "constructor": {
+        "kernel": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+        "review_secs": 300
+      },
+      "contract_id": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+      "deployment_transaction": {
+        "arguments_sha256": "e30a9fb9402eb268b5a6584ddacf3b3bd975586ccc0e56e7d6ba7d3d903d3006",
+        "authorizers": [],
+        "balance_changes": [],
+        "closed_at": "2026-07-30T03:13:56.000Z",
+        "contract_id": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+        "envelope_sha256": "6d186a1968555a15cecfc58f6bc28c5c3f9623e4eed9fc571b97f54d478530cb",
+        "events": [],
+        "explorer_url": "https://stellar.expert/explorer/testnet/tx/6316b8ae723ab86ba5af62e5c20cfbc10a3cc44f746c44377aa1703dc8e74f73",
+        "function": "__constructor",
+        "hash": "6316b8ae723ab86ba5af62e5c20cfbc10a3cc44f746c44377aa1703dc8e74f73",
+        "ledger": 3872426,
+        "resources": {
+          "inclusion_fee_stroops": "100",
+          "instructions": 1146642,
+          "read_bytes": 0,
+          "resource_fee_stroops": "649781",
+          "write_bytes": 212
+        },
+        "result": "SUCCESS",
+        "source": "GCYJPIAPCI7HYGXBVKVZSVH37EQ3L3CZ47LSRMIUXWC55BZ2O7HQQIAZ",
+        "step": "deploy_sla_hook"
+      },
+      "explorer_url": "https://stellar.expert/explorer/testnet/contract/CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+      "fetched_wasm_sha256": "14ef819cc362420d9ae543202774f094d794d4004889c86078e9a47cb7f94120",
+      "local_wasm_sha256": "14ef819cc362420d9ae543202774f094d794d4004889c86078e9a47cb7f94120"
+    }
+  },
+  "demo": {
+    "published": false,
+    "recording_sha256": "0a2bbda60747d790ac542df4608e17835fa9ea6c72d42b953a7ae426e357f5fd"
+  },
+  "generated_at": "2026-07-30T03:20:10.510Z",
+  "identities": {
+    "admin": "GCYJPIAPCI7HYGXBVKVZSVH37EQ3L3CZ47LSRMIUXWC55BZ2O7HQQIAZ",
+    "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+    "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+    "facilitator": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+    "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+  },
+  "network": {
+    "first_ledger": 3872422,
+    "last_ledger": 3872500,
+    "name": "testnet",
+    "observed_at": "2026-07-30T03:22:07.000Z",
+    "passphrase": "Test SDF Network ; September 2015",
+    "protocol_version": 27,
+    "rpc_url": "https://soroban-testnet.stellar.org"
+  },
+  "release": {
+    "source_commit": "d9608edb26ab309ada1e3667fade6b515d1fd271",
+    "source_repository": "https://github.com/trionlabs/stellar-8183",
+    "tag": "v0.1.0",
+    "version": "0.1.0"
+  },
+  "scenarios": [
+    {
+      "assertions": [
+        "client and provider both authorize distinct budget proposals",
+        "client loses exactly 10000000 base units",
+        "provider receives exactly 10000000 base units",
+        "escrow has zero terminal liability"
+      ],
+      "description": "Create without provider, negotiate, fund 1 test USDC, submit, and complete",
+      "final_state": "Completed",
+      "id": "completion",
+      "job_id": 4,
+      "job_snapshots": [
+        {
+          "after_step": "create_job",
+          "budget_base_units": "0",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382421,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 4,
+          "provider": null,
+          "state": "Open"
+        },
+        {
+          "after_step": "set_provider",
+          "budget_base_units": "0",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382421,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 4,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Open"
+        },
+        {
+          "after_step": "set_budget",
+          "budget_base_units": "9999999",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382421,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 4,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Open"
+        },
+        {
+          "after_step": "set_budget",
+          "budget_base_units": "10000000",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382421,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 4,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Open"
+        },
+        {
+          "after_step": "fund",
+          "budget_base_units": "10000000",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382421,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 4,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Funded"
+        },
+        {
+          "after_step": "submit",
+          "budget_base_units": "10000000",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": "785d2e5a6cec369046419876c5b5b86cc7edeb9cf1a4f8e3d6dd553842f70395",
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382421,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 4,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Submitted"
+        },
+        {
+          "after_step": "complete",
+          "budget_base_units": "10000000",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": "75e73a80ffd41b3117b1864eb9c7d5f80e194b29daca6d210dda54352ef8fa51",
+          "deliverable_hash": "785d2e5a6cec369046419876c5b5b86cc7edeb9cf1a4f8e3d6dd553842f70395",
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382421,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 4,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Completed"
+        }
+      ],
+      "kind": "completion",
+      "transactions": [
+        {
+          "arguments_sha256": "87e30c6c01fcda988f583234bc19eb4ef0012339f2f985f1609faa0e67c6a6bc",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:18:51.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "ee3556af444ff96ee3126bbc207a59e3ebd0724b512c5ad7540aa4d070868a23",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+                  "expires_at": "1785382421",
+                  "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+                  "provider": null
+                },
+                "topics": [
+                  "4",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+                ]
+              },
+              "name": "job_created"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/6da011ea2096ae592471557f69c1ab45b2fc62300217bf460a949150fb2eb19c",
+          "function": "create_job",
+          "hash": "6da011ea2096ae592471557f69c1ab45b2fc62300217bf460a949150fb2eb19c",
+          "ledger": 3872485,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 2246955,
+            "read_bytes": 144,
+            "resource_fee_stroops": "1606807",
+            "write_bytes": 908
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "create_job"
+        },
+        {
+          "arguments_sha256": "baa4ebf7089ffba7599b2caa3c9372e4620d88b87091a159832ffe6da01739d4",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:19:01.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "b14c375347e80d19653d2c002cf75f56201f194aaa6f5d92fecdcd3b00db8cf7",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {},
+                "topics": [
+                  "4",
+                  "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+                ]
+              },
+              "name": "provider_set"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/920324064e8b7431a5b4fa0f1d7deba8aa050e56793af7fb62aefe43e4deba3d",
+          "function": "set_provider",
+          "hash": "920324064e8b7431a5b4fa0f1d7deba8aa050e56793af7fb62aefe43e4deba3d",
+          "ledger": 3872487,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3174898,
+            "read_bytes": 144,
+            "resource_fee_stroops": "143489",
+            "write_bytes": 660
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "set_provider"
+        },
+        {
+          "arguments_sha256": "a8b8ae169a8a02ea54529f6ad8e504a7af2472b72b6eca6d0976330d0b1f6e56",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:19:11.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "062330c227c515fc6e571e5e045990ec4cf4c26cc6724725b4555df60667a194",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "amount": "9999999"
+                },
+                "topics": [
+                  "4",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+                ]
+              },
+              "name": "budget_set"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/bd9d5bea5ce30be356225436a9fff50647b92307e4ff57b4928b49211f32a8b7",
+          "function": "set_budget",
+          "hash": "bd9d5bea5ce30be356225436a9fff50647b92307e4ff57b4928b49211f32a8b7",
+          "ledger": 3872489,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3188954,
+            "read_bytes": 144,
+            "resource_fee_stroops": "28874",
+            "write_bytes": 660
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "set_budget"
+        },
+        {
+          "arguments_sha256": "5f3a483b6783e9f56db227fdb347b590da22b00e9edaad969e6408fac1a3f5d0",
+          "authorizers": [
+            "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:19:21.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "6435e6feefc3e569da765f6550e788d636894abd10c1540c510963720cb25b9b",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "amount": "10000000"
+                },
+                "topics": [
+                  "4",
+                  "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+                ]
+              },
+              "name": "budget_set"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/bf8b764087a3d3ddb7a5473caabafcc1de70830ebf31584861fada68a1162e6a",
+          "function": "set_budget",
+          "hash": "bf8b764087a3d3ddb7a5473caabafcc1de70830ebf31584861fada68a1162e6a",
+          "ledger": 3872491,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3188954,
+            "read_bytes": 144,
+            "resource_fee_stroops": "28874",
+            "write_bytes": 660
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "set_budget"
+        },
+        {
+          "arguments_sha256": "25c61a9b47bc64c055e742c26363d906d394cb9e09965423b10b55df137dfef2",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "0",
+              "before_base_units": "10000000",
+              "delta_base_units": "-10000000"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "10000000",
+              "before_base_units": "0",
+              "delta_base_units": "10000000"
+            }
+          ],
+          "closed_at": "2026-07-30T03:19:36.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "1e423dd2cadaaf5ebb1170bac199ec0a90bfba5d118a9046272b16631eb26e96",
+          "events": [
+            {
+              "contract_id": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
+              "decoded": {
+                "data": "10000000",
+                "topics": [
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+                  "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+                  "USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+                ]
+              },
+              "name": "transfer"
+            },
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "amount": "10000000"
+                },
+                "topics": [
+                  "4",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+                ]
+              },
+              "name": "job_funded"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/01d6a73fec51e966462cc9bfe722af3f3eafe65fcc7baadfbf3c0bc4f6322c75",
+          "function": "fund",
+          "hash": "01d6a73fec51e966462cc9bfe722af3f3eafe65fcc7baadfbf3c0bc4f6322c75",
+          "ledger": 3872494,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3480298,
+            "read_bytes": 260,
+            "resource_fee_stroops": "50182",
+            "write_bytes": 1004
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "fund"
+        },
+        {
+          "arguments_sha256": "c756fea06316e93a7fa807706198cb6418123ef77f2d1fded9864b0e409f1737",
+          "authorizers": [
+            "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:19:47.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "9df3d0b02ced79cb17ef90e72106abb52c1884ac1b22cab172c3b174a08508e2",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "work_hash": "785d2e5a6cec369046419876c5b5b86cc7edeb9cf1a4f8e3d6dd553842f70395"
+                },
+                "topics": [
+                  "4",
+                  "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+                ]
+              },
+              "name": "job_submitted"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/2e78e5539532ef0694045e8df421648b77778d18094061096baaf81f59824892",
+          "function": "submit",
+          "hash": "2e78e5539532ef0694045e8df421648b77778d18094061096baaf81f59824892",
+          "ledger": 3872496,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3195753,
+            "read_bytes": 144,
+            "resource_fee_stroops": "143830",
+            "write_bytes": 704
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "submit"
+        },
+        {
+          "arguments_sha256": "d4936062d6e92d2e20f8dff7faf8fc7a9b8b173506ccb5d96d5e2835a90b5e32",
+          "authorizers": [
+            "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "10000000",
+              "before_base_units": "0",
+              "delta_base_units": "10000000"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "10000000",
+              "delta_base_units": "-10000000"
+            }
+          ],
+          "closed_at": "2026-07-30T03:20:07.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "e34092ab491afb21bc7bfc6d4c91f2e9d603d15490cf6eae6670531ab7c51499",
+          "events": [
+            {
+              "contract_id": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
+              "decoded": {
+                "data": "10000000",
+                "topics": [
+                  "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+                  "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+                  "USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+                ]
+              },
+              "name": "transfer"
+            },
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "reason": "75e73a80ffd41b3117b1864eb9c7d5f80e194b29daca6d210dda54352ef8fa51"
+                },
+                "topics": [
+                  "4",
+                  "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ"
+                ]
+              },
+              "name": "job_completed"
+            },
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "amount": "10000000"
+                },
+                "topics": [
+                  "4",
+                  "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+                ]
+              },
+              "name": "payment_released"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/0fa28fde32701497a75dbad4cb4843a38b8f6c3ad61378fd0ba4ed793000ff43",
+          "function": "complete",
+          "hash": "0fa28fde32701497a75dbad4cb4843a38b8f6c3ad61378fd0ba4ed793000ff43",
+          "ledger": 3872500,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3468353,
+            "read_bytes": 260,
+            "resource_fee_stroops": "142878",
+            "write_bytes": 1080
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "complete"
+        }
+      ]
+    },
+    {
+      "assertions": [
+        "claim_refund has no role authorizer",
+        "client receives the full 10000000 base-unit refund",
+        "refund emits no SLA-hook event"
+      ],
+      "description": "Fund, reach ledger-time expiry, and claim a permissionless refund",
+      "final_state": "Expired",
+      "id": "refund",
+      "job_id": 1,
+      "job_snapshots": [
+        {
+          "after_step": "create_job",
+          "budget_base_units": "0",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785381396,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 1,
+          "provider": null,
+          "state": "Open"
+        },
+        {
+          "after_step": "set_provider",
+          "budget_base_units": "0",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785381396,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 1,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Open"
+        },
+        {
+          "after_step": "set_budget",
+          "budget_base_units": "10000000",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785381396,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 1,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Open"
+        },
+        {
+          "after_step": "fund",
+          "budget_base_units": "10000000",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785381396,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 1,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Funded"
+        },
+        {
+          "after_step": "claim_refund",
+          "budget_base_units": "10000000",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785381396,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 1,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Expired"
+        }
+      ],
+      "kind": "refund",
+      "transactions": [
+        {
+          "arguments_sha256": "a28f32db2ec0625084268b60405deb048983bf0d776d4190f27fc65c969ca534",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:15:46.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "7e50399cc6e0a597e02b6328ecbc193fedb37acbd00cf4e9359c471061d8f66d",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+                  "expires_at": "1785381396",
+                  "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+                  "provider": null
+                },
+                "topics": [
+                  "1",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+                ]
+              },
+              "name": "job_created"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/da36991efa627098f81329ce36495e26f160cfb73a8f727bd704329c2347dc52",
+          "function": "create_job",
+          "hash": "da36991efa627098f81329ce36495e26f160cfb73a8f727bd704329c2347dc52",
+          "ledger": 3872448,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 2246955,
+            "read_bytes": 144,
+            "resource_fee_stroops": "1608349",
+            "write_bytes": 908
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "create_job"
+        },
+        {
+          "arguments_sha256": "a224c9c3100aed6379bf509bd5f83e5deaddd59c22fb3e65e1563eacf7f06a1b",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:16:01.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "d95f460d73b7abe74f6349898b23f8ec17441bc6bf6abbb468cbe91d6f381080",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {},
+                "topics": [
+                  "1",
+                  "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+                ]
+              },
+              "name": "provider_set"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/aa60608ecfd57d7f8a1634bcc8f8b13e535ee6f31919ae921c1e8878cb87769c",
+          "function": "set_provider",
+          "hash": "aa60608ecfd57d7f8a1634bcc8f8b13e535ee6f31919ae921c1e8878cb87769c",
+          "ledger": 3872451,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3174898,
+            "read_bytes": 144,
+            "resource_fee_stroops": "143489",
+            "write_bytes": 660
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "set_provider"
+        },
+        {
+          "arguments_sha256": "2eecaeddc5de9e4945fbd37e9a50c226091a26f4105a8c0d39c5db8c2f8dbeba",
+          "authorizers": [
+            "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:16:16.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "c6f46aef983bf943403ce97b1722191c1bfc61b4be76918314b2bd94770047f3",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "amount": "10000000"
+                },
+                "topics": [
+                  "1",
+                  "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+                ]
+              },
+              "name": "budget_set"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/0390e2bb8377033331d9b3fbda48aa57cc8ee168905f63a7164feb468d03f768",
+          "function": "set_budget",
+          "hash": "0390e2bb8377033331d9b3fbda48aa57cc8ee168905f63a7164feb468d03f768",
+          "ledger": 3872454,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3188954,
+            "read_bytes": 144,
+            "resource_fee_stroops": "28874",
+            "write_bytes": 660
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "set_budget"
+        },
+        {
+          "arguments_sha256": "2800147cb7e3bc647d5964172102c4a995d7a8423319c37a7458a4f7c5db2fc6",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "0",
+              "before_base_units": "10000000",
+              "delta_base_units": "-10000000"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "10000000",
+              "before_base_units": "0",
+              "delta_base_units": "10000000"
+            }
+          ],
+          "closed_at": "2026-07-30T03:16:26.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "4e3471da332ef0af3d99bac388c758b1f0a21bfc66becfe969f9e5e15f30468f",
+          "events": [
+            {
+              "contract_id": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
+              "decoded": {
+                "data": "10000000",
+                "topics": [
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+                  "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+                  "USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+                ]
+              },
+              "name": "transfer"
+            },
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "amount": "10000000"
+                },
+                "topics": [
+                  "1",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+                ]
+              },
+              "name": "job_funded"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/546bd79e56c72d30c903d1609c1c7b9215f8f2206eff9ada756bdd05f36ab28a",
+          "function": "fund",
+          "hash": "546bd79e56c72d30c903d1609c1c7b9215f8f2206eff9ada756bdd05f36ab28a",
+          "ledger": 3872456,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3488127,
+            "read_bytes": 416,
+            "resource_fee_stroops": "162249",
+            "write_bytes": 1004
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "fund"
+        },
+        {
+          "arguments_sha256": "8f7c4accb8b71238fca3d0d3fd6f253ef709650fbc41da6b797ac3b4eb0d2cd0",
+          "authorizers": [],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "0",
+              "delta_base_units": "10000000"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "10000000",
+              "delta_base_units": "-10000000"
+            }
+          ],
+          "closed_at": "2026-07-30T03:16:51.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "1cc0dc35dbfbb11fae595a395525875a5137ae2e63a268be4919c52b6767852f",
+          "events": [
+            {
+              "contract_id": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
+              "decoded": {
+                "data": "10000000",
+                "topics": [
+                  "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+                  "USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+                ]
+              },
+              "name": "transfer"
+            },
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "amount": "10000000"
+                },
+                "topics": [
+                  "1",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+                ]
+              },
+              "name": "refunded"
+            },
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {},
+                "topics": [
+                  "1"
+                ]
+              },
+              "name": "job_expired"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/ceaea179887179a1b0744766f51638117f7bf9b94504a93645d81d247035422b",
+          "function": "claim_refund",
+          "hash": "ceaea179887179a1b0744766f51638117f7bf9b94504a93645d81d247035422b",
+          "ledger": 3872461,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 1631617,
+            "read_bytes": 116,
+            "resource_fee_stroops": "27731",
+            "write_bytes": 928
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "claim_refund"
+        }
+      ]
+    },
+    {
+      "assertions": [
+        "client authorizes the Open-state rejection",
+        "rejection moves no token balance"
+      ],
+      "description": "Client rejects an unfunded Open job",
+      "final_state": "Rejected",
+      "id": "open-rejection",
+      "job_id": 2,
+      "job_snapshots": [
+        {
+          "after_step": "create_job",
+          "budget_base_units": "0",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382311,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 2,
+          "provider": null,
+          "state": "Open"
+        },
+        {
+          "after_step": "reject",
+          "budget_base_units": "0",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": "ef6f035672787abbbb8cf4edd43fd7e9cafdb893af9c8d0d1a008f07016fa37c",
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382311,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 2,
+          "provider": null,
+          "state": "Rejected"
+        }
+      ],
+      "kind": "open_rejection",
+      "transactions": [
+        {
+          "arguments_sha256": "5628e0b25d7356721c09ef99082bb42b7dda975d96a8cb51e51a418c8ad03a27",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:17:16.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "35d21b220fc21c1b221a8cd58bd88658d079e157fef93695efc80701af61fc8c",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+                  "expires_at": "1785382311",
+                  "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+                  "provider": null
+                },
+                "topics": [
+                  "2",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+                ]
+              },
+              "name": "job_created"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/94125cd5a13fe7ed153e703a409fabc19f0df6b65629842983c03136564db513",
+          "function": "create_job",
+          "hash": "94125cd5a13fe7ed153e703a409fabc19f0df6b65629842983c03136564db513",
+          "ledger": 3872466,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 2246955,
+            "read_bytes": 144,
+            "resource_fee_stroops": "1607358",
+            "write_bytes": 908
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "create_job"
+        },
+        {
+          "arguments_sha256": "1d2db80ebc2b24b0faa71ab3a8b8e7a6dcdd9461d77cb5db76c87b9eda335621",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:17:31.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "365ac318a30ffc8987f74d61fc8af0512a31ecb0412dc21190d1a2fcbea948a9",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "reason": "ef6f035672787abbbb8cf4edd43fd7e9cafdb893af9c8d0d1a008f07016fa37c"
+                },
+                "topics": [
+                  "2",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+                ]
+              },
+              "name": "job_rejected"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/23573f9c4c0c8cbede7be520fcc96fa46183071252b4433741d06d6f2b92e34b",
+          "function": "reject",
+          "hash": "23573f9c4c0c8cbede7be520fcc96fa46183071252b4433741d06d6f2b92e34b",
+          "ledger": 3872469,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3151525,
+            "read_bytes": 144,
+            "resource_fee_stroops": "143717",
+            "write_bytes": 660
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "reject"
+        }
+      ]
+    },
+    {
+      "assertions": [
+        "evaluator authorizes the Funded-state rejection",
+        "client receives the full 10000000 base-unit refund",
+        "escrow has zero terminal liability"
+      ],
+      "description": "Evaluator rejects a funded job",
+      "final_state": "Rejected",
+      "id": "evaluator-rejection",
+      "job_id": 3,
+      "job_snapshots": [
+        {
+          "after_step": "create_job",
+          "budget_base_units": "0",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382356,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 3,
+          "provider": null,
+          "state": "Open"
+        },
+        {
+          "after_step": "set_provider",
+          "budget_base_units": "0",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382356,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 3,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Open"
+        },
+        {
+          "after_step": "set_budget",
+          "budget_base_units": "10000000",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382356,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 3,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Open"
+        },
+        {
+          "after_step": "fund",
+          "budget_base_units": "10000000",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": null,
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382356,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 3,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Funded"
+        },
+        {
+          "after_step": "reject",
+          "budget_base_units": "10000000",
+          "client": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+          "decision_hash": "d849f23efa4fffc0d269a7b78d5fa4a654815183b76d14311a8c7c2138b377f8",
+          "deliverable_hash": null,
+          "description_sha256": "aed631976be09a5868abb5ee7d769c3e6000a263ce85c8e02685e3bdf9f7e93f",
+          "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+          "expires_at": 1785382356,
+          "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+          "id": 3,
+          "provider": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+          "state": "Rejected"
+        }
+      ],
+      "kind": "evaluator_rejection",
+      "transactions": [
+        {
+          "arguments_sha256": "e167f12c252eeb6b2e4208b350c4444ff1a846fcf03026dff66c4a4da4e99e37",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:17:46.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "e3210b3e94c028bff5e4c79ec2bbe6da256a3f5fe0556e033b85189bbfcb59be",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "evaluator": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+                  "expires_at": "1785382356",
+                  "hook": "CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5",
+                  "provider": null
+                },
+                "topics": [
+                  "3",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+                ]
+              },
+              "name": "job_created"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/974f38a9466105fbb1705842472c83ea5be0cb5ffda7f9c890a009d4a76dd33b",
+          "function": "create_job",
+          "hash": "974f38a9466105fbb1705842472c83ea5be0cb5ffda7f9c890a009d4a76dd33b",
+          "ledger": 3872472,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 2246955,
+            "read_bytes": 144,
+            "resource_fee_stroops": "1606037",
+            "write_bytes": 908
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "create_job"
+        },
+        {
+          "arguments_sha256": "587eb0ce614d3e6e1f18e95d35176f9883ce9bc0a096d4feb95da7bfdc400d19",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:17:56.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "25e0410c4f8a4c8d0dfa763e621c8c8b3b2d53bc7728459b9aa0132b10a2f1fa",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {},
+                "topics": [
+                  "3",
+                  "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+                ]
+              },
+              "name": "provider_set"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/ba9b8cb6e02a2710bca07d4e5b42cc64d905a9041d269f9ebedffe7ba933f443",
+          "function": "set_provider",
+          "hash": "ba9b8cb6e02a2710bca07d4e5b42cc64d905a9041d269f9ebedffe7ba933f443",
+          "ledger": 3872474,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3174898,
+            "read_bytes": 144,
+            "resource_fee_stroops": "143489",
+            "write_bytes": 660
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "set_provider"
+        },
+        {
+          "arguments_sha256": "dbb6fc6219329fbcdaec933b715738cacbea914de077e8d9fac02fdac798fc0d",
+          "authorizers": [
+            "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "10000000",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            }
+          ],
+          "closed_at": "2026-07-30T03:18:11.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "437acb74db6e3d352bbbcd734dbe325895edeb247b77a3ce59cd2fd32f5b81d2",
+          "events": [
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "amount": "10000000"
+                },
+                "topics": [
+                  "3",
+                  "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T"
+                ]
+              },
+              "name": "budget_set"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/460d9549fbfe2b62b80c1969d10c6d22ac4d6e37561f7a4fe3d74946c4ae0ad9",
+          "function": "set_budget",
+          "hash": "460d9549fbfe2b62b80c1969d10c6d22ac4d6e37561f7a4fe3d74946c4ae0ad9",
+          "ledger": 3872477,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3188954,
+            "read_bytes": 144,
+            "resource_fee_stroops": "28874",
+            "write_bytes": 660
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "set_budget"
+        },
+        {
+          "arguments_sha256": "91f0003f42eeea5cdd37184a5b56d1da480dde7aa206dac1684f0ffbaa648c0a",
+          "authorizers": [
+            "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "0",
+              "before_base_units": "10000000",
+              "delta_base_units": "-10000000"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "10000000",
+              "before_base_units": "0",
+              "delta_base_units": "10000000"
+            }
+          ],
+          "closed_at": "2026-07-30T03:18:21.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "ba0735ec26d87d014a72bda6594623d023f68ffb5105cbbbc2fbab608679a518",
+          "events": [
+            {
+              "contract_id": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
+              "decoded": {
+                "data": "10000000",
+                "topics": [
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+                  "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+                  "USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+                ]
+              },
+              "name": "transfer"
+            },
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "amount": "10000000"
+                },
+                "topics": [
+                  "3",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+                ]
+              },
+              "name": "job_funded"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/197b46c4868fb9f8d601f6e4c1ca280d9563b9255e1149fa260b3552abc01def",
+          "function": "fund",
+          "hash": "197b46c4868fb9f8d601f6e4c1ca280d9563b9255e1149fa260b3552abc01def",
+          "ledger": 3872479,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3480298,
+            "read_bytes": 260,
+            "resource_fee_stroops": "50182",
+            "write_bytes": 1004
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "fund"
+        },
+        {
+          "arguments_sha256": "e183acc39f114900d8480a31777abda5b6d5e68cf52e21ff6341b867b5560bec",
+          "authorizers": [
+            "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ"
+          ],
+          "balance_changes": [
+            {
+              "address": "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+              "after_base_units": "10000000",
+              "before_base_units": "0",
+              "delta_base_units": "10000000"
+            },
+            {
+              "address": "GAZGIM5UT5YU2BHC35QNWHMMGZLL6LZYWPXCMH75UZYFQSBEGWMVGG2T",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ",
+              "after_base_units": "0",
+              "before_base_units": "0",
+              "delta_base_units": "0"
+            },
+            {
+              "address": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "after_base_units": "0",
+              "before_base_units": "10000000",
+              "delta_base_units": "-10000000"
+            }
+          ],
+          "closed_at": "2026-07-30T03:18:36.000Z",
+          "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+          "envelope_sha256": "8e4890bf9e35f9242868eb81a9b8d9d040caa1dba76970c4f0f4e214834a0142",
+          "events": [
+            {
+              "contract_id": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
+              "decoded": {
+                "data": "10000000",
+                "topics": [
+                  "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI",
+                  "USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+                ]
+              },
+              "name": "transfer"
+            },
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "amount": "10000000"
+                },
+                "topics": [
+                  "3",
+                  "GCWCFRHVSL6JRXUF45RNEYLU6LU3WVH6SWSLJAMS5PZWZCL6FKEDSZSI"
+                ]
+              },
+              "name": "refunded"
+            },
+            {
+              "contract_id": "CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW",
+              "decoded": {
+                "data": {
+                  "reason": "d849f23efa4fffc0d269a7b78d5fa4a654815183b76d14311a8c7c2138b377f8"
+                },
+                "topics": [
+                  "3",
+                  "GBQYUXOJJQBFVPJZEA4FUVVTG4YOF7OCOIYHT4QOHE5G4W2MGNLGGKQJ"
+                ]
+              },
+              "name": "job_rejected"
+            }
+          ],
+          "explorer_url": "https://stellar.expert/explorer/testnet/tx/d9a04baedb201f450b4c6270a5219595791c901f6d4e33357f26fdffc9d04c0d",
+          "function": "reject",
+          "hash": "d9a04baedb201f450b4c6270a5219595791c901f6d4e33357f26fdffc9d04c0d",
+          "ledger": 3872482,
+          "resources": {
+            "inclusion_fee_stroops": "100",
+            "instructions": 3456223,
+            "read_bytes": 260,
+            "resource_fee_stroops": "142768",
+            "write_bytes": 1040
+          },
+          "result": "SUCCESS",
+          "source": "GC2AW65Z7P6JDOC35H22DVGCJMZFRG7SHCU64A3M6KNMCBVGHD7GFDJW",
+          "step": "reject"
+        }
+      ]
+    }
+  ],
+  "schema_version": "1.0.0",
+  "sdk": {
+    "package": "@trionlabs/stellar-8183",
+    "provenance_verified": false,
+    "tarball_sha256": "8c9b558c553c3d4c5b1c951dfc62d6fc25a5fb86ea2e1922744c614f6b30441d",
+    "version": "0.1.0"
+  },
+  "status": "deployment",
+  "token": {
+    "asset_code": "USDC",
+    "contract_id": "CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA",
+    "decimals": 7,
+    "issuer": "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+  }
+}

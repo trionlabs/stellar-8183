@@ -13,7 +13,7 @@
     "bindings:check": "pnpm --filter @trionlabs/stellar-8183 bindings:check",
     "bindings:generate": "pnpm --filter @trionlabs/stellar-8183 bindings:generate",
     "build": "pnpm -r build",
-    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm pack:check",
+    "check": "pnpm build && pnpm lint && pnpm typecheck && pnpm test && pnpm pack:check",
     "clean": "pnpm -r clean",
     "format": "pnpm -r format",
     "format:check": "pnpm -r format:check",

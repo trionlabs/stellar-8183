@@ -1,0 +1,35 @@
+1
+00:00:00,200 --> 00:00:08,040
+This is ERC-8183-style job escrow on Stellar. A real Terminal is on pinned public main, commit b9d4134.
+
+2
+00:00:08,100 --> 00:00:14,180
+All 19 evidence-tooling tests pass. Semantic validation checks consistency, not provenance.
+
+3
+00:00:14,240 --> 00:00:20,742
+Horizon confirms job 4: success, ledger 3,872,500, identical hash.
+
+4
+00:00:20,802 --> 00:00:23,905
+The ledger endpoint returns its real public ledger hash.
+
+5
+00:00:25,980 --> 00:00:34,182
+The permissionless refund is independently successful in ledger 3,872,461 and returns the full escrow.
+
+6
+00:00:34,242 --> 00:00:37,164
+Its ledger endpoint returns the second public hash.
+
+7
+00:00:38,100 --> 00:00:46,873
+Now Playwright opens Stellar Expert itself. The completion page shows the full URL, successful status, ledger, and complete invocation.
+
+8
+00:00:48,300 --> 00:00:52,773
+The second live navigation shows the successful claim_refund invocation and its ledger.
+
+9
+00:00:53,400 --> 00:01:17,227
+This is functional testnet evidence, not a new transaction submission and not audited production software. Mutation methods only prepare and simulate; relay signing is delegated to callbacks, and the facilitator submits. The SDK never accepts or stores secret keys. The live kernel differs from the v0.1.0 release, so byte-for-byte provenance is not claimed. npm remains unpublished.

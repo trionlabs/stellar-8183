@@ -29,6 +29,23 @@ whose diff is exactly `deployments/testnet.json` and
 `deployments/testnet.raw.json`; the release workflow enforces that relationship
 before building or publishing.
 
+## Live submission demo
+
+[Watch the 78-second live testnet verification](artifacts/testnet/stellar-8183-submission-demo.mp4).
+It records actual Terminal commands and live Horizon responses, followed by a
+Playwright-controlled Chrome window showing the completion and permissionless
+refund transactions in Stellar Expert. The recording verifies previously
+finalized July 30, 2026 transactions; it does not submit a fresh transaction.
+
+This remains testnet-only, unaudited `deployment` evidence. The live kernel
+bytes differ from the public v0.1.0 release kernel, so the demo does not claim
+byte-for-byte release provenance. See the [transcript](artifacts/testnet/stellar-8183-submission-demo-transcript.md),
+[public evidence links](artifacts/testnet/stellar-8183-submission-demo-links.md),
+[captions](artifacts/testnet/stellar-8183-submission-demo.srt), and
+[SHA-256 checksum](artifacts/testnet/stellar-8183-submission-demo.mp4.sha256).
+The [audit contact sheet](artifacts/testnet/stellar-8183-submission-demo-contact-sheet.png)
+provides a quick visual index of the recording.
+
 ## What it provides
 
 - The complete six-state ERC-8183 lifecycle:

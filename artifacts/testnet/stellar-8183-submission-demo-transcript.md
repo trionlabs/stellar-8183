@@ -4,9 +4,9 @@ Video: `artifacts/testnet/stellar-8183-submission-demo.mp4`
 
 Duration: 78.307 seconds
 
-This is an exact-window recording of a real macOS Terminal followed by a Playwright-controlled Chrome window. It live-verifies previously finalized July 30, 2026 Stellar testnet evidence; it does not submit a new transaction. The canonical machine-evidence recording remains `demo.mp4`.
+This is an exact-window recording of a real macOS Terminal followed by a Playwright-controlled Chrome window. It live-verifies previously finalized July 30, 2026 Stellar testnet evidence; it does not submit a new transaction. The Terminal titlebar is replaced by a same-height privacy-safe margin, while the Terminal content remains at its original vertical position. The canonical machine-evidence recording remains `demo.mp4`.
 
-Source capture SHA-256: `a766c05a8c9b80850e20e5f3ad19a5837149db544455cf77860fb75b923e759c`
+Source capture SHA-256: `cfe9909969abf0e64b31e5f9bba9d26d9f550baba89fba87c8eb49ce96a5d60b`
 
 ## 00:00:00.200
 

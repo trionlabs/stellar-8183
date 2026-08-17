@@ -1,6 +1,6 @@
 # Soroban Agentic Commerce submission links
 
-This video live-verifies recorded July 30, 2026 Stellar testnet evidence. It does not submit a fresh transaction. The recording uses exact-window ScreenCaptureKit sources for a real Terminal and a Playwright-controlled Chrome window; whole-display capture is disabled.
+This video live-verifies recorded July 30, 2026 Stellar testnet evidence. It does not submit a fresh transaction. The recording uses exact-window ScreenCaptureKit sources for a real Terminal and a Playwright-controlled Chrome window; whole-display capture is disabled. The Terminal titlebar is replaced by a same-height privacy-safe margin without moving or cropping the Terminal content.
 
 The project is testnet-only and unaudited. Evidence status is `deployment`; npm and final publication promotion remain pending. The live kernel hashes to `c07d5528b42827ecdcfad7e798bc0d08cd7e1183343746a415b4cf8b7e7cfcad`, while the public v0.1.0 release kernel hashes to `a39783cc9fe7f6acf39b6dc86f460a3ed172c098e9a9655cddfbd851b60ae43f`; byte-for-byte deployment provenance is therefore not claimed.
 
@@ -26,7 +26,7 @@ The project is testnet-only and unaudited. Evidence status is `deployment`; npm 
 - Stellar/EVM mapping: https://github.com/trionlabs/stellar-8183/blob/b9d41346d7e72d662ec8a53e2aa0a34c83125ef8/docs/erc-8183-stellar-mapping.md
 - SDK guide: https://github.com/trionlabs/stellar-8183/blob/b9d41346d7e72d662ec8a53e2aa0a34c83125ef8/packages/sdk/README.md
 
-Video SHA-256: `090a550299fc3eafd426fdaa3d500f60ea6111b44ffedbc0ab40c24c1ad0d321`
+Video SHA-256: `1de2e8a188b13ee78342058578a80a569ece2755320060640add79644f6a766e`
 
 Canonical `demo.mp4` SHA-256 (unchanged): `0a2bbda60747d790ac542df4608e17835fa9ea6c72d42b953a7ae426e357f5fd`
 

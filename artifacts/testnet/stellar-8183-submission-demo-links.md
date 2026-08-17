@@ -9,7 +9,7 @@ The project is testnet-only and unaudited. Evidence status is `deployment`; npm 
 - Evidence-declared release source: https://github.com/trionlabs/stellar-8183/tree/d9608edb26ab309ada1e3667fade6b515d1fd271
 - Deployment evidence: https://github.com/trionlabs/stellar-8183/blob/b9d41346d7e72d662ec8a53e2aa0a34c83125ef8/deployments/testnet.json
 - v0.1.0 release (known kernel mismatch): https://github.com/trionlabs/stellar-8183/releases/tag/v0.1.0
-- Current green CI: https://github.com/trionlabs/stellar-8183/actions/runs/31868709762
+- Pinned-source green CI: https://github.com/trionlabs/stellar-8183/actions/runs/31868709762
 - Kernel contract: https://stellar.expert/explorer/testnet/contract/CA4LPJIQZEGMCYA4WV5W4F6X6RGLGX2YO7IRZJKVXSEJXOZNTTYUEBIW
 - SLA hook contract: https://stellar.expert/explorer/testnet/contract/CDBL5VG4W5VCZXUXYJBODQJ45VKCMTNRCSNNIBKYZKV6TSO6KD5Q3QK5
 - Create job: https://stellar.expert/explorer/testnet/tx/6da011ea2096ae592471557f69c1ab45b2fc62300217bf460a949150fb2eb19c

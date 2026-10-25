@@ -17,7 +17,8 @@
     "deploy:testnet": "tsx tools/deploy-testnet.ts",
     "verify:receipt": "tsx tools/verify-receipt.ts",
     "verify:canary": "tsx tools/verify-canary.ts",
-    "assemble:canary": "tsx tools/assemble-canary.ts"
+    "assemble:canary": "tsx tools/assemble-canary.ts",
+    "resolve:agent": "tsx tools/resolve-agent.ts"
   },
   "dependencies": {
     "@stellar/freighter-api": "6.0.1",
@@ -31,7 +32,7 @@
     "prettier": "^3.6.2",
     "tsx": "4.21.0",
     "typescript": "^5.9.2",
-    "vite": "7.3.6",
-    "vitest": "^3.2.4"
+    "vite": "7.3.7",
+    "vitest": "4.1.12"
   }
 }

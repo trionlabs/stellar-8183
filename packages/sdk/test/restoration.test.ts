@@ -61,20 +61,22 @@ function restoreTransaction(
 function policy(
   keypair: Keypair,
   keys: readonly xdr.LedgerKey[],
-  signTransaction = vi.fn(async (transactionXdr: string) => {
-    const transaction = TransactionBuilder.fromXDR(
-      transactionXdr,
-      Networks.TESTNET,
-    );
-    if (!(transaction instanceof Transaction)) {
-      throw new Error("unexpected fee-bump transaction");
-    }
-    transaction.sign(keypair);
-    return {
-      signedTxXdr: transaction.toXDR(),
-      signerAddress: keypair.publicKey(),
-    };
-  }),
+  signTransaction: GuardedRestoreOptions["signer"]["signTransaction"] = vi.fn(
+    async (transactionXdr: string) => {
+      const transaction = TransactionBuilder.fromXDR(
+        transactionXdr,
+        Networks.TESTNET,
+      );
+      if (!(transaction instanceof Transaction)) {
+        throw new Error("unexpected fee-bump transaction");
+      }
+      transaction.sign(keypair);
+      return {
+        signedTxXdr: transaction.toXDR(),
+        signerAddress: keypair.publicKey(),
+      };
+    },
+  ),
 ): GuardedRestoreOptions {
   return {
     signer: {

@@ -58,6 +58,16 @@ jobs:
       - run: pnpm audit --audit-level high
       - run: pnpm bindings:check
       - run: pnpm check
+      - name: Install browser for Console integration tests
+        run: pnpm --filter @trionlabs/8183-console exec playwright install --with-deps chromium
+      - name: Exercise the Console in Chromium
+        run: pnpm console:e2e
+      - name: Upload Console static build
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-commerce-console
+          path: apps/console/dist
+          if-no-files-found: error
 
   audit:
     name: Dependency and secret audit

@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { mkdir } from "node:fs/promises";
 
 async function createJob(
   page: Page,
@@ -109,4 +110,48 @@ test("mainnet configuration rejects a valuable-asset profile", async ({
     .fill("CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA");
   await page.getByRole("button", { name: "Use deployment" }).click();
   await expect(page.locator(".dialog-error")).toContainText("DEMO8183");
+});
+
+test("exports desktop and mobile rehearsal previews", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+  await createJob(page, "Translate the product brief into Spanish");
+  await act(page, "set_budget");
+  await act(page, "fund");
+  await page.getByLabel("Rehearsal role").selectOption("provider");
+  await act(page, "submit");
+  await page.getByLabel("Rehearsal role").selectOption("client");
+  await createJob(page, "Summarize customer research findings");
+  await act(page, "set_budget");
+  await act(page, "fund");
+  await page.getByLabel("Rehearsal role").selectOption("evaluator");
+  await page
+    .locator(".job-row")
+    .filter({ hasText: "Translate the product brief" })
+    .click();
+  await mkdir("../../artifacts/month-two", { recursive: true });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({
+    path: "../../artifacts/month-two/console-desktop.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect(
+    page.getByRole("heading", { name: "Work, with a clear finish." }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  await page.screenshot({
+    path: "../../artifacts/month-two/console-mobile.png",
+    fullPage: false,
+  });
+  await page.locator(".detail-panel").scrollIntoViewIfNeeded();
+  await page.screenshot({
+    path: "../../artifacts/month-two/console-mobile-job.png",
+    fullPage: false,
+  });
 });

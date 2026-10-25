@@ -32,6 +32,10 @@ before building or publishing.
 ## Agent Commerce Console (month-two implementation)
 
 The standalone Console lives in [apps/console](apps/console/README.md).
+Try the [hosted Console preview](https://trionlabs.github.io/stellar-8183/), which
+starts in a local rehearsal without a wallet. See the
+[implementation status](docs/month-two-status.md) and
+[public testnet evidence](deployments/month-two/README.md).
 It adds wallet-based job actions, optional read-only Stellar 8004 identity
 import, deterministic outcome receipts, receipt verification, local opt-in
 metrics, and browser tests. The v0.1 contract ABI is unchanged.

@@ -22,7 +22,7 @@ async function act(page: Page, value: string): Promise<void> {
 test("client, provider, and evaluator complete a job and export a verifiable rehearsal receipt", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await expect(page.getByText("You're in a local rehearsal.")).toBeVisible();
   await createJob(page);
   await act(page, "set_budget");
@@ -57,7 +57,7 @@ test("client, provider, and evaluator complete a job and export a verifiable reh
 test("funded rejection refunds and expired refund can be triggered by the provider", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await createJob(page);
   await act(page, "set_budget");
   await act(page, "fund");
@@ -79,7 +79,7 @@ test("descriptions render as text and the mobile workspace does not overflow", a
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
+  await page.goto("./");
   await createJob(page, '<img src=x onerror="window.injected=true">');
   expect(
     await page.evaluate(
@@ -97,7 +97,7 @@ test("descriptions render as text and the mobile workspace does not overflow", a
 test("mainnet configuration rejects a valuable-asset profile", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "Network settings" }).click();
   await page
     .getByLabel("Network", { exact: false })
@@ -112,9 +112,36 @@ test("mainnet configuration rejects a valuable-asset profile", async ({
   await expect(page.locator(".dialog-error")).toContainText("DEMO8183");
 });
 
+test("loads the bundled testnet profile at the deployed project path", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await page.getByRole("link", { name: "8183 home" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Work, with a clear finish." }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Network settings" }).click();
+  await page
+    .getByRole("button", { name: "Load verified testnet profile" })
+    .click();
+  await expect(page.getByLabel("Kernel contract")).toHaveValue(
+    "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+  );
+  await expect(page.getByLabel("Symbol", { exact: true })).toHaveValue(
+    "DEMO8183",
+  );
+  await page.getByRole("button", { name: "Use deployment" }).click();
+  await expect(page.locator(".live-banner")).toContainText(
+    "Pinned payment asset: DEMO8183",
+  );
+  await expect(
+    page.getByRole("button", { name: "Connect wallet" }),
+  ).toBeVisible();
+});
+
 test("exports desktop and mobile rehearsal previews", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/");
+  await page.goto("./");
   await createJob(page, "Translate the product brief into Spanish");
   await act(page, "set_budget");
   await act(page, "fund");

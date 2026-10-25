@@ -4,6 +4,10 @@ A standalone application for clients and providers of asynchronous digital
 work. Use the existing escrow kernel to create, price, fund, submit, approve,
 reject, or refund a job. No change is made to the v0.1 contract ABI.
 
+[Open the hosted preview](https://trionlabs.github.io/stellar-8183/). It starts
+in the local rehearsal. The bundled profile selects the verified testnet
+deployment when you switch to live operation.
+
 ## Run locally
 
 From the repository root:

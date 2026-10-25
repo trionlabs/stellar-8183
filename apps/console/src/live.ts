@@ -13,6 +13,7 @@ import {
   commitmentFromHex,
   decodeContractEvent,
   unwrapContractResult,
+  inspectInvocation,
   type Job,
   type PreparedContractInvocation,
 } from "@trionlabs/stellar-8183";
@@ -20,6 +21,7 @@ import { assertBinding, resolveAgent } from "./identity.js";
 import {
   address,
   assertAction,
+  assertReviewedJob,
   uint,
   validateProfile,
   type Action,
@@ -176,6 +178,9 @@ export class LiveCommerce {
   private async send<T>(
     prepared: PreparedContractInvocation<T>,
   ): Promise<{ value: T; outcome: Outcome }> {
+    const expectedArguments = (prepared.transaction.options.args ?? []).map(
+      (arg) => arg.toXDR("base64") as string,
+    );
     const sent = await prepared.transaction.signAndSend({
       force: true,
       signTransaction: async (xdr) => {
@@ -185,9 +190,28 @@ export class LiveCommerce {
         );
         if (
           !(unsigned instanceof Transaction) ||
+          unsigned.source !== this.wallet.address ||
           BigInt(unsigned.fee) > BigInt(this.profile.maxFee)
         )
           throw new Error("Transaction exceeds the fee ceiling.");
+        const invocation = inspectInvocation(unsigned);
+        if (
+          invocation.contractId !== this.profile.kernel ||
+          invocation.method !== prepared.method ||
+          JSON.stringify(invocation.argumentXdr) !==
+            JSON.stringify(expectedArguments)
+        )
+          throw new Error(
+            "Prepared transaction differs from the reviewed action.",
+          );
+        const maxTime = Number(unsigned.timeBounds?.maxTime ?? 0);
+        const now = Math.floor(Date.now() / 1000);
+        if (
+          !Number.isSafeInteger(maxTime) ||
+          maxTime <= now ||
+          maxTime > now + 180
+        )
+          throw new Error("Transaction has invalid or excessive time bounds.");
         const signedTxXdr = await this.wallet.sign(xdr, this.profile);
         assertSignedTransaction(
           xdr,
@@ -227,8 +251,10 @@ export class LiveCommerce {
     action: Action,
     input: ActionInput = {},
     binding?: AgentBinding,
+    reviewed?: Job,
   ): Promise<RecordJob> {
     const job = await this.read(id);
+    if (reviewed) assertReviewedJob(job, reviewed);
     assertAction(job, action, this.wallet.address);
     if (action === "fund") await this.tokenInfo();
     let snapshot = binding;
@@ -264,7 +290,10 @@ export class LiveCommerce {
       case "fund":
         outcome = (
           await this.send(
-            await core.fund({ id, expectedBudget: job.budget }, options),
+            await core.fund(
+              { id, expectedBudget: reviewed?.budget ?? job.budget },
+              options,
+            ),
           )
         ).outcome;
         break;
@@ -334,6 +363,7 @@ export async function verifyOnChain(
     throw new Error(
       "Receipt belongs to a different network, kernel, or token.",
     );
+  await reader.tokenInfo();
   const [job, tx] = await Promise.all([
     reader.read(uint(r.jobId)),
     reader.server.getTransaction(r.terminalTransaction.hash),

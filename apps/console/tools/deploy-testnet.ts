@@ -12,11 +12,36 @@ import {
 } from "@stellar/stellar-sdk";
 import { digest } from "../src/receipt.js";
 import { validateProfile, type Profile } from "../src/model.js";
+import { assertBuildSource } from "./source.js";
 
 const execute = promisify(execFile);
 const root = resolve(import.meta.dirname, "../../..");
 const configDir = resolve(root, ".stellar/month-two");
 const out = resolve(root, "artifacts/month-two");
+const sourceCommit = (
+  await execute("git", ["rev-parse", "HEAD"], { cwd: root })
+).stdout.trim();
+const assertSource = () => assertBuildSource(root, sourceCommit);
+await assertSource();
+try {
+  await readFile(resolve(out, "profile.json"));
+  throw new Error(
+    "A deployment profile already exists. Reuse it; this command refuses a duplicate deployment.",
+  );
+} catch (error) {
+  if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+}
+for (const script of [
+  "./scripts/verify-release.sh",
+  "./scripts/release-build.sh",
+])
+  await execute(script, [], {
+    cwd: root,
+    timeout: 600000,
+    maxBuffer: 5_000_000,
+    env: { ...process.env, SOURCE_REPO: "github:trionlabs/stellar-8183" },
+  });
+await assertSource();
 await mkdir(out, { recursive: true });
 await mkdir(configDir, { recursive: true, mode: 0o700 });
 const cli = async (args: string[]): Promise<string> => {
@@ -178,6 +203,7 @@ for (const [name, id] of [
     throw new Error(`${name} deployed Wasm does not match the build.`);
   hashes[name] = await digest(local);
 }
+await assertSource();
 const profile: Profile = validateProfile({
   id: "testnet",
   rpcUrl: "https://soroban-testnet.stellar.org",
@@ -203,9 +229,7 @@ await writeFile(
       evidenceType: "author-run",
       profile,
       hook,
-      sourceCommit: (
-        await execute("git", ["rev-parse", "HEAD"], { cwd: root })
-      ).stdout.trim(),
+      sourceCommit,
       wasmSha256: hashes,
       accounts: Object.fromEntries(
         Object.entries(keys).map(([r, key]) => [r, key.publicKey()]),

@@ -61,9 +61,25 @@ export function assertBinding(
   binding: AgentBinding,
   provider: string,
 ): void {
+  const fields = [
+    "network",
+    "identityRegistry",
+    "agentId",
+    "provider",
+    "resolvedAtLedger",
+  ];
+  if (
+    !binding ||
+    Object.keys(binding).sort().join() !== fields.sort().join() ||
+    !Number.isSafeInteger(binding.resolvedAtLedger) ||
+    binding.resolvedAtLedger <= 0 ||
+    uint(binding.agentId) > 0xffff_ffffn
+  )
+    throw new Error("Invalid saved agent binding.");
   if (binding.network !== profile.id || binding.provider !== provider)
     throw new Error(
       "The imported agent wallet no longer matches this job's provider. Resolve the identity again or explicitly use the direct-address path.",
     );
   contract(binding.identityRegistry);
+  address(binding.provider);
 }

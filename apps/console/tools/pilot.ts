@@ -7,6 +7,7 @@ import { commitmentBytes, commitmentToHex } from "@trionlabs/stellar-8183";
 import { LiveCommerce, verifyOnChain, type Wallet } from "../src/live.js";
 import { validateProfile, type Action, type Profile } from "../src/model.js";
 import { encodeReceipt, makeReceipt } from "../src/receipt.js";
+import { verifyBalanceAccounting, type Balances } from "../src/accounting.js";
 
 const root = resolve(import.meta.dirname, "../../..");
 const profilePath =
@@ -47,6 +48,20 @@ await client.tokenInfo();
 const out = resolve(root, "artifacts/month-two/pilot");
 await mkdir(out, { recursive: true });
 const report: unknown[] = [];
+const balances = async (): Promise<Balances> => {
+  const [c, p, e, k] = await Promise.all([
+    client.tokenBalance(client.wallet.address),
+    client.tokenBalance(provider.wallet.address),
+    client.tokenBalance(evaluator.wallet.address),
+    client.tokenBalance(profile.kernel),
+  ]);
+  return {
+    client: c.toString(),
+    provider: p.toString(),
+    evaluator: e.toString(),
+    escrow: k.toString(),
+  };
+};
 for (const path of [
   "complete",
   "reject",
@@ -56,6 +71,7 @@ for (const path of [
   "claim_refund",
 ] as const) {
   const started = Date.now();
+  const initial = await balances();
   let record = await client.create({
     description: `Author-run ${path} verification; not customer evidence`,
     provider: provider.wallet.address,
@@ -66,14 +82,16 @@ for (const path of [
     ),
   });
   const id = record.job.id;
-  const transactions: unknown[] = [];
+  const transactions = [record.outcome!];
   const act = async (who: LiveCommerce, action: Action, input = {}) => {
     record = await who.act(id, action, input);
-    transactions.push(record.outcome);
+    transactions.push(record.outcome!);
     console.log(`job ${id} ${action}: ${record.outcome!.hash}`);
   };
   await act(client, "set_budget", { budget: 1_0000000n });
   await act(client, "fund");
+  const fundingTransaction = record.outcome!.hash;
+  const funded = await balances();
   if (path === "complete") {
     await act(provider, "submit", {
       commitment: commitmentToHex(
@@ -88,6 +106,18 @@ for (const path of [
     await act(provider, "claim_refund");
   }
   const receipt = await makeReceipt(profile, record.job, record.outcome!);
+  const balanceAccounting = {
+    jobId: id.toString(),
+    fundingTransaction,
+    initial,
+    funded,
+    terminal: await balances(),
+  };
+  verifyBalanceAccounting(
+    balanceAccounting,
+    record.job.budget,
+    path === "complete",
+  );
   const verification = await verifyOnChain(receipt, profile, client);
   await writeFile(resolve(out, `job-${id}.json`), encodeReceipt(receipt), {
     flag: "wx",
@@ -96,6 +126,7 @@ for (const path of [
     jobId: id.toString(),
     path,
     transactions,
+    balanceAccounting,
     verification,
     durationSeconds: Math.round((Date.now() - started) / 1000),
   });

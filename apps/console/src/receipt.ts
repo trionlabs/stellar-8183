@@ -14,6 +14,7 @@ import {
   type Outcome,
   type Profile,
 } from "./model.js";
+import { assertBinding } from "./identity.js";
 
 export interface OutcomeReceipt {
   schema: "stellar-8183/outcome/v1";
@@ -58,6 +59,7 @@ export async function makeReceipt(
   binding?: AgentBinding,
   rehearsal = false,
 ): Promise<ReceiptFile> {
+  if (binding) assertBinding(profile, binding, job.provider ?? "");
   if (!terminal(job.state.tag))
     throw new Error("Receipts require a terminal job.");
   const receipt: OutcomeReceipt = {

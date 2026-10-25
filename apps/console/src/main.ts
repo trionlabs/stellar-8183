@@ -29,6 +29,8 @@ import {
 import { encodeReceipt, makeReceipt, parseReceipt } from "./receipt.js";
 import { Rehearsal, rehearsalAccounts, rehearsalProfile } from "./rehearsal.js";
 import { connectWallet } from "./wallet.js";
+import { JobMemory } from "./storage.js";
+import { assertBinding } from "./identity.js";
 import "./style.css";
 
 globalThis.Buffer = Buffer;
@@ -42,6 +44,7 @@ let records: RecordJob[] = [];
 let selected: bigint | undefined;
 let filter = "all";
 let busy = false;
+let storageUnavailable = false;
 let rehearsal = new Rehearsal();
 const metrics = new Metrics();
 const esc = (value: unknown): string =>
@@ -126,8 +129,31 @@ async function task(work: () => Promise<void>): Promise<void> {
 function remember(record: RecordJob): void {
   const old = records.find((r) => r.job.id === record.job.id);
   const merged = { ...old, ...record };
+  if (merged.binding) {
+    try {
+      assertBinding(profile, merged.binding, merged.job.provider ?? "");
+    } catch {
+      merged.binding = undefined;
+    }
+  }
   records = [merged, ...records.filter((r) => r.job.id !== record.job.id)];
   selected = record.job.id;
+  if (mode === "live") {
+    try {
+      new JobMemory(localStorage, profile).save(merged);
+    } catch {
+      storageUnavailable = true;
+    }
+  }
+}
+
+function restoreRecord(record: RecordJob): RecordJob {
+  try {
+    return new JobMemory(localStorage, profile).restore(record);
+  } catch {
+    storageUnavailable = true;
+    return record;
+  }
 }
 function download(name: string, content: string): void {
   const url = URL.createObjectURL(
@@ -294,15 +320,75 @@ function actionInputs(): void {
 }
 
 function settings(): void {
+  let saved: Profile | undefined;
+  try {
+    const text = localStorage.getItem("8183:profile:v1");
+    if (text) saved = validateProfile(JSON.parse(text) as Profile);
+  } catch {
+    /* An invalid saved profile cannot select a live network. */
+  }
   const p =
-    mode === "rehearsal"
+    saved ??
+    (mode === "rehearsal"
       ? { ...profile, kernel: "", token: "", symbol: "USDC" }
-      : profile;
+      : profile);
   const dialog = modal(
     "Configure a deployment",
     `<form id="settings-form"><p class="hint">Use a reviewed deployment profile. No kernel is endorsed by default. Changing the network clears loaded jobs and disconnects the wallet.</p><label>Network<select name="id"><option value="testnet">Stellar Testnet</option><option value="mainnet-canary" ${p.id === "mainnet-canary" ? "selected" : ""}>Mainnet canary</option></select></label><label>RPC URL<input name="rpcUrl" required value="${esc(p.rpcUrl)}" /></label><label>Kernel contract<input name="kernel" required value="${esc(p.kernel)}" /></label><label>Immutable payment token<input name="token" required value="${esc(p.token)}" /></label><div class="form-row"><label>Symbol<input name="symbol" required value="${esc(p.symbol)}" /></label><label>Decimals<input name="decimals" type="number" min="0" max="18" value="${p.decimals}" required /></label></div><label>Maximum total fee (stroops)<input name="maxFee" required value="${esc(p.maxFee)}" /></label><label class="check"><input name="ack" type="checkbox" ${p.canaryAcknowledged ? "checked" : ""} /> I verified this mainnet profile is bound to a valueless DEMO8183 asset and is approved for canary use.</label><button class="primary full">Use deployment</button></form>`,
   );
-  dialog.querySelector("form")!.addEventListener("submit", (event) => {
+  const form = dialog.querySelector<HTMLFormElement>("form")!;
+  const preset = document.createElement("button");
+  preset.type = "button";
+  preset.className = "secondary full";
+  preset.textContent = "Load verified testnet profile";
+  form.prepend(preset);
+  const fillProfile = (value: Profile): void => {
+    for (const name of [
+      "id",
+      "rpcUrl",
+      "kernel",
+      "token",
+      "symbol",
+      "decimals",
+      "maxFee",
+    ] as const)
+      (
+        form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement
+      ).value = String(value[name]);
+    (form.elements.namedItem("ack") as HTMLInputElement).checked =
+      value.canaryAcknowledged;
+  };
+  preset.addEventListener(
+    "click",
+    () =>
+      void task(async () => {
+        const response = await fetch(
+          `${import.meta.env.BASE_URL}testnet-profile.json`,
+        );
+        if (!response.ok)
+          throw new Error("Could not load the bundled testnet profile.");
+        fillProfile(validateProfile((await response.json()) as Profile));
+      }),
+  );
+  const importLabel = document.createElement("label");
+  importLabel.textContent = "Or import a deployment profile JSON";
+  const file = document.createElement("input");
+  file.type = "file";
+  file.accept = "application/json,.json";
+  importLabel.append(file);
+  form.insertBefore(importLabel, preset.nextSibling);
+  file.addEventListener("change", () => {
+    const selected = file.files?.[0];
+    if (selected)
+      void task(async () => {
+        if (selected.size > 8000)
+          throw new Error("Deployment profile is too large.");
+        fillProfile(
+          validateProfile(JSON.parse(await selected.text()) as Profile),
+        );
+      });
+  });
+  form.addEventListener("submit", (event) => {
     event.preventDefault();
     const data = new FormData(event.target as HTMLFormElement);
     void task(async () => {
@@ -319,6 +405,12 @@ function settings(): void {
         canaryAcknowledged: data.get("ack") === "on",
       });
       profile = next;
+      metrics.clear();
+      try {
+        localStorage.setItem("8183:profile:v1", JSON.stringify(next));
+      } catch {
+        storageUnavailable = true;
+      }
       configured = true;
       mode = "live";
       records = [];
@@ -358,7 +450,13 @@ async function doAction(data: FormData): Promise<void> {
   const next =
     mode === "rehearsal"
       ? await rehearsal.act(record.job.id, action, actor(), input)
-      : await live().act(record.job.id, action, input, record.binding);
+      : await live().act(
+          record.job.id,
+          action,
+          input,
+          record.binding,
+          record.job,
+        );
   remember(next);
   if (action === "fund") metrics.record("job_funded");
   if (terminal(next.job.state.tag)) metrics.record("job_terminal");
@@ -379,7 +477,7 @@ function loadJob(): void {
       remember(
         mode === "rehearsal"
           ? rehearsal.read(id)
-          : { job: await live().read(id) },
+          : restoreRecord({ job: await live().read(id) }),
       );
       dialog.close();
       render();
@@ -518,6 +616,7 @@ async function clicks(name: string): Promise<void> {
       if (mode === "rehearsal") settings();
       else {
         mode = "rehearsal";
+        metrics.clear();
         profile = { ...rehearsalProfile };
         wallet = undefined;
         records = [];
@@ -532,8 +631,22 @@ async function clicks(name: string): Promise<void> {
           "Rehearsal wallets are simulated. Change roles using the selector.",
         );
       else {
-        wallet = await connectWallet(profile);
-        await live().tokenInfo();
+        const connected = await connectWallet(profile);
+        await new LiveCommerce(profile, connected).tokenInfo();
+        wallet = connected;
+        try {
+          for (const id of new JobMemory(localStorage, profile)
+            .ids()
+            .slice(0, 20)) {
+            try {
+              remember(restoreRecord({ job: await live().read(id) }));
+            } catch {
+              /* An unavailable job can be retried by ID. */
+            }
+          }
+        } catch {
+          storageUnavailable = true;
+        }
         metrics.record("wallet_connected");
         render();
         notify("Wallet connected and payment token verified.");
@@ -561,6 +674,17 @@ async function clicks(name: string): Promise<void> {
     case "identity":
       importIdentity();
       break;
+    case "discard-identity": {
+      const record = active();
+      if (record) {
+        remember({ ...record, binding: undefined });
+        render();
+        notify(
+          "Using the recorded provider address directly. No 8004 identity claim will be attached to funding or the receipt.",
+        );
+      }
+      break;
+    }
     case "verify":
       verifyDialog();
       break;
@@ -582,7 +706,10 @@ async function clicks(name: string): Promise<void> {
     }
     case "metrics":
       if (metrics.enabled)
-        download(`8183-${mode}-metrics.json`, metrics.export(mode));
+        download(
+          `8183-${mode}-metrics.json`,
+          metrics.export(mode === "live" ? profile.id : "rehearsal"),
+        );
       else {
         metrics.start();
         render();
@@ -594,6 +721,8 @@ async function clicks(name: string): Promise<void> {
   }
 }
 function bind(): void {
+  app.querySelector<HTMLAnchorElement>(".brand")!.href =
+    import.meta.env.BASE_URL;
   app
     .querySelectorAll<HTMLButtonElement>("[data-click]")
     .forEach((button) =>
@@ -636,7 +765,22 @@ function bind(): void {
       () => void task(async () => importIdentity()),
     );
     document.querySelector(".detail-panel")!.append(button);
+    if (active()?.binding) {
+      const direct = document.createElement("button");
+      direct.className = "text-button";
+      direct.textContent = "Use provider address without 8004";
+      direct.addEventListener(
+        "click",
+        () => void task(() => clicks("discard-identity")),
+      );
+      document.querySelector(".detail-panel")!.append(direct);
+    }
   }
+  if (storageUnavailable)
+    notify(
+      "Browser storage is unavailable. Keep the job ID and download receipts before leaving this session.",
+      true,
+    );
 }
 
 render();

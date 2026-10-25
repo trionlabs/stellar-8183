@@ -109,6 +109,42 @@ for (const receipt of evidence.receipts) {
     throw new Error(
       "Missing exact-budget payout/refund event. An Open-state rejection is not a funded rejection.",
     );
+  const accounting = evidence.balanceAccounting.find(
+    (b) => b.jobId === receipt.receipt.jobId,
+  )!;
+  const funding = await reader.server.getTransaction(
+    accounting.fundingTransaction,
+  );
+  if (funding.status !== "SUCCESS")
+    throw new Error("Funding transaction is unavailable or unsuccessful.");
+  const fundedTx = TransactionBuilder.fromXDR(
+    funding.envelopeXdr,
+    evidence.profile.networkPassphrase,
+  );
+  if (
+    !(fundedTx instanceof Transaction) ||
+    fundedTx.hash().toString("hex") !== accounting.fundingTransaction ||
+    fundedTx.operations.length !== 1
+  )
+    throw new Error("Invalid funding envelope.");
+  const op = fundedTx.operations[0];
+  if (
+    op?.type !== "invokeHostFunction" ||
+    op.func.switch().name !== "hostFunctionTypeInvokeContract"
+  )
+    throw new Error("Funding is not a contract call.");
+  const call = op.func.invokeContract();
+  if (
+    Address.fromScAddress(call.contractAddress()).toString() !==
+      evidence.profile.kernel ||
+    call.functionName().toString() !== "fund" ||
+    !call.args()[0] ||
+    !call.args()[1] ||
+    scValToNative(call.args()[0]!) !== BigInt(receipt.receipt.jobId) ||
+    scValToNative(call.args()[1]!) !== BigInt(receipt.receipt.budget) ||
+    funding.ledger > tx.ledger
+  )
+    throw new Error("Funding does not match the stated job and budget.");
 }
 console.log(
   "Canary code, token, deployments, hook admission, and three terminal paths verified. This is author-run compatibility evidence; independent customer participation is not asserted.",

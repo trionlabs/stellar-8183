@@ -178,6 +178,28 @@ export function assertAction(
       "This wallet cannot perform that action in the current job state. Refresh the job and check its role and expiry.",
     );
 }
+
+export function assertReviewedJob(current: Job, reviewed: Job): void {
+  const terms = (job: Job): string =>
+    JSON.stringify(
+      [
+        job.id,
+        job.client,
+        job.provider ?? "",
+        job.evaluator,
+        job.budget,
+        job.expires_at,
+        job.hook ?? "",
+        job.state.tag,
+        job.desc,
+        job.work_hash ? hex(job.work_hash) : "",
+      ].map(String),
+    );
+  if (terms(current) !== terms(reviewed))
+    throw new Error(
+      "Job terms changed after your review. Refresh and review the updated job before signing.",
+    );
+}
 export function amount(value: string, decimals: number): bigint {
   const result = parseUnits(value, decimals);
   if (result <= 0n) throw new Error("Budget must be greater than zero.");

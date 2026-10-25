@@ -136,6 +136,10 @@ requires the Chapter Lead to accept the valueless-canary boundary. There is
 also no funded mainnet deployment signer in this workflow. Valuable-asset
 deployment is not permitted by this implementation.
 
+See `docs/mainnet-canary-threat-model.md` for the prepared threat model,
+predeployment record, evidence requirements, and failure response. Its blank
+approval references are not deployment authorization.
+
 `src/canary.ts` defines the separate strict evidence profile, and
 `tools/verify-canary.ts` checks deployed Wasm, token metadata, creation and hook
 admission transactions, hook binding, terminal jobs, and exact-budget payout

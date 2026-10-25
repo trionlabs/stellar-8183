@@ -26,6 +26,8 @@ host-only advisory exception and extend tests; the deployed application is uncha
 - A separate mainnet-canary evidence format and read-only verifier, including
   build versions, contract hashes, deployment references, exact-budget transfers,
   and arithmetic over captured balance observations.
+- A mainnet-canary threat-model update in `docs/mainnet-canary-threat-model.md`,
+  with explicit prerequisites and failure handling; no approval is inferred.
 - Browser lifecycle tests, wallet/security regression tests, static build and
   browser tests in CI, and a first-publication GitHub Pages script.
 

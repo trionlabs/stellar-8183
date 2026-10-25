@@ -18,7 +18,8 @@ the client, provider, or evaluator role to exercise each step. Advance the
 rehearsal clock to test expiry. Rehearsal receipts are explicitly marked and
 cannot pass live verification. Refreshing the page discards rehearsal jobs.
 
-For live testnet use, choose Network settings, supply a reviewed kernel, its
+For live testnet use, choose Network settings and Load verified testnet profile,
+or import a reviewed profile JSON. You can also enter a kernel, its
 immutable payment token, symbol, decimals, and fee ceiling, then connect
 Freighter on the matching network. Every mutation requires wallet approval.
 The account needs XLM for transaction fees/reserves and any required token
@@ -41,7 +42,8 @@ corepack pnpm@11.9.0 console:e2e
 corepack pnpm@11.9.0 console:build
 ```
 
-The static application is in `apps/console/dist/`. Serve it over HTTPS or
+The static application is in `apps/console/dist/`. Assets use relative URLs so
+it can be hosted at a project subpath. Serve it over HTTPS or
 localhost. It needs no server-side signing secret. Browser tests use installed
 Chrome on macOS and bundled Chromium elsewhere; `PLAYWRIGHT_CHANNEL` overrides
 the default. CI runs type checks, unit tests, and browser lifecycle tests.
@@ -75,6 +77,12 @@ Select an Open job, then Import provider from 8004. Supply the network's
 Identity Registry and numeric agent ID. The pinned Stellar v0.1 profile calls
 `get_agent_wallet(u32)` directly through RPC. An absent wallet or archived
 registry fails before funding. The proposed provider is shown before signing.
+
+Recent live job IDs, terminal transaction pointers, and advisory identity
+snapshots persist in local browser storage, scoped by network, kernel, and
+token. They restore when the deployment and wallet reconnect. Changed provider
+addresses invalidate the old snapshot. Rehearsal data stays in memory.
+Deleting browser storage removes those pointers; retain portable receipts.
 
 Before funding an imported job, the registry is read again and must still
 resolve to the on-chain provider. Its network, registry, agent ID, wallet, and
@@ -128,6 +136,12 @@ deployment is not permitted by this implementation.
 `tools/verify-canary.ts` checks deployed Wasm, token metadata, creation and hook
 admission transactions, hook binding, terminal jobs, and exact-budget payout
 events. It rejects duplicate jobs and Open-state rejection as refund evidence.
+It also records the pinned build toolchain, observed before/funded/terminal
+balances, exact arithmetic, and funding transaction references. The verifier
+re-fetches successful funding and payout events; observed snapshots alone are
+not treated as proof of payment. Historical absolute balance snapshots are
+captured observations, not independently authenticated ledger proofs; the
+verifier authenticates the referenced transfers and checks snapshot arithmetic.
 
 ```sh
 corepack pnpm@11.9.0 --filter @trionlabs/8183-console verify:canary canary-evidence.json PUBLIC_G_ACCOUNT

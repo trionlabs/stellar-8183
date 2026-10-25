@@ -29,6 +29,27 @@ whose diff is exactly `deployments/testnet.json` and
 `deployments/testnet.raw.json`; the release workflow enforces that relationship
 before building or publishing.
 
+## Agent Commerce Console (month-two implementation)
+
+The standalone Console lives in [apps/console](apps/console/README.md).
+It adds wallet-based job actions, optional read-only Stellar 8004 identity
+import, deterministic outcome receipts, receipt verification, local opt-in
+metrics, and browser tests. The v0.1 contract ABI is unchanged.
+
+```sh
+corepack pnpm@11.9.0 install --frozen-lockfile
+corepack pnpm@11.9.0 console:dev
+```
+
+Open `http://127.0.0.1:4173`. A clearly labeled local rehearsal requires no
+wallet. Live mode uses a configured deployment and Freighter; the connected
+wallet signs and pays its own transaction fees. See the Console guide for
+testnet setup, pilot instructions, and the remaining mainnet review gate.
+
+The mainnet-canary evidence profile is implemented separately from v0.1's
+testnet release schema. No mainnet deployment or independent customer pilot is
+claimed by this code change. The existing audit restriction still applies.
+
 ## Live submission demo
 
 [Watch the 78-second live testnet verification](artifacts/testnet/stellar-8183-submission-demo.mp4).

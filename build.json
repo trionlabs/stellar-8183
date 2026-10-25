@@ -1,0 +1,8 @@
+{
+  "project": "stellar-8183",
+  "sourceCommit": "f9743ed681c85edc0c588dceec1a9cfd7d2968a5",
+  "sourceBranch": "feat/agent-commerce-console",
+  "builtAt": "2026-10-25T22:10:33.933Z",
+  "network": "testnet-preview",
+  "independentPilotCompleted": false
+}

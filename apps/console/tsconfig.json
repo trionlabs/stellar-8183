@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "noEmit": true,
+    "types": ["vite/client", "node"],
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": ["src", "test", "tools", "*.ts", "e2e"]
+}

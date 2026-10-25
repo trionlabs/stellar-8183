@@ -10,6 +10,10 @@
     "node": ">=22"
   },
   "scripts": {
+    "console:dev": "pnpm --filter @trionlabs/stellar-8183 build && pnpm --filter @trionlabs/8183-console dev",
+    "console:build": "pnpm --filter @trionlabs/stellar-8183 build && pnpm --filter @trionlabs/8183-console build",
+    "console:test": "pnpm --filter @trionlabs/8183-console test",
+    "console:e2e": "pnpm --filter @trionlabs/8183-console test:e2e",
     "bindings:check": "pnpm --filter @trionlabs/stellar-8183 bindings:check",
     "bindings:generate": "pnpm --filter @trionlabs/stellar-8183 bindings:generate",
     "build": "pnpm -r build",

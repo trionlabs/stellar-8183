@@ -1,0 +1,37 @@
+{
+  "name": "@trionlabs/8183-console",
+  "version": "0.2.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "pilot": "tsx tools/pilot.ts",
+    "deploy:testnet": "tsx tools/deploy-testnet.ts",
+    "verify:receipt": "tsx tools/verify-receipt.ts",
+    "verify:canary": "tsx tools/verify-canary.ts",
+    "assemble:canary": "tsx tools/assemble-canary.ts"
+  },
+  "dependencies": {
+    "@stellar/freighter-api": "6.0.1",
+    "@stellar/stellar-sdk": "16.2.0",
+    "@trionlabs/stellar-8183": "workspace:*",
+    "buffer": "6.0.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.2",
+    "@types/node": "^22.15.0",
+    "prettier": "^3.6.2",
+    "tsx": "4.21.0",
+    "typescript": "^5.9.2",
+    "vite": "7.3.6",
+    "vitest": "^3.2.4"
+  }
+}

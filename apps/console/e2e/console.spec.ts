@@ -214,11 +214,24 @@ test("exports desktop and mobile rehearsal previews", async ({ page }) => {
 test("removing an unresolved tracking reminder requires a saved reference and does not claim cancellation", async ({
   page,
 }) => {
+  await page.route("**/testnet-profile.json", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    await route.continue();
+  });
   await page.goto("./");
   await page.getByRole("button", { name: "Network settings" }).click();
   await page
     .getByRole("button", { name: "Load verified testnet profile" })
     .click();
+  await expect(page.getByLabel("Kernel contract")).toHaveValue(
+    /^C[A-Z2-7]{55}$/,
+  );
+  await expect(page.getByLabel("Immutable payment token")).toHaveValue(
+    /^C[A-Z2-7]{55}$/,
+  );
+  await expect(
+    page.getByRole("button", { name: "Use deployment" }),
+  ).toBeEnabled();
   const kernel = await page.getByLabel("Kernel contract").inputValue();
   const token = await page.getByLabel("Immutable payment token").inputValue();
   const hash = "ab".repeat(32);

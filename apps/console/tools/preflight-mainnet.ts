@@ -113,7 +113,16 @@ async function prepare(path: string): Promise<void> {
   );
 }
 
-async function check(path: string): Promise<void> {
+async function review(path: string): Promise<{
+  sourceCommit: string;
+  kernelWasmSha256: string;
+  hookWasmSha256: string;
+  authorization: {
+    chapterLead: string;
+    independentAudit: string;
+    threatModel: string;
+  };
+}> {
   assertNoSecretEnvironment(process.env);
   const authorization = parseMainnetAuthorization(await readFile(path, "utf8"));
   const build = await sourceAndBuild();
@@ -126,6 +135,18 @@ async function check(path: string): Promise<void> {
       "Reviewed source or Wasm does not match the current reproducible build.",
     );
   await cli(["network", "health", "--network", "mainnet"]);
+  return {
+    ...build,
+    authorization: {
+      chapterLead: authorization.chapterLeadApproval.reference,
+      independentAudit: authorization.independentAudit.reference,
+      threatModel: authorization.threatModelReview.reference,
+    },
+  };
+}
+
+async function check(path: string): Promise<void> {
+  const reviewed = await review(path);
   const accounts: Record<string, { address: string; nativeXlm: string }> = {};
   const addresses = new Set<string>();
   const horizon = new Horizon.Server("https://horizon.stellar.org");
@@ -138,8 +159,11 @@ async function check(path: string): Promise<void> {
     const native = account.balances.find(
       (balance) => balance.asset_type === "native",
     );
-    if (!native || Number(native.balance) < 1)
-      throw new Error(`${alias} needs at least 1 XLM for reserves and fees.`);
+    const minimum = 1.5;
+    if (!native || Number(native.balance) < minimum)
+      throw new Error(
+        `${alias} needs at least ${minimum} XLM for Mainnet reserves and bounded canary fees.`,
+      );
     accounts[alias] = { address, nativeXlm: native.balance };
   }
   console.log(
@@ -147,12 +171,7 @@ async function check(path: string): Promise<void> {
       {
         status: "READY_FOR_HUMAN_DEPLOYMENT_REVIEW",
         network: "mainnet",
-        ...build,
-        authorization: {
-          chapterLead: authorization.chapterLeadApproval.reference,
-          independentAudit: authorization.independentAudit.reference,
-          threatModel: authorization.threatModelReview.reference,
-        },
+        ...reviewed,
         accounts,
         nextStep:
           "Review public accounts and balances, then use the separately reviewed interactive deployment procedure. Preflight does not submit transactions.",
@@ -166,8 +185,17 @@ async function check(path: string): Promise<void> {
 const [mode, suppliedPath] = process.argv.slice(2);
 const path = suppliedPath ? resolve(suppliedPath) : defaultAuthorization;
 if (mode === "prepare") await prepare(path);
-else if (mode === "check") await check(path);
+else if (mode === "review") {
+  const result = await review(path);
+  console.log(
+    JSON.stringify(
+      { status: "REVIEWS_VALID", network: "mainnet", ...result },
+      null,
+      2,
+    ),
+  );
+} else if (mode === "check") await check(path);
 else
   throw new Error(
-    "Usage: pnpm preflight:mainnet prepare [authorization.json] | check [authorization.json]",
+    "Usage: pnpm preflight:mainnet prepare|review|check [authorization.json]",
   );

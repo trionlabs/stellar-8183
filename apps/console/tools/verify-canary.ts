@@ -25,7 +25,10 @@ if (!evidencePath || !readerAddress)
     "Usage: pnpm verify:canary <evidence.json> <public G-account>",
   );
 const evidence = await parseCanaryEvidence(
-  await readFile(evidencePath, "utf8"),
+  await readFile(
+    resolve(resolve(import.meta.dirname, "../../.."), evidencePath),
+    "utf8",
+  ),
 );
 await verifyBuildProvenance(evidence, resolve(import.meta.dirname, "../../.."));
 const reader = new LiveCommerce(evidence.profile, {

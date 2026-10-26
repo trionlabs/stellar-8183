@@ -5,7 +5,6 @@ import { resolve } from "node:path";
 import {
   Address,
   Horizon,
-  Networks,
   Transaction,
   TransactionBuilder,
   scValToNative,
@@ -23,7 +22,9 @@ import { validateProfile, type Profile } from "../src/model.js";
 import type { BalanceAccounting } from "../src/accounting.js";
 
 const root = resolve(import.meta.dirname, "../../..");
-const dir = process.argv[2] ?? resolve(root, "artifacts/month-two");
+const dir = process.argv[2]
+  ? resolve(root, process.argv[2])
+  : resolve(root, "artifacts/month-two");
 const deployment = JSON.parse(
   await readFile(resolve(dir, "deployment.json"), "utf8"),
 ) as {
@@ -34,15 +35,18 @@ const deployment = JSON.parse(
   accounts: { admin: string; client: string };
 };
 const profile = validateProfile(deployment.profile);
-if (profile.networkPassphrase !== Networks.TESTNET)
-  throw new Error("This automated capture is testnet-only.");
+const runDirectory = profile.id === "mainnet-canary" ? "canary" : "pilot";
 const reader = new LiveCommerce(profile, {
   address: deployment.accounts.client,
   sign: async () => {
     throw new Error("Capture cannot sign.");
   },
 });
-const horizon = new Horizon.Server("https://horizon-testnet.stellar.org");
+const horizon = new Horizon.Server(
+  profile.id === "mainnet-canary"
+    ? "https://horizon.stellar.org"
+    : "https://horizon-testnet.stellar.org",
+);
 const transactions = await horizon
   .transactions()
   .forAccount(deployment.accounts.admin)
@@ -84,14 +88,14 @@ for (const row of transactions.records) {
 }
 const receipts = [];
 const report = JSON.parse(
-  await readFile(resolve(dir, "pilot/author-run-report.json"), "utf8"),
+  await readFile(resolve(dir, runDirectory, "author-run-report.json"), "utf8"),
 ) as { scenarios: { jobId: string; balanceAccounting: BalanceAccounting }[] };
 const runIds = new Set(report.scenarios.map((s) => s.jobId));
-for (const name of (await readdir(resolve(dir, "pilot"))).filter((name) =>
+for (const name of (await readdir(resolve(dir, runDirectory))).filter((name) =>
   /^job-\d+\.json$/.test(name),
 )) {
   const file = await parseReceipt(
-    await readFile(resolve(dir, "pilot", name), "utf8"),
+    await readFile(resolve(dir, runDirectory, name), "utf8"),
   );
   if (runIds.has(file.receipt.jobId)) receipts.push(file);
 }

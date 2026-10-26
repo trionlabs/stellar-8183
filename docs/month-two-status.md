@@ -29,6 +29,9 @@ refer to their own commit; inspect the hashes when comparing older run results.
   and arithmetic over captured balance observations.
 - A mainnet-canary threat-model update in `docs/mainnet-canary-threat-model.md`,
   with explicit prerequisites and failure handling; no approval is inferred.
+- A terminal-only Mainnet canary runner with OS secure-store signing,
+  deterministic planning, deployment recovery, three lifecycle paths, and
+  public evidence assembly in `scripts/mainnet-canary-wizard.sh`.
 - Browser lifecycle tests, wallet/security regression tests, static build and
   browser tests in CI, and a first-publication GitHub Pages script.
 

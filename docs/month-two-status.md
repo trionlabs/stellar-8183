@@ -35,10 +35,13 @@ refer to their own commit; inspect the hashes when comparing older run results.
 
 The current checks cover 29 Rust tests, 152 JavaScript/TypeScript tests,
 and eight browser tests. An additional opt-in author-run browser suite executes
-three real testnet jobs and injects RPC recovery failures. Formatting,
-Clippy, type checks, SDK packaging, generated
-bindings, reproducible Wasm builds, and secret scans are included. Live evidence
-was re-fetched from Stellar RPC; the bundle is in `deployments/month-two/`.
+three real testnet jobs and injects RPC recovery failures. The final hosted run
+was bound to source commit `2e779aca87dbe1f34d7abb954a599855261f87e0` and
+produced independently rechecked jobs 18–20; every job 1–20 is terminal and the
+kernel holds no DEMO8183. Formatting, Clippy, type checks, SDK packaging,
+generated bindings, reproducible Wasm builds, and secret scans are included.
+Live evidence was re-fetched from Stellar RPC; the bundle is in
+`deployments/month-two/`.
 
 The full npm audit now reports zero findings after pinning the installable
 `smol-toml` 1.9.1 patch. A local HTTP integration test covers the SDK's real

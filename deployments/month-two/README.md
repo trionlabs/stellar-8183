@@ -21,6 +21,26 @@ hashes match clean reproducible builds; versions and hashes are in the manifest.
 | 11 | Funded rejection | [641cb4d1...](https://stellar.expert/explorer/testnet/tx/641cb4d1876deabd6263ad9e82ed44c5b54059418c9c9f9f2bfde2117149c0fc) |
 | 12 | Expired refund | [0ea9af17...](https://stellar.expert/explorer/testnet/tx/0ea9af178155ea207e1fcde1839ab30b3e6f01a95b9050ffcf8c5b6f636d24cf) |
 
+The final source-bound browser run used the hosted Console built from
+`2e779aca87dbe1f34d7abb954a599855261f87e0`. It verified every hosted file
+against the local production build before signing and produced these additional
+author-controlled jobs:
+
+| Job | Outcome | Terminal transaction |
+| --- | --- | --- |
+| 18 | Completed | [e426ce69...](https://stellar.expert/explorer/testnet/tx/e426ce69026acd3a88adf21a9258371b21aee653059988af9e72fabec4d7b2ce) |
+| 19 | Funded rejection | [dc882cca...](https://stellar.expert/explorer/testnet/tx/dc882ccac7520e55db06bee85a6dbf1fad561a800f2d682193f86a7948bf5398) |
+| 20 | Expired refund | [c67e6dc6...](https://stellar.expert/explorer/testnet/tx/c67e6dc6b21a6cd7cd05abfecac07420a33ec9e9d44d8a2ae13ac2caa0a4bb47) |
+
+`browser-author-run.json` records the application hashes, wallet boundary,
+submitted methods, and portable receipts. It explicitly says this is not an
+independent participant or actual extension-UI session. Verify its detached
+checksum with:
+
+```sh
+(cd deployments/month-two && shasum -a 256 -c browser-author-run.json.sha256)
+```
+
 `canary-evidence.json` is a canonical versioned evidence bundle with six portable
 receipts and captured balance observations. Its filename identifies the evidence
 profile, not the network: `profile.id` explicitly says `testnet`.

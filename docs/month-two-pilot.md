@@ -43,7 +43,9 @@ create and fund six jobs, two per terminal path:
 
 - Provider submits, evaluator completes, payment reaches the provider.
 - Evaluator rejects an already-funded job, refund reaches the client.
-- Funded job expires, another wallet triggers the refund to the client.
+- Funded job expires, and the participant triggers at least one refund to the
+  client. Another refund may be triggered by the provider to demonstrate that
+  expiry refunds are permissionless.
 
 Use the correct SLA review deadline when preparing expiry jobs. Do not substitute
 an Open cancellation for funded rejection. The participant signs their own client

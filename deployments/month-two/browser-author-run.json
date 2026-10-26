@@ -1,0 +1,134 @@
+{
+  "schema": "stellar-8183/browser-author-run/v1",
+  "evidenceType": "author-run",
+  "independentParticipant": false,
+  "walletBoundary": "Real Freighter API message protocol with author-controlled Node-only testnet signer; not a real extension UI or customer session",
+  "profile": {
+    "id": "testnet",
+    "rpcUrl": "https://soroban-testnet.stellar.org",
+    "networkPassphrase": "Test SDF Network ; September 2015",
+    "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+    "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
+    "symbol": "DEMO8183",
+    "decimals": 7,
+    "maxFee": "10000000",
+    "canaryAcknowledged": false
+  },
+  "sourceCommit": "2e779aca87dbe1f34d7abb954a599855261f87e0",
+  "applicationFiles": {
+    "index.html": "5223a828f95594637593abcbda90ec7f0b40a9ce8263d86b03096f534e9838bb",
+    "mark.svg": "29b86fe83daf2517e19ddc88613e10676db62e956bfc02d7ad910c5bff46b064",
+    "testnet-profile.json": "f46fbb5d43d5a99739b00b083f05bc998f8b1ab1cc9fa6840fe9ff9a07163ecc",
+    "assets/index-CkvcF0dm.js": "9556a09dac1d5f7b2fd9e5d68438d94c46827ef4faa94806d875828219413c77",
+    "assets/index-DwwZ0Wao.css": "12ddcbfda74b294c518cb66c63164f1ad93d3c1efdf1f908a4a3afbc4df67886",
+    "assets/sac-spec-DbwpsrbI.js": "f3979a3032eff914bd4337b4d04f68f9e07844a9fcb00c259fe379f57b440827"
+  },
+  "applicationUrl": "https://trionlabs.github.io/stellar-8183/",
+  "generatedAt": "2026-10-26T13:36:18.070Z",
+  "submissions": 16,
+  "signedMethods": [
+    "create_job",
+    "create_job",
+    "set_provider",
+    "set_budget",
+    "fund",
+    "submit",
+    "complete",
+    "create_job",
+    "set_provider",
+    "set_budget",
+    "fund",
+    "reject",
+    "create_job",
+    "set_provider",
+    "set_budget",
+    "fund",
+    "claim_refund"
+  ],
+  "receipts": [
+    {
+      "receipt": {
+        "agentBinding": null,
+        "budget": "10000000",
+        "client": "GC2OHQG6JNXJYV36A4Q7NOUIVEUZZYPFYH747H6C3AWXQII2WCOVSFSS",
+        "decision": null,
+        "description": "Author-run browser complete; not independent customer evidence",
+        "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
+        "evidenceType": "on-chain",
+        "expiresAt": "1793022494",
+        "hook": null,
+        "jobId": "18",
+        "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+        "network": "testnet",
+        "networkPassphrase": "Test SDF Network ; September 2015",
+        "provider": "GANCJRKFVQBWGT4BFVSH2SWUCMAFTAPKVLFM4HFVTW7G3OWXANUSH7EL",
+        "schema": "stellar-8183/outcome/v1",
+        "state": "Completed",
+        "terminalTransaction": {
+          "hash": "e426ce69026acd3a88adf21a9258371b21aee653059988af9e72fabec4d7b2ce",
+          "ledger": 5399611,
+          "method": "complete"
+        },
+        "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
+        "workHash": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
+      },
+      "sha256": "e699ba100feb0a068b21fe382cad86ca6be5121229911ae1257bee10faf4b788"
+    },
+    {
+      "receipt": {
+        "agentBinding": null,
+        "budget": "10000000",
+        "client": "GC2OHQG6JNXJYV36A4Q7NOUIVEUZZYPFYH747H6C3AWXQII2WCOVSFSS",
+        "decision": null,
+        "description": "Author-run browser reject; not independent customer evidence",
+        "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
+        "evidenceType": "on-chain",
+        "expiresAt": "1793022551",
+        "hook": null,
+        "jobId": "19",
+        "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+        "network": "testnet",
+        "networkPassphrase": "Test SDF Network ; September 2015",
+        "provider": "GANCJRKFVQBWGT4BFVSH2SWUCMAFTAPKVLFM4HFVTW7G3OWXANUSH7EL",
+        "schema": "stellar-8183/outcome/v1",
+        "state": "Rejected",
+        "terminalTransaction": {
+          "hash": "dc882ccac7520e55db06bee85a6dbf1fad561a800f2d682193f86a7948bf5398",
+          "ledger": 5399620,
+          "method": "reject"
+        },
+        "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
+        "workHash": null
+      },
+      "sha256": "1cb271521d7f68c35e2f0032d71e116057c8e5f74d9312fece1c3d2b832b9157"
+    },
+    {
+      "receipt": {
+        "agentBinding": null,
+        "budget": "10000000",
+        "client": "GC2OHQG6JNXJYV36A4Q7NOUIVEUZZYPFYH747H6C3AWXQII2WCOVSFSS",
+        "decision": null,
+        "description": "Author-run browser claim_refund; not independent customer evidence",
+        "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
+        "evidenceType": "on-chain",
+        "expiresAt": "1793021757",
+        "hook": null,
+        "jobId": "20",
+        "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+        "network": "testnet",
+        "networkPassphrase": "Test SDF Network ; September 2015",
+        "provider": "GANCJRKFVQBWGT4BFVSH2SWUCMAFTAPKVLFM4HFVTW7G3OWXANUSH7EL",
+        "schema": "stellar-8183/outcome/v1",
+        "state": "Expired",
+        "terminalTransaction": {
+          "hash": "c67e6dc6b21a6cd7cd05abfecac07420a33ec9e9d44d8a2ae13ac2caa0a4bb47",
+          "ledger": 5399637,
+          "method": "claim_refund"
+        },
+        "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
+        "workHash": null
+      },
+      "sha256": "cd8b8bc190ed52586a3cbb74f60c8464d51da69f55cd55e1b26e4e33a3b10be9"
+    }
+  ]
+}

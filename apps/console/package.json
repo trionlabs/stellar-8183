@@ -16,6 +16,7 @@
     "format:check": "prettier --check .",
     "pilot": "tsx tools/pilot.ts",
     "deploy:testnet": "tsx tools/deploy-testnet.ts",
+    "preflight:mainnet": "tsx tools/preflight-mainnet.ts",
     "verify:receipt": "tsx tools/verify-receipt.ts",
     "verify:canary": "tsx tools/verify-canary.ts",
     "assemble:canary": "tsx tools/assemble-canary.ts",

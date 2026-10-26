@@ -178,6 +178,36 @@ requires the Chapter Lead to accept the valueless-canary boundary. There is
 also no funded mainnet deployment signer in this workflow. Valuable-asset
 deployment is not permitted by this implementation.
 
+After the Chapter Lead accepts the valueless-canary boundary, prepare a
+source-bound authorization record for independent review:
+
+```sh
+corepack pnpm@11.9.0 --filter @trionlabs/8183-console \
+  preflight:mainnet prepare
+```
+
+The command refuses a dirty worktree, rebuilds the release twice, and writes an
+ignored, owner-readable template to
+`deployments/private/mainnet-authorization.json`. Fill it with the actual
+Chapter Lead approval, independent audit, and threat-model review references.
+It deliberately rejects placeholders, unresolved critical/high findings, or a
+review that is not independent from the builder.
+
+Provision four distinct, minimally funded `canary-admin`, `canary-client`,
+`canary-provider`, and `canary-evaluator` identities in the Stellar CLI OS
+secure store or on a hardware wallet. Never place signing material in `.env`.
+Then run the read-only gate:
+
+```sh
+corepack pnpm@11.9.0 --filter @trionlabs/8183-console \
+  preflight:mainnet check
+```
+
+It checks the exact reviewed commit and Wasm hashes, Mainnet health, public
+role addresses, account separation, and XLM availability. It does not sign or
+submit a transaction. A successful preflight is readiness evidence, not a
+deployment or permission to skip human transaction review.
+
 See `docs/mainnet-canary-threat-model.md` for the prepared threat model,
 predeployment record, evidence requirements, and failure response. Its blank
 approval references are not deployment authorization.

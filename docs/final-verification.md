@@ -64,10 +64,10 @@ Two confirmed verifier defects were corrected:
   Decimal integer fields now enforce their documented string type.
 
 The original six CLI receipts passed live verification after these fixes. The
-final hosted browser run created jobs 18–20 from the exact CI-reviewed source
+final hosted browser run created jobs 18-20 from the exact CI-reviewed source
 commit. All hosted files matched the CI artifact before signing. The three
 receipts passed an independent checksum, terminal-state, exact-budget event, and
-source/role authorization review. All jobs 1–20 are terminal, their aggregate
+source/role authorization review. All jobs 1-20 are terminal, their aggregate
 funded liability is zero, and the kernel's DEMO8183 balance is zero. Public
 reports label author control and do not present it as customer validation.
 

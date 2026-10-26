@@ -34,11 +34,11 @@ refer to their own commit; inspect the hashes when comparing older run results.
 
 ## Verification
 
-The current checks cover 29 Rust tests, 153 JavaScript/TypeScript tests,
+The current checks cover 29 Rust tests, 161 JavaScript/TypeScript tests,
 and six browser tests. An additional opt-in author-run browser suite executes
 three real testnet jobs and injects RPC recovery failures. The latest local
 source-bound run used commit `dfc993333893ec731622670589cec5499edaeee9` and
-produced independently rechecked jobs 21–23; every job 1–23 is terminal and the
+produced independently rechecked jobs 21-23; every job 1-23 is terminal and the
 kernel holds no DEMO8183. Formatting, Clippy, type checks, SDK packaging,
 generated bindings, reproducible Wasm builds, and secret scans are included.
 Live evidence was re-fetched from Stellar RPC; the bundle is in

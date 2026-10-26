@@ -49,6 +49,13 @@ The operator/reviewer must supply actual references for:
 - Kernel/hook IDs, constructor arguments, fetched hashes, and hook admission.
 - A separate acknowledged `mainnet-canary` Console profile.
 
+Use `docs/mainnet-independent-review-request.md` as the independent review
+scope. After committing the exact candidate source, run
+`preflight:mainnet prepare`, add the real approval/review references to the
+ignored authorization record, and run `preflight:mainnet check`. The gate binds
+those references to the clean commit and reproducible Wasm hashes and refuses
+environment-based signing material. It does not submit a transaction.
+
 Do not infer approval from blank fields, a successful build, an author-run test,
 or the fact that the app supports a mainnet profile.
 

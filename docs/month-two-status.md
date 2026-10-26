@@ -5,9 +5,9 @@ claim that the follow-on grant, customer discovery, or mainnet milestone is
 complete. The historical v0.1 release and immutable contracts are unchanged.
 
 The [hosted Console](https://trionlabs.github.io/stellar-8183/) is available for
-review. Its `build.json` pins the published application source to
-`f9743ed681c85edc0c588dceec1a9cfd7d2968a5`. Subsequent changes document CI's
-host-only advisory exception and extend tests; the deployed application is unchanged.
+review. Its [build metadata](https://trionlabs.github.io/stellar-8183/build.json)
+records the exact published application source. CI checks on the pull request
+refer to their own commit; inspect the hashes when comparing older run results.
 
 ## Delivered
 
@@ -33,17 +33,16 @@ host-only advisory exception and extend tests; the deployed application is uncha
 
 ## Verification
 
-The final local checks cover 29 Rust tests, 122 JavaScript/TypeScript tests,
+The final local checks cover 29 Rust tests, 123 JavaScript/TypeScript tests,
 and six browser tests, including the hosted GitHub Pages application. Formatting,
 Clippy, type checks, SDK packaging, generated
 bindings, reproducible Wasm builds, and secret scans are included. Live evidence
 was re-fetched from Stellar RPC; the bundle is in `deployments/month-two/`.
 
-The npm audit has zero high/critical findings. One moderate transitive
-`smol-toml` advisory remains (GHSA-r4xh-jqrq-34v2); the registry did not provide
-the advertised patched version when checked. The Console does not call the SDK's
-TOML discovery APIs or fetch arbitrary agent metadata. This is a remaining
-dependency limitation, not a clean-audit claim.
+The full npm audit now reports zero findings after pinning the installable
+`smol-toml` 1.9.1 patch. A local HTTP integration test covers the SDK's real
+TOML resolver with both valid metadata and invalid input. Rust, npm, and secret
+scans run independently, and the combined security gate requires all three.
 
 The raw Cargo audit also reports RUSTSEC-2026-0387 in the pinned SDK's native
 Soroban test host. It is absent from the production Wasm dependency graph. CI

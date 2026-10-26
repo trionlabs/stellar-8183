@@ -1,6 +1,6 @@
 # Dependency audit assessment
 
-Reviewed on 2026-10-25. Exceptions below do not constitute an independent audit
+Reviewed on 2026-10-26. Exceptions below do not constitute an independent audit
 or permission to deploy the unaudited escrow on mainnet.
 
 ## Native test host: RUSTSEC-2026-0387
@@ -42,15 +42,20 @@ release's contract-source/Wasm provenance until a separately reviewed release.
 
 ## JavaScript: GHSA-r4xh-jqrq-34v2
 
-The final pnpm audit reports one moderate transitive
-[`smol-toml` advisory](https://github.com/advisories/GHSA-r4xh-jqrq-34v2), with
-zero high or critical findings. It advertises 1.8.1 as patched, but that version
-was unavailable from the configured npm registry at review time. The installed
-version is 1.7.1 through `@stellar/stellar-sdk` 16.2.0.
+The 2026-10-25 review found a moderate transitive
+[`smol-toml` advisory](https://github.com/advisories/GHSA-r4xh-jqrq-34v2) in
+1.7.1 through `@stellar/stellar-sdk` 16.2.0. The advertised 1.8.1 patch was not
+available from the configured npm registry. On 2026-10-26, 1.9.1 was verified as
+installable and pinned in the workspace override and lockfile. The full pnpm
+audit now reports zero findings at every severity, without ignored advisories.
 
-The Console calls contract/RPC and wallet APIs. It does not call Stellar TOML
-discovery or fetch agent metadata URLs, which limits exposure to the affected
-parser. The dependency remains vulnerable for consumers that do call that API;
-do not pass untrusted TOML through it. No pnpm advisory is suppressed; CI
-continues to reject high/critical findings. Adopt the compatible patch once it
-is available and rerun workspace and browser checks.
+A local HTTP integration test exercises the Stellar SDK's real TOML resolver
+with valid asset metadata and malformed TOML, confirming compatibility with the
+updated parser. Workspace builds, packaging, and browser checks also cover the
+upgrade. Other consumers must update their own lockfiles; this override does
+not rewrite already-published npm artifacts or downstream installations.
+
+Rust, JavaScript, and secret scans now run as independent CI jobs. The existing
+combined security check remains a gate and fails unless all three succeed.
+The npm audit continues to reject high/critical findings; a dependency finding
+does not suppress the TypeScript tests or the secret scan.

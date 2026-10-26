@@ -13,3 +13,4 @@ overrides:
   tinypool: 2.1.2
   vite: 7.3.7
   esbuild: 0.28.1
+  smol-toml: 1.9.1

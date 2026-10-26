@@ -12,6 +12,7 @@ overrides:
   tinypool: 2.1.2
   vite: 7.3.7
   esbuild: 0.28.1
+  smol-toml: 1.9.1
 
 importers:
 
@@ -719,8 +720,8 @@ packages:
   siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
 
-  smol-toml@1.7.1:
-    resolution: {integrity: sha512-PPlsspAZ4jbMBu5DMFhfUGDQLu/vrL4SyBROVS37x8ynnVmFIs1VPBz1Co8Xks3TvpIaZXmU85y4DrQ+UyVFoQ==}
+  smol-toml@1.9.1:
+    resolution: {integrity: sha512-j7WyPdf0CJoutMzMoPLF/bVXHtKZIT9Rb4eGeEbWw8X2t5oirjPgpL+OpaENZrILYaXqYwnVH+qgUwVbl+pUJQ==}
     engines: {node: '>= 18'}
 
   source-map-js@1.2.2:
@@ -1037,7 +1038,7 @@ snapshots:
       commander: 14.0.3
       eventsource: 4.1.0
       feaxios: 0.0.23
-      smol-toml: 1.7.1
+      smol-toml: 1.9.1
       uint8array-extras: 1.5.0
     transitivePeerDependencies:
       - debug
@@ -1363,7 +1364,7 @@ snapshots:
 
   siginfo@2.0.0: {}
 
-  smol-toml@1.7.1: {}
+  smol-toml@1.9.1: {}
 
   source-map-js@1.2.2: {}
 

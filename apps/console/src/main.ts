@@ -3,6 +3,8 @@ import { commitmentBytes, commitmentToHex } from "@trionlabs/stellar-8183";
 import { resolveAgent } from "./identity.js";
 import {
   LiveCommerce,
+  ConfirmedJobReadError,
+  UnconfirmedTransactionError,
   verifyOnChain,
   type ActionInput,
   type NewJob,
@@ -31,6 +33,7 @@ import { Rehearsal, rehearsalAccounts, rehearsalProfile } from "./rehearsal.js";
 import { connectWallet } from "./wallet.js";
 import { JobMemory } from "./storage.js";
 import { assertBinding } from "./identity.js";
+import { RecoveryJournal } from "./recovery.js";
 import "./style.css";
 
 globalThis.Buffer = Buffer;
@@ -47,6 +50,22 @@ let busy = false;
 let storageUnavailable = false;
 let rehearsal = new Rehearsal();
 const metrics = new Metrics();
+const journals = new Map<string, RecoveryJournal>();
+function recovery(): RecoveryJournal {
+  const key = `${profile.id}:${profile.kernel}:${profile.token}`;
+  let journal = journals.get(key);
+  if (!journal) {
+    let storage: Storage | undefined;
+    try {
+      storage = localStorage;
+    } catch {
+      storageUnavailable = true;
+    }
+    journal = new RecoveryJournal(profile, storage);
+    journals.set(key, journal);
+  }
+  return journal;
+}
 const esc = (value: unknown): string =>
   String(value ?? "").replace(
     /[&<>"']/g,
@@ -113,6 +132,40 @@ async function task(work: () => Promise<void>): Promise<void> {
     await work();
   } catch (error) {
     metrics.record("action_failed");
+    if (mode === "live" && error instanceof ConfirmedJobReadError) {
+      recovery().confirmed(error.jobId, error.outcome, error.binding);
+      records = records.filter((record) => record.job.id !== error.jobId);
+      selected = undefined;
+      render();
+      notify(
+        `Transaction confirmed for job #${error.jobId}. Its state could not be loaded. Use Load confirmed job below; do not recreate or repeat the action.`,
+      );
+      const link = document.createElement("a");
+      link.href = explorer(profile, "tx", error.outcome.hash);
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = ` View confirmed transaction ${error.outcome.hash}`;
+      document.querySelector("#notice")!.append(link);
+      return;
+    }
+    if (mode === "live" && error instanceof UnconfirmedTransactionError) {
+      const id = error.submission.jobId;
+      const previous = records.find(
+        (record) => record.job.id.toString() === id,
+      );
+      if (previous && error.binding)
+        remember({ ...previous, binding: error.binding });
+      recovery().track(error.submission);
+      if (id)
+        records = records.filter((record) => record.job.id.toString() !== id);
+      selected = undefined;
+      render();
+      notify(
+        "A signed transaction has an unknown outcome. Use Check transaction before retrying; a network error does not prove it failed.",
+        true,
+      );
+      return;
+    }
     notify(
       error instanceof Error
         ? error.message
@@ -139,6 +192,7 @@ function remember(record: RecordJob): void {
   records = [merged, ...records.filter((r) => r.job.id !== record.job.id)];
   selected = record.job.id;
   if (mode === "live") {
+    recovery().observed(record.job.id);
     try {
       new JobMemory(localStorage, profile).save(merged);
     } catch {
@@ -169,16 +223,105 @@ function row(record: RecordJob): string {
   const j = record.job;
   return `<button class="job-row ${selected === j.id ? "selected" : ""}" data-job="${j.id}"><span class="job-number">${j.id.toString().padStart(2, "0")}</span><span class="job-description"><strong>${esc(j.desc)}</strong><small>${esc(j.provider ? short(j.provider) : "Provider unassigned")} <span class="separator">/</span> ${esc(displayAmount(j.budget, profile.decimals))} ${esc(profile.symbol)}</small></span><span class="badge ${j.state.tag.toLowerCase()}">${j.state.tag}</span><span class="arrow">&nearr;</span></button>`;
 }
+function lifecycleProgress(state: RecordJob["job"]["state"]["tag"]): string {
+  if (terminal(state))
+    return `<p class="hint terminal-outcome">Final outcome: ${state}</p>`;
+  const position = ["Open", "Funded", "Submitted"].indexOf(state);
+  return `<div class="progress" aria-label="Job lifecycle">${["Open", "Funded", "Submitted", "Settled"].map((label, index) => `<span class="${position >= index ? "done" : ""}">${index + 1}. ${label}</span>`).join("")}</div>`;
+}
+function recoveryPanel(): HTMLElement | undefined {
+  if (mode !== "live" || !configured) return;
+  const journal = recovery();
+  const pending = journal.pending();
+  const missing = journal.missing(records.map((record) => record.job.id));
+  if (!pending.length && !missing.length) return;
+  const panel = document.createElement("section");
+  panel.className = "recovery-panel";
+  panel.setAttribute("aria-label", "Transaction recovery");
+  panel.innerHTML = `<h2>Recover a transaction or job</h2><p>Signed transactions are never retried automatically. An unavailable response does not prove a transaction failed.</p>${pending.map((item) => `<article><span>${item.method === "create_job" ? "Create job" : esc(labels[item.method])}${item.jobId ? ` - job #${esc(item.jobId)}` : ""}</span><a href="${explorer(profile, "tx", item.hash)}" target="_blank" rel="noopener noreferrer"><code>${esc(item.hash)}</code></a><button class="secondary" data-check-submission="${item.hash}">Check transaction</button></article>`).join("")}${missing.map((id) => `<article><span>Saved job #${id}: current state unavailable</span><button class="secondary" data-recover-job="${id}">Load confirmed job #${id}</button></article>`).join("")}${journal.storageUnavailable ? `<p class="hint">Browser storage is unavailable. Tracking is in memory only; save these public IDs and transaction hashes before leaving.</p>` : ""}`;
+  return panel;
+}
+async function checkSubmission(hash: string): Promise<void> {
+  const journal = recovery();
+  const pending = journal.pending().find((item) => item.hash === hash);
+  if (!pending) return;
+  const result = await live().recoverSubmission(pending);
+  if (result.status === "unknown") {
+    notify(
+      "This transaction is still unavailable from RPC. Its outcome remains unknown. Check Stellar Expert or try the status check later; do not resend automatically.",
+      true,
+    );
+    return;
+  }
+  journal.clear(hash);
+  if (result.status === "failed") {
+    render();
+    notify(
+      "The tracked transaction failed on-chain. Review the job's current state before preparing a new action.",
+      true,
+    );
+    return;
+  }
+  remember(restoreRecord(result.record));
+  render();
+  notify(
+    `Confirmed transaction recovered. Job #${result.record.job.id} is ${result.record.job.state.tag}.`,
+  );
+}
+async function stopTracking(hash: string): Promise<void> {
+  const journal = recovery();
+  const pending = journal.pending().find((item) => item.hash === hash);
+  if (!pending) return;
+  const dialog = modal(
+    "Stop local transaction tracking",
+    `<p>This only removes a local reminder. It does not cancel the transaction or prove it failed. It may already have applied or may apply later. Check this hash in your wallet or Stellar Expert first; retrying a successful creation can create another job.</p><code>${esc(hash)}</code><p>A public reference will be downloaded so you can check the outcome later.</p><button class="primary full" id="stop-tracking">Save reference and stop tracking</button>`,
+  );
+  const accepted = await new Promise<boolean>((resolve) => {
+    dialog.addEventListener("close", () => resolve(false), { once: true });
+    dialog.querySelector("#stop-tracking")!.addEventListener(
+      "click",
+      () => {
+        resolve(true);
+        dialog.close();
+      },
+      { once: true },
+    );
+  });
+  if (!accepted) return;
+  download(
+    `8183-pending-${hash}.json`,
+    JSON.stringify(
+      {
+        schema: "stellar-8183/pending-reference/v1",
+        network: profile.id,
+        kernel: profile.kernel,
+        token: profile.token,
+        submission: pending,
+        status: "unverified-reference",
+      },
+      null,
+      2,
+    ),
+  );
+  journal.clear(hash);
+  render();
+  notify(
+    `Local tracking cleared for ${hash}. This did not cancel the transaction or verify its outcome. Keep the downloaded reference.`,
+    true,
+  );
+}
 function detail(): string {
   const record = active();
   if (!record)
     return `<div class="empty-detail"><span class="empty-mark">[ ]</span><h3>A clear path to settlement.</h3><p>Select a job to view its terms, review the work, or take the next step.</p></div>`;
   const j = record.job,
     state = j.state.tag;
+  if (mode === "live" && recovery().blocksJob(j.id))
+    return `<h2>Job #${j.id}: transaction outcome unknown</h2><p class="hint">Check the tracked transaction above before taking another action. The previous screen is not proof that a signed transaction failed.</p>`;
   const actions = availableActions(j, actor(), clock());
   const expiry = new Date(Number(j.expires_at) * 1000).toLocaleString();
   const expired = BigInt(clock()) >= j.expires_at;
-  return `<div class="detail-head"><span class="eyebrow">JOB ${j.id}</span><span class="badge ${state.toLowerCase()}">${state}</span></div><h2>${esc(j.desc)}</h2><div class="budget"><span>${esc(displayAmount(j.budget, profile.decimals))}</span> ${esc(profile.symbol)}</div><div class="progress" aria-label="Job lifecycle">${["Open", "Funded", "Submitted", "Settled"].map((s, i) => `<span class="${["Open", "Funded", "Submitted"].indexOf(state) >= i || terminal(state) ? "done" : ""}">${i + 1}. ${s}</span>`).join("")}</div><dl class="terms"><dt>Client</dt><dd title="${j.client}">${esc(short(j.client))}${actor() === j.client ? " (you)" : ""}</dd><dt>Provider</dt><dd title="${esc(j.provider)}">${j.provider ? esc(short(j.provider)) : "Unassigned"}${actor() === j.provider ? " (you)" : ""}</dd><dt>Evaluator</dt><dd title="${j.evaluator}">${esc(short(j.evaluator))}${actor() === j.evaluator ? " (you)" : ""}</dd><dt>Expiry</dt><dd>${esc(expiry)}${expired ? " (passed)" : ""}</dd><dt>Policy hook</dt><dd>${j.hook ? esc(short(j.hook)) : "None"}</dd></dl>${record.binding ? `<p class="hint">Imported agent ${esc(record.binding.agentId)}. Wallet observed at ledger ${record.binding.resolvedAtLedger}. This is a client snapshot.</p>` : ""}${j.work_hash ? `<div class="commitment"><span class="eyebrow">WORK SHA-256</span><code>${esc(commitmentToHex(j.work_hash))}</code></div>` : ""}${actions.length ? `<form id="action-form"><label>Next step<select name="action" id="action">${actions.map((a) => `<option value="${a}">${labels[a]}</option>`).join("")}</select></label><div id="action-inputs"></div><button class="primary full" type="submit">Review action <span>&rarr;</span></button></form>` : `<p class="hint">${terminal(state) ? "This job is settled. No further payment can be released." : "The next action belongs to a different wallet. Refresh after the other party acts."}</p>`}${!terminal(state) && expired ? `<p class="hint">After expiry, a valid decision and refund can race. The first successful transaction wins.</p>` : ""}${record.outcome && mode === "live" ? `<a class="text-link" href="${explorer(profile, "tx", record.outcome.hash)}" target="_blank" rel="noopener noreferrer">View latest transaction &nearr;</a>` : ""}${terminal(state) ? `<button class="secondary full" data-click="receipt">Download outcome receipt</button>` : ""}<button class="text-button" data-click="refresh">Refresh job</button>`;
+  return `<div class="detail-head"><span class="eyebrow">JOB ${j.id}</span><span class="badge ${state.toLowerCase()}">${state}</span></div><h2>${esc(j.desc)}</h2><div class="budget"><span>${esc(displayAmount(j.budget, profile.decimals))}</span> ${esc(profile.symbol)}</div>${lifecycleProgress(state)}<dl class="terms"><dt>Client</dt><dd title="${j.client}">${esc(short(j.client))}${actor() === j.client ? " (you)" : ""}</dd><dt>Provider</dt><dd title="${esc(j.provider)}">${j.provider ? esc(short(j.provider)) : "Unassigned"}${actor() === j.provider ? " (you)" : ""}</dd><dt>Evaluator</dt><dd title="${j.evaluator}">${esc(short(j.evaluator))}${actor() === j.evaluator ? " (you)" : ""}</dd><dt>Expiry</dt><dd>${esc(expiry)}${expired ? " (passed)" : ""}</dd><dt>Policy hook</dt><dd>${j.hook ? esc(short(j.hook)) : "None"}</dd></dl>${record.binding ? `<p class="hint">Imported agent ${esc(record.binding.agentId)}. Wallet observed at ledger ${record.binding.resolvedAtLedger}. This is a client snapshot.</p>` : ""}${j.work_hash ? `<div class="commitment"><span class="eyebrow">WORK SHA-256</span><code>${esc(commitmentToHex(j.work_hash))}</code></div>` : ""}${actions.length ? `<form id="action-form"><label>Next step<select name="action" id="action">${actions.map((a) => `<option value="${a}">${labels[a]}</option>`).join("")}</select></label><div id="action-inputs"></div><button class="primary full" type="submit">Review action <span>&rarr;</span></button></form>` : `<p class="hint">${terminal(state) ? "This job is settled. No further payment can be released." : "The next action belongs to a different wallet. Refresh after the other party acts."}</p>`}${!terminal(state) && expired ? `<p class="hint">After expiry, a valid decision and refund can race. The first successful transaction wins.</p>` : ""}${record.outcome && mode === "live" ? `<a class="text-link" href="${explorer(profile, "tx", record.outcome.hash)}" target="_blank" rel="noopener noreferrer">View latest transaction &nearr;</a>` : ""}${terminal(state) ? `<button class="secondary full" data-click="receipt">Download outcome receipt</button>` : ""}<button class="text-button" data-click="refresh">Refresh job</button>`;
 }
 
 function render(): void {
@@ -205,6 +348,26 @@ function render(): void {
       2,
       "0",
     )}</strong><p>Completed, rejected, or refunded</p></article></section><div class="content-grid"><section class="jobs-panel"><div class="panel-heading"><h2>Your jobs <span>${records.length}</span></h2><button class="text-button" data-click="load">Load by ID &nearr;</button></div><div class="tabs" role="group" aria-label="Job filters">${["all", "active", "settled"].map((f) => `<button data-filter="${f}" class="${filter === f ? "active" : ""}">${f === "all" ? "All jobs" : f[0]!.toUpperCase() + f.slice(1)}</button>`).join("")}</div><div class="job-list">${visible.length ? visible.map(row).join("") : `<div class="empty-list"><h3>Your next project starts here.</h3><p>Create a job or load one by its on-chain ID.</p><button class="secondary" data-click="new">Create your first job</button></div>`}</div><div class="panel-footer">${mode === "rehearsal" ? "LOCAL SIMULATION" : "LOADED JOBS ONLY"}<span>Client &rarr; Provider &rarr; Evaluator</span></div></section><section class="detail-panel" aria-label="Selected job">${detail()}</section></div><footer class="page-footer"><span>The evaluator decides quality. Escrow enforces payment and expiry.</span><button class="text-button" data-click="metrics">${metrics.enabled ? "Export session metrics" : "Enable local session metrics"}</button></footer></main></div><dialog id="modal"><div id="modal-content"></div></dialog>`;
+  const recoveryView = recoveryPanel();
+  if (recoveryView) {
+    app.querySelector(".stats")!.before(recoveryView);
+    recovery()
+      .pending()
+      .forEach((item) => {
+        const row = recoveryView.querySelector(
+          `[data-check-submission="${item.hash}"]`,
+        )?.parentElement;
+        if (!row) return;
+        const button = document.createElement("button");
+        button.className = "text-button";
+        button.textContent = "Stop local tracking";
+        button.addEventListener(
+          "click",
+          () => void task(() => stopTracking(item.hash)),
+        );
+        row.append(button);
+      });
+  }
   bind();
   actionInputs();
 }
@@ -243,6 +406,13 @@ function newJob(): void {
     notify("Configure your deployment and connect a wallet first.", true);
     return;
   }
+  if (mode === "live" && recovery().blocksCreate(actor())) {
+    notify(
+      "A job creation from this wallet has an unknown outcome. Check its tracked transaction before creating another job.",
+      true,
+    );
+    return;
+  }
   const dialog = modal(
     "Commission a new job",
     `<form id="create-form"><p class="hint">Agree the work, evaluator, and deadline with your provider before funding. Descriptions are public on-chain.</p><label>What needs to be delivered?<textarea name="description" required maxlength="512" placeholder="e.g. Translate the product brief into Spanish"></textarea></label><label>Provider address (optional until funding)<input name="provider" value="${mode === "rehearsal" ? rehearsalAccounts.provider : ""}" placeholder="G... or C..." /></label><label>Evaluator address<input name="evaluator" required value="${mode === "rehearsal" ? rehearsalAccounts.evaluator : actor()}" /></label><p class="hint">The evaluator can approve or reject work. It may be the client; it is a trusted role, not independent arbitration.</p><div class="form-row"><label>Expiry in minutes<input name="minutes" type="number" min="1" max="43200" required value="60" /></label><label>SLA hook (optional)<input name="hook" placeholder="C..." ${mode === "rehearsal" ? "disabled" : ""} /></label></div><button class="primary full">Review new job &rarr;</button></form>`,
@@ -273,6 +443,10 @@ function newJob(): void {
         ))
       )
         return;
+      if (mode === "live" && recovery().blocksCreate(actor()))
+        throw new Error(
+          "Check the tracked creation transaction before creating another job.",
+        );
       remember(
         mode === "rehearsal"
           ? rehearsal.create(input, actor())
@@ -428,6 +602,10 @@ function settings(): void {
 async function doAction(data: FormData): Promise<void> {
   const record = active();
   if (!record) return;
+  if (mode === "live" && recovery().blocksJob(record.job.id))
+    throw new Error(
+      "Check the tracked transaction before repeating an action for this job.",
+    );
   const action = String(data.get("action")) as Action;
   const input: ActionInput = {
     provider: data.get("provider")
@@ -447,6 +625,10 @@ async function doAction(data: FormData): Promise<void> {
     ))
   )
     return;
+  if (mode === "live" && recovery().blocksJob(record.job.id))
+    throw new Error(
+      "Check the tracked transaction before repeating an action for this job.",
+    );
   const next =
     mode === "rehearsal"
       ? await rehearsal.act(record.job.id, action, actor(), input)
@@ -497,6 +679,13 @@ function importIdentity(): void {
     );
     return;
   }
+  if (recovery().blocksJob(record.job.id)) {
+    notify(
+      "Check the tracked transaction before changing this job's provider.",
+      true,
+    );
+    return;
+  }
   const dialog = modal(
     "Import an 8004 provider",
     `<form><p class="hint">Reads the Stellar 8004 v0.1 get_agent_wallet(u32) profile. Identity is not proof of work quality. You will review and sign a separate set-provider action.</p><label>Identity Registry contract<input name="registry" required placeholder="C..." /></label><label>Agent ID<input name="agentId" required inputmode="numeric" /></label><button class="primary full">Resolve wallet</button></form>`,
@@ -522,6 +711,10 @@ function importIdentity(): void {
         ))
       )
         return;
+      if (recovery().blocksJob(record.job.id))
+        throw new Error(
+          "Check the tracked transaction before changing this job's provider.",
+        );
       const next = await live().act(record.job.id, "set_provider", {
         provider: binding.provider,
       });
@@ -677,6 +870,10 @@ async function clicks(name: string): Promise<void> {
     case "discard-identity": {
       const record = active();
       if (record) {
+        if (mode === "live" && recovery().blocksJob(record.job.id))
+          throw new Error(
+            "Check the tracked transaction before changing its identity snapshot.",
+          );
         remember({ ...record, binding: undefined });
         render();
         notify(
@@ -724,6 +921,28 @@ function bind(): void {
   app.querySelector<HTMLAnchorElement>(".brand")!.href =
     import.meta.env.BASE_URL;
   app
+    .querySelectorAll<HTMLButtonElement>("[data-check-submission]")
+    .forEach((button) =>
+      button.addEventListener(
+        "click",
+        () => void task(() => checkSubmission(button.dataset.checkSubmission!)),
+      ),
+    );
+  app
+    .querySelectorAll<HTMLButtonElement>("[data-recover-job]")
+    .forEach((button) =>
+      button.addEventListener(
+        "click",
+        () =>
+          void task(async () => {
+            const id = uint(button.dataset.recoverJob!);
+            remember(restoreRecord({ job: await live().read(id) }));
+            render();
+            notify(`Job #${id} loaded from the confirmed public record.`);
+          }),
+      ),
+    );
+  app
     .querySelectorAll<HTMLButtonElement>("[data-click]")
     .forEach((button) =>
       button.addEventListener(
@@ -756,7 +975,10 @@ function bind(): void {
       const data = new FormData(event.target as HTMLFormElement);
       void task(() => doAction(data));
     });
-  if (active()?.job.state.tag === "Open") {
+  if (
+    active()?.job.state.tag === "Open" &&
+    !(mode === "live" && recovery().blocksJob(active()!.job.id))
+  ) {
     const button = document.createElement("button");
     button.className = "text-button";
     button.textContent = "Import provider from 8004";

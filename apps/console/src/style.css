@@ -922,3 +922,33 @@ dialog::backdrop {
     transition: none !important;
   }
 }
+:root .recovery-panel {
+  background: #fff8e5;
+  border: 1px solid #ead6a3;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.recovery-panel h2 {
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+.recovery-panel p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.recovery-panel article {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+.recovery-panel article a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+}
+.recovery-panel article span {
+  font-size: 13px;
+}

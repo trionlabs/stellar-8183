@@ -5,6 +5,7 @@ import {
   Keypair,
   Transaction,
   TransactionBuilder,
+  StrKey,
   rpc,
   scValToNative,
 } from "@stellar/stellar-sdk";
@@ -35,6 +36,135 @@ import { matchReceiptJob, type ReceiptFile } from "./receipt.js";
 export interface Wallet {
   address: string;
   sign(xdr: string, profile: Profile): Promise<string>;
+}
+
+export interface PendingSubmission {
+  hash: string;
+  method: "create_job" | Action;
+  source: string;
+  jobId?: string;
+}
+
+const mutationMethods = new Set<string>([
+  "create_job",
+  "set_provider",
+  "set_budget",
+  "fund",
+  "submit",
+  "complete",
+  "reject",
+  "claim_refund",
+]);
+
+export function assertPendingSubmission(
+  value: unknown,
+): asserts value is PendingSubmission {
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    throw new Error("Invalid pending transaction metadata.");
+  const item = value as Record<string, unknown>;
+  const fields = Object.keys(item).sort().join();
+  if (
+    (fields !== "hash,method,source" &&
+      fields !== "hash,jobId,method,source") ||
+    typeof item.hash !== "string" ||
+    !/^[a-f0-9]{64}$/.test(item.hash) ||
+    typeof item.method !== "string" ||
+    !mutationMethods.has(item.method) ||
+    typeof item.source !== "string" ||
+    !StrKey.isValidEd25519PublicKey(item.source)
+  )
+    throw new Error("Invalid pending transaction metadata.");
+  if (item.method === "create_job") {
+    if ("jobId" in item)
+      throw new Error(
+        "A pending create transaction cannot claim a job ID before confirmation.",
+      );
+  } else {
+    if (typeof item.jobId !== "string")
+      throw new Error("A pending job action requires its job ID.");
+    uint(item.jobId);
+  }
+}
+
+export class ConfirmedJobReadError extends Error {
+  constructor(
+    readonly jobId: bigint,
+    readonly outcome: Outcome,
+    readonly binding?: AgentBinding,
+    cause?: unknown,
+  ) {
+    super(
+      "The transaction is confirmed, but the updated job could not be read. Keep its job ID and transaction hash, then refresh; do not repeat the action.",
+      { cause },
+    );
+    this.name = "ConfirmedJobReadError";
+  }
+}
+
+export class UnconfirmedTransactionError extends Error {
+  constructor(
+    readonly submission: PendingSubmission,
+    cause?: unknown,
+    readonly binding?: AgentBinding,
+  ) {
+    super(
+      "The transaction was signed, but its final result is not verified. Check its transaction hash before repeating the action.",
+      { cause },
+    );
+    this.name = "UnconfirmedTransactionError";
+  }
+}
+
+export type SubmissionRecovery =
+  | { status: "unknown" }
+  | { status: "failed" }
+  | { status: "confirmed"; record: RecordJob };
+
+function submissionTransaction(
+  profile: Profile,
+  pending: PendingSubmission,
+  result:
+    | rpc.Api.GetSuccessfulTransactionResponse
+    | rpc.Api.GetFailedTransactionResponse,
+): Transaction {
+  if (!Number.isSafeInteger(result.ledger) || result.ledger <= 0)
+    throw new Error("Recovered transaction has no valid confirmation ledger.");
+  const transaction = TransactionBuilder.fromXDR(
+    result.envelopeXdr,
+    profile.networkPassphrase,
+  );
+  if (
+    !(transaction instanceof Transaction) ||
+    result.txHash !== pending.hash ||
+    transaction.hash().toString("hex") !== pending.hash ||
+    transaction.source !== pending.source
+  )
+    throw new Error(
+      "Recovered transaction hash, network, or source does not match the pending action.",
+    );
+  const invocation = inspectInvocation(transaction);
+  if (
+    invocation.contractId !== profile.kernel ||
+    invocation.method !== pending.method
+  )
+    throw new Error(
+      "Recovered transaction invokes a different kernel or method.",
+    );
+  const operation = transaction.operations[0];
+  if (operation?.type !== "invokeHostFunction")
+    throw new Error("Recovered transaction is not a contract invocation.");
+  const first = operation.func.invokeContract().args()[0];
+  if (
+    !first ||
+    (pending.method === "create_job"
+      ? scValToNative(first) !== pending.source
+      : first.switch().name !== "scvU64" ||
+        scValToNative(first) !== uint(pending.jobId!))
+  )
+    throw new Error(
+      "Recovered transaction does not match the stated client or job ID.",
+    );
+  return transaction;
 }
 export interface NewJob {
   description: string;
@@ -177,60 +307,137 @@ export class LiveCommerce {
 
   private async send<T>(
     prepared: PreparedContractInvocation<T>,
+    jobId?: bigint,
   ): Promise<{ value: T; outcome: Outcome }> {
+    const context: { submission?: PendingSubmission } = {};
     const expectedArguments = (prepared.transaction.options.args ?? []).map(
       (arg) => arg.toXDR("base64") as string,
     );
-    const sent = await prepared.transaction.signAndSend({
-      force: true,
-      signTransaction: async (xdr) => {
-        const unsigned = TransactionBuilder.fromXDR(
-          xdr,
-          this.profile.networkPassphrase,
-        );
-        if (
-          !(unsigned instanceof Transaction) ||
-          unsigned.source !== this.wallet.address ||
-          BigInt(unsigned.fee) > BigInt(this.profile.maxFee)
-        )
-          throw new Error("Transaction exceeds the fee ceiling.");
-        const invocation = inspectInvocation(unsigned);
-        if (
-          invocation.contractId !== this.profile.kernel ||
-          invocation.method !== prepared.method ||
-          JSON.stringify(invocation.argumentXdr) !==
-            JSON.stringify(expectedArguments)
-        )
-          throw new Error(
-            "Prepared transaction differs from the reviewed action.",
+    const sent = await prepared.transaction
+      .signAndSend({
+        force: true,
+        signTransaction: async (xdr) => {
+          const unsigned = TransactionBuilder.fromXDR(
+            xdr,
+            this.profile.networkPassphrase,
           );
-        const maxTime = Number(unsigned.timeBounds?.maxTime ?? 0);
-        const now = Math.floor(Date.now() / 1000);
-        if (
-          !Number.isSafeInteger(maxTime) ||
-          maxTime <= now ||
-          maxTime > now + 180
-        )
-          throw new Error("Transaction has invalid or excessive time bounds.");
-        const signedTxXdr = await this.wallet.sign(xdr, this.profile);
-        assertSignedTransaction(
-          xdr,
-          signedTxXdr,
-          this.profile,
-          this.wallet.address,
-        );
-        return { signedTxXdr, signerAddress: this.wallet.address };
-      },
-    });
+          if (
+            !(unsigned instanceof Transaction) ||
+            unsigned.source !== this.wallet.address ||
+            BigInt(unsigned.fee) > BigInt(this.profile.maxFee)
+          )
+            throw new Error("Transaction exceeds the fee ceiling.");
+          const invocation = inspectInvocation(unsigned);
+          if (
+            invocation.contractId !== this.profile.kernel ||
+            invocation.method !== prepared.method ||
+            JSON.stringify(invocation.argumentXdr) !==
+              JSON.stringify(expectedArguments)
+          )
+            throw new Error(
+              "Prepared transaction differs from the reviewed action.",
+            );
+          const maxTime = Number(unsigned.timeBounds?.maxTime ?? 0);
+          const now = Math.floor(Date.now() / 1000);
+          if (
+            !Number.isSafeInteger(maxTime) ||
+            maxTime <= now ||
+            maxTime > now + 180
+          )
+            throw new Error(
+              "Transaction has invalid or excessive time bounds.",
+            );
+          const signedTxXdr = await this.wallet.sign(xdr, this.profile);
+          assertSignedTransaction(
+            xdr,
+            signedTxXdr,
+            this.profile,
+            this.wallet.address,
+          );
+          const submission = {
+            hash: unsigned.hash().toString("hex"),
+            method: prepared.method,
+            source: this.wallet.address,
+            ...(jobId === undefined ? {} : { jobId: jobId.toString() }),
+          };
+          assertPendingSubmission(submission);
+          context.submission = submission;
+          return { signedTxXdr, signerAddress: this.wallet.address };
+        },
+      })
+      .catch((cause: unknown) => {
+        if (context.submission)
+          throw new UnconfirmedTransactionError(context.submission, cause);
+        throw cause;
+      });
     const result = sent.getTransactionResponse;
     const hash = sent.sendTransactionResponse?.hash;
-    if (!result || result.status !== "SUCCESS" || !hash)
+    const submission = context.submission;
+    if (!submission)
+      throw new Error("The wallet did not sign the prepared action.");
+    if (!result || result.status !== "SUCCESS" || hash !== submission.hash)
+      throw new UnconfirmedTransactionError(submission);
+    try {
+      submissionTransaction(this.profile, submission, result);
+      return {
+        value: unwrapContractResult(sent.result, prepared.method),
+        outcome: {
+          hash: submission.hash,
+          ledger: result.ledger,
+          method: prepared.method,
+        },
+      };
+    } catch (cause) {
+      throw new UnconfirmedTransactionError(submission, cause);
+    }
+  }
+
+  private async confirmedRecord(
+    id: bigint,
+    outcome: Outcome,
+    binding?: AgentBinding,
+  ): Promise<RecordJob> {
+    try {
+      const job = await this.read(id);
+      if (job.id !== id)
+        throw new Error("The RPC returned a different job ID.");
+      return { job, outcome, binding };
+    } catch (cause) {
+      throw new ConfirmedJobReadError(id, outcome, binding, cause);
+    }
+  }
+
+  async recoverSubmission(
+    pending: PendingSubmission,
+  ): Promise<SubmissionRecovery> {
+    assertPendingSubmission(pending);
+    const result = await this.server.getTransaction(pending.hash);
+    if (result.txHash !== pending.hash)
       throw new Error(
-        "Transaction has not been confirmed successful. Refresh before retrying.",
+        "RPC transaction hash does not match the pending action.",
       );
+    if (result.status === "NOT_FOUND") return { status: "unknown" };
+    submissionTransaction(this.profile, pending, result);
+    if (result.status === "FAILED") return { status: "failed" };
+    let id: bigint;
+    if (pending.method === "create_job") {
+      if (!result.returnValue || result.returnValue.switch().name !== "scvU64")
+        throw new Error(
+          "Confirmed create transaction has no valid job ID return value.",
+        );
+      const value: unknown = scValToNative(result.returnValue);
+      if (typeof value !== "bigint")
+        throw new Error("Invalid create job return value.");
+      id = value;
+    } else id = uint(pending.jobId!);
+    const outcome = {
+      hash: pending.hash,
+      ledger: result.ledger,
+      method: pending.method,
+    };
     return {
-      value: unwrapContractResult(sent.result, prepared.method),
-      outcome: { hash, ledger: result.ledger, method: prepared.method },
+      status: "confirmed",
+      record: await this.confirmedRecord(id, outcome),
     };
   }
 
@@ -243,7 +450,7 @@ export class LiveCommerce {
         { source: this.wallet.address, timeoutInSeconds: 120 },
       ),
     );
-    return { job: await this.read(id), outcome };
+    return this.confirmedRecord(id, outcome);
   }
 
   async act(
@@ -264,85 +471,96 @@ export class LiveCommerce {
     }
     const core = await this.kernel();
     const options = { source: this.wallet.address, timeoutInSeconds: 120 };
+    const send = <T>(prepared: PreparedContractInvocation<T>) =>
+      this.send(prepared, id);
     let outcome: Outcome;
-    switch (action) {
-      case "set_provider":
-        outcome = (
-          await this.send(
-            await core.setProvider(
-              { id, provider: address(input.provider ?? "") },
-              options,
-            ),
-          )
-        ).outcome;
-        snapshot = undefined;
-        break;
-      case "set_budget":
-        outcome = (
-          await this.send(
-            await core.setBudget(
-              { id, actor: this.wallet.address, amount: input.budget ?? 0n },
-              options,
-            ),
-          )
-        ).outcome;
-        break;
-      case "fund":
-        outcome = (
-          await this.send(
-            await core.fund(
-              { id, expectedBudget: reviewed?.budget ?? job.budget },
-              options,
-            ),
-          )
-        ).outcome;
-        break;
-      case "submit":
-        outcome = (
-          await this.send(
-            await core.submit(
-              { id, workHash: commitmentFromHex(input.commitment ?? "") },
-              options,
-            ),
-          )
-        ).outcome;
-        break;
-      case "complete":
-        outcome = (
-          await this.send(
-            await core.complete(
-              {
-                id,
-                reason: input.commitment
-                  ? commitmentFromHex(input.commitment)
-                  : undefined,
-              },
-              options,
-            ),
-          )
-        ).outcome;
-        break;
-      case "reject":
-        outcome = (
-          await this.send(
-            await core.reject(
-              {
-                id,
-                reason: input.commitment
-                  ? commitmentFromHex(input.commitment)
-                  : undefined,
-              },
-              options,
-            ),
-          )
-        ).outcome;
-        break;
-      case "claim_refund":
-        outcome = (await this.send(await core.claimRefund(id, options)))
-          .outcome;
-        break;
+    try {
+      switch (action) {
+        case "set_provider":
+          outcome = (
+            await send(
+              await core.setProvider(
+                { id, provider: address(input.provider ?? "") },
+                options,
+              ),
+            )
+          ).outcome;
+          snapshot = undefined;
+          break;
+        case "set_budget":
+          outcome = (
+            await send(
+              await core.setBudget(
+                { id, actor: this.wallet.address, amount: input.budget ?? 0n },
+                options,
+              ),
+            )
+          ).outcome;
+          break;
+        case "fund":
+          outcome = (
+            await send(
+              await core.fund(
+                { id, expectedBudget: reviewed?.budget ?? job.budget },
+                options,
+              ),
+            )
+          ).outcome;
+          break;
+        case "submit":
+          outcome = (
+            await send(
+              await core.submit(
+                { id, workHash: commitmentFromHex(input.commitment ?? "") },
+                options,
+              ),
+            )
+          ).outcome;
+          break;
+        case "complete":
+          outcome = (
+            await send(
+              await core.complete(
+                {
+                  id,
+                  reason: input.commitment
+                    ? commitmentFromHex(input.commitment)
+                    : undefined,
+                },
+                options,
+              ),
+            )
+          ).outcome;
+          break;
+        case "reject":
+          outcome = (
+            await send(
+              await core.reject(
+                {
+                  id,
+                  reason: input.commitment
+                    ? commitmentFromHex(input.commitment)
+                    : undefined,
+                },
+                options,
+              ),
+            )
+          ).outcome;
+          break;
+        case "claim_refund":
+          outcome = (await send(await core.claimRefund(id, options))).outcome;
+          break;
+      }
+    } catch (cause) {
+      if (cause instanceof UnconfirmedTransactionError && snapshot)
+        throw new UnconfirmedTransactionError(
+          cause.submission,
+          cause,
+          snapshot,
+        );
+      throw cause;
     }
-    return { job: await this.read(id), binding: snapshot, outcome };
+    return this.confirmedRecord(id, outcome, snapshot);
   }
 }
 

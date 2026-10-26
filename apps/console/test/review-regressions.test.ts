@@ -130,7 +130,6 @@ describe("persistent identity snapshots", () => {
         job,
         { hash: "ab".repeat(32), ledger: 1, method: "reject" },
         { ...binding, provider: accounts.client },
-        true,
       ),
     ).rejects.toThrow("no longer matches");
   });

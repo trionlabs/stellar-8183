@@ -4,9 +4,9 @@ A standalone application for clients and providers of asynchronous digital
 work. Use the existing escrow kernel to create, price, fund, submit, approve,
 reject, or refund a job. No change is made to the v0.1 contract ABI.
 
-[Open the hosted preview](https://trionlabs.github.io/stellar-8183/). It starts
-in the local rehearsal. The bundled profile selects the verified testnet
-deployment when you switch to live operation.
+[Open the hosted preview](https://trionlabs.github.io/stellar-8183/). It opens
+on the verified Stellar Testnet deployment and never substitutes local jobs or
+balances for on-chain state.
 
 ## Run locally
 
@@ -17,15 +17,13 @@ corepack pnpm@11.9.0 install --frozen-lockfile
 corepack pnpm@11.9.0 console:dev
 ```
 
-Open `http://127.0.0.1:4173`. Rehearsal mode runs entirely in memory. Select
-the client, provider, or evaluator role to exercise each step. Advance the
-rehearsal clock to test expiry. Rehearsal receipts are explicitly marked and
-cannot pass live verification. Refreshing the page discards rehearsal jobs.
+Open `http://127.0.0.1:4173`. The reviewed Testnet profile is selected by
+default. Connect Freighter on Testnet to create or change a job. Public jobs
+can be loaded and outcome receipts can be verified without connecting a wallet.
 
-For live testnet use, choose Network settings and Load verified testnet profile,
-or import a reviewed profile JSON. You can also enter a kernel, its
-immutable payment token, symbol, decimals, and fee ceiling, then connect
-Freighter on the matching network. Every mutation requires wallet approval.
+Network settings offers the bundled verified Testnet deployment or a reviewed
+Mainnet canary profile import. Raw RPC and contract fields are intentionally
+not exposed in the product UI. Every mutation requires wallet approval.
 The account needs XLM for transaction fees/reserves and any required token
 trustline. This version uses direct source-account signing; it does not host a
 facilitator or receive private keys. The existing SDK relay workflow is still
@@ -85,13 +83,13 @@ registry fails before funding. The proposed provider is shown before signing.
 Recent live job IDs, terminal transaction pointers, and advisory identity
 snapshots persist in local browser storage, scoped by network, kernel, and
 token. They restore when the deployment and wallet reconnect. Changed provider
-addresses invalidate the old snapshot. Rehearsal data stays in memory.
-Deleting browser storage removes those pointers; retain portable receipts.
+addresses invalidate the old snapshot. Deleting browser storage removes those
+pointers; retain portable receipts.
 
 Before funding an imported job, the registry is read again and must still
 resolve to the on-chain provider. Its network, registry, agent ID, wallet, and
 observed ledger are saved as a client snapshot. That snapshot is advisory;
-there is a possible change between simulation and funding. It is not an atomic
+there is a possible change between the preflight read and funding. It is not an atomic
 on-chain identity guarantee. Once funded, no settlement action reads 8004.
 
 Use Set provider to explicitly switch to the direct-address path if the
@@ -224,7 +222,7 @@ import. Never receive or operate the participant's key.
 
 Metrics are opt-in, local, and contain only event names and elapsed seconds.
 No wallet address, job text, or file contents are collected. Export the report
-manually. Separate author-run, rehearsal, and independent-session evidence.
+manually. Separate author-run and independent-session evidence.
 
 The final report must record first-funded-job time, errors, assistance, issue
 links for the largest repeated blockers, and a continue/change/stop decision.

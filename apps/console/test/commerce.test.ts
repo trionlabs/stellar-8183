@@ -67,13 +67,7 @@ describe("job lifecycle and role permissions", () => {
       );
       expect(availableActions(result.job, accounts.client, r.now)).toEqual([]);
       await expect(r.act(id, final, accounts.evaluator)).rejects.toThrow();
-      const receipt = await makeReceipt(
-        profile,
-        result.job,
-        result.outcome!,
-        undefined,
-        true,
-      );
+      const receipt = await makeReceipt(profile, result.job, result.outcome!);
       expect(await parseReceipt(encodeReceipt(receipt))).toEqual(receipt);
       matchReceiptJob(receipt.receipt, result.job);
     },
@@ -160,13 +154,7 @@ describe("untrusted profiles, bindings, and receipts", () => {
   it("rejects altered bytes, extra fields, and mismatched terminal jobs", async () => {
     const { r, id } = setup();
     const result = await r.act(id, "reject", accounts.client);
-    const file = await makeReceipt(
-      profile,
-      result.job,
-      result.outcome!,
-      undefined,
-      true,
-    );
+    const file = await makeReceipt(profile, result.job, result.outcome!);
     const changed = structuredClone(file);
     changed.receipt.budget = "999";
     await expect(parseReceipt(JSON.stringify(changed))).rejects.toThrow("hash");

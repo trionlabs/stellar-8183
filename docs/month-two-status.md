@@ -11,9 +11,10 @@ refer to their own commit; inspect the hashes when comparing older run results.
 
 ## Delivered
 
-- Standalone wallet-based Console in `apps/console`, with an offline rehearsal,
-  live network profiles, all escrow actions, review before signing, bounded fees,
-  local file hashing, and portable receipts.
+- Standalone wallet-based Console in `apps/console`, pinned to the verified
+  Testnet deployment by default, with all escrow actions, review before signing,
+  bounded fees, local file hashing, and portable receipts. Mainnet requires an
+  explicitly reviewed canary profile; no local job or balance substitute exists.
 - Optional direct-contract Stellar 8004 lookup using `get_agent_wallet(u32)`.
   The wallet is rechecked before funding; settlement does not read the registry.
   A provider address can be supplied directly. No external project is modified.
@@ -95,7 +96,7 @@ corepack pnpm@11.9.0 check
 corepack pnpm@11.9.0 console:e2e
 ```
 
-The app starts in a clearly labeled local rehearsal. Use Network settings to
-load the bundled verified testnet profile. Live operation needs Freighter on
-testnet, XLM for fees, a DEMO8183 trustline, and demo tokens. See the Console
+The app starts on the bundled verified Testnet profile. Creating or changing a
+job needs Freighter on Testnet, XLM for fees, a DEMO8183 trustline, and test
+tokens. Public jobs and receipts remain readable without a wallet. See the Console
 README and pilot runbook for participant setup and evidence commands.

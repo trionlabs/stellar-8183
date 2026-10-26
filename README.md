@@ -33,7 +33,7 @@ before building or publishing.
 
 The standalone Console lives in [apps/console](apps/console/README.md).
 Try the [hosted Console preview](https://trionlabs.github.io/stellar-8183/), which
-starts in a local rehearsal without a wallet. See the
+opens on the verified Stellar Testnet deployment. See the
 [implementation status](docs/month-two-status.md) and
 [public testnet evidence](deployments/month-two/README.md).
 It adds wallet-based job actions, optional read-only Stellar 8004 identity
@@ -45,9 +45,9 @@ corepack pnpm@11.9.0 install --frozen-lockfile
 corepack pnpm@11.9.0 console:dev
 ```
 
-Open `http://127.0.0.1:4173`. A clearly labeled local rehearsal requires no
-wallet. Live mode uses a configured deployment and Freighter; the connected
-wallet signs and pays its own transaction fees. See the Console guide for
+Open `http://127.0.0.1:4173`. Public Testnet jobs and receipts can be read
+without a wallet; creating or changing a job requires Freighter approval. The
+connected wallet signs and pays its own transaction fees. See the Console guide for
 testnet setup, pilot instructions, and the remaining mainnet review gate.
 
 The mainnet-canary evidence profile is implemented separately from v0.1's

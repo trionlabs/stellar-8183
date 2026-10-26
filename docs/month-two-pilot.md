@@ -31,7 +31,7 @@ The issuer/operator transfers at least six demo tokens to that public address
 after the participant establishes the trustline. Provider accounts also need a
 trustline to receive payment. None of these tokens has monetary value.
 
-Open the Console, load the verified testnet profile, connect Freighter on the
+Open the Console, confirm the verified Testnet profile, connect Freighter on the
 same network, and enable local session metrics with consent. Use direct provider
 addresses initially. Use 8004 import only with a real registration controlled by
 the chosen provider; a random public agent is not a cooperating pilot provider.

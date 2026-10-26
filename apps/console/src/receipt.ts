@@ -35,7 +35,7 @@ export interface OutcomeReceipt {
   decision: string | null;
   terminalTransaction: Outcome;
   agentBinding: AgentBinding | null;
-  evidenceType: "on-chain" | "rehearsal";
+  evidenceType: "on-chain";
 }
 export interface ReceiptFile {
   receipt: OutcomeReceipt;
@@ -57,7 +57,6 @@ export async function makeReceipt(
   job: Job,
   outcome: Outcome,
   binding?: AgentBinding,
-  rehearsal = false,
 ): Promise<ReceiptFile> {
   if (binding) assertBinding(profile, binding, job.provider ?? "");
   if (!terminal(job.state.tag))
@@ -81,7 +80,7 @@ export async function makeReceipt(
     decision: job.decision ? hex(job.decision) : null,
     terminalTransaction: outcome,
     agentBinding: binding ?? null,
-    evidenceType: rehearsal ? "rehearsal" : "on-chain",
+    evidenceType: "on-chain",
   };
   return { receipt, sha256: await digestText(canonical(receipt)) };
 }
@@ -98,7 +97,7 @@ export async function parseReceipt(text: string): Promise<ReceiptFile> {
   if (
     !r ||
     r.schema !== "stellar-8183/outcome/v1" ||
-    !["on-chain", "rehearsal"].includes(r.evidenceType)
+    r.evidenceType !== "on-chain"
   )
     throw new Error("Unknown receipt schema.");
   if (Object.keys(file).sort().join() !== "receipt,sha256")

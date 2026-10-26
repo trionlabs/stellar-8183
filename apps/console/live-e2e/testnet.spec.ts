@@ -266,13 +266,8 @@ test("author-run live browser settlement through Freighter's message protocol", 
   });
   const configure = async () => {
     await page.getByRole("button", { name: "Network settings" }).click();
-    await page
-      .getByRole("button", { name: "Load verified testnet profile" })
-      .click();
-    await expect(page.getByLabel("Kernel contract")).toHaveValue(
-      profile.kernel,
-    );
-    await page.getByRole("button", { name: "Use deployment" }).click();
+    await page.getByRole("button", { name: "Use verified Testnet" }).click();
+    await expect(page.locator(".live-banner")).toContainText(profile.symbol);
   };
   const connect = async (next: Role, description?: string) => {
     role = next;

@@ -570,8 +570,6 @@ export async function verifyOnChain(
   reader: LiveCommerce,
 ): Promise<string> {
   const r = file.receipt;
-  if (r.evidenceType !== "on-chain")
-    throw new Error("Local rehearsal receipts cannot be verified on-chain.");
   if (
     r.network !== profile.id ||
     r.networkPassphrase !== profile.networkPassphrase ||

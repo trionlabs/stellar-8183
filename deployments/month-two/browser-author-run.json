@@ -14,17 +14,17 @@
     "maxFee": "10000000",
     "canaryAcknowledged": false
   },
-  "sourceCommit": "2e779aca87dbe1f34d7abb954a599855261f87e0",
+  "sourceCommit": "dfc993333893ec731622670589cec5499edaeee9",
   "applicationFiles": {
-    "index.html": "5223a828f95594637593abcbda90ec7f0b40a9ce8263d86b03096f534e9838bb",
+    "index.html": "feae8ff07e7bbe3b68a247e1c185beb5d7f535bd3ea890366659ac69b2ca662c",
     "mark.svg": "29b86fe83daf2517e19ddc88613e10676db62e956bfc02d7ad910c5bff46b064",
     "testnet-profile.json": "f46fbb5d43d5a99739b00b083f05bc998f8b1ab1cc9fa6840fe9ff9a07163ecc",
-    "assets/index-CkvcF0dm.js": "9556a09dac1d5f7b2fd9e5d68438d94c46827ef4faa94806d875828219413c77",
-    "assets/index-DwwZ0Wao.css": "12ddcbfda74b294c518cb66c63164f1ad93d3c1efdf1f908a4a3afbc4df67886",
+    "assets/index-CmtL-AMd.css": "39d9ca7d6aa0386eba31fe70832d24eee3f817bdc7dedf568f388fdd9d1c2f13",
+    "assets/index-D7FA4L0x.js": "6e900b52d95d1672e8f8f94d00c5200c42eae1623744ce416836c49272597d43",
     "assets/sac-spec-DbwpsrbI.js": "f3979a3032eff914bd4337b4d04f68f9e07844a9fcb00c259fe379f57b440827"
   },
-  "applicationUrl": "https://trionlabs.github.io/stellar-8183/",
-  "generatedAt": "2026-10-26T13:36:18.070Z",
+  "applicationUrl": "http://127.0.0.1:4174",
+  "generatedAt": "2026-10-26T14:14:17.743Z",
   "submissions": 16,
   "signedMethods": [
     "create_job",
@@ -55,9 +55,9 @@
         "description": "Author-run browser complete; not independent customer evidence",
         "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
         "evidenceType": "on-chain",
-        "expiresAt": "1793022494",
+        "expiresAt": "1793024776",
         "hook": null,
-        "jobId": "18",
+        "jobId": "21",
         "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
         "network": "testnet",
         "networkPassphrase": "Test SDF Network ; September 2015",
@@ -65,14 +65,14 @@
         "schema": "stellar-8183/outcome/v1",
         "state": "Completed",
         "terminalTransaction": {
-          "hash": "e426ce69026acd3a88adf21a9258371b21aee653059988af9e72fabec4d7b2ce",
-          "ledger": 5399611,
+          "hash": "1c7d52f7cd78cc389266323a8fdc8d973c65352dd3c0ec4364d48febcc3f1c84",
+          "ledger": 5400068,
           "method": "complete"
         },
         "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
         "workHash": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
       },
-      "sha256": "e699ba100feb0a068b21fe382cad86ca6be5121229911ae1257bee10faf4b788"
+      "sha256": "8a9d207a08fbf441efb60ca429b9a32c4febd2cca81391a054457fc628b187ae"
     },
     {
       "receipt": {
@@ -83,9 +83,9 @@
         "description": "Author-run browser reject; not independent customer evidence",
         "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
         "evidenceType": "on-chain",
-        "expiresAt": "1793022551",
+        "expiresAt": "1793024834",
         "hook": null,
-        "jobId": "19",
+        "jobId": "22",
         "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
         "network": "testnet",
         "networkPassphrase": "Test SDF Network ; September 2015",
@@ -93,14 +93,14 @@
         "schema": "stellar-8183/outcome/v1",
         "state": "Rejected",
         "terminalTransaction": {
-          "hash": "dc882ccac7520e55db06bee85a6dbf1fad561a800f2d682193f86a7948bf5398",
-          "ledger": 5399620,
+          "hash": "7ec381d79f7cc4bab7e5362a60d99b6b0b31a233c8c4d9522e824b4edb4b082b",
+          "ledger": 5400076,
           "method": "reject"
         },
         "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
         "workHash": null
       },
-      "sha256": "1cb271521d7f68c35e2f0032d71e116057c8e5f74d9312fece1c3d2b832b9157"
+      "sha256": "34a7f520dab26c8f0395ed050a06f90220086f6d14efa7a03afe73eb8ff69872"
     },
     {
       "receipt": {
@@ -111,9 +111,9 @@
         "description": "Author-run browser claim_refund; not independent customer evidence",
         "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
         "evidenceType": "on-chain",
-        "expiresAt": "1793021757",
+        "expiresAt": "1793024039",
         "hook": null,
-        "jobId": "20",
+        "jobId": "23",
         "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
         "network": "testnet",
         "networkPassphrase": "Test SDF Network ; September 2015",
@@ -121,14 +121,14 @@
         "schema": "stellar-8183/outcome/v1",
         "state": "Expired",
         "terminalTransaction": {
-          "hash": "c67e6dc6b21a6cd7cd05abfecac07420a33ec9e9d44d8a2ae13ac2caa0a4bb47",
-          "ledger": 5399637,
+          "hash": "1debdcdd146bee14e9ac094aeb2d6f01864d910749956abf592ecca0a1b5fe5b",
+          "ledger": 5400093,
           "method": "claim_refund"
         },
         "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
         "workHash": null
       },
-      "sha256": "cd8b8bc190ed52586a3cbb74f60c8464d51da69f55cd55e1b26e4e33a3b10be9"
+      "sha256": "fd27a5a6590318de5773ce49b38535e7ead6ebb9176856ec8ad9102674684bac"
     }
   ]
 }

@@ -12,25 +12,24 @@ The kernel/hook source is pinned to `97363501078154c65179208985e56ebb3b326ec7`.
 The Console changes do not modify that contract source or ABI. The fetched Wasm
 hashes match clean reproducible builds; versions and hashes are in the manifest.
 
-| Job | Outcome | Terminal transaction |
-| --- | --- | --- |
-| 7 | Completed | [c19c9537...](https://stellar.expert/explorer/testnet/tx/c19c9537840b7e519611ae87c734ca64eb9345756298867ede3a49ae216906fc) |
-| 8 | Funded rejection | [1d3ba42f...](https://stellar.expert/explorer/testnet/tx/1d3ba42fc846d25dfbafba455ec524c4b1c457046cbc50fa60fb06a341520782) |
-| 9 | Expired refund | [80ca579e...](https://stellar.expert/explorer/testnet/tx/80ca579eda979bba2d2eca301cd981e5238d34cb692b79eda526d6ad1d8e8b67) |
-| 10 | Completed | [a762fea5...](https://stellar.expert/explorer/testnet/tx/a762fea5578c5cbf1b0fa6480723d2b65c15928a7087d16d24635747b4667d80) |
-| 11 | Funded rejection | [641cb4d1...](https://stellar.expert/explorer/testnet/tx/641cb4d1876deabd6263ad9e82ed44c5b54059418c9c9f9f2bfde2117149c0fc) |
-| 12 | Expired refund | [0ea9af17...](https://stellar.expert/explorer/testnet/tx/0ea9af178155ea207e1fcde1839ab30b3e6f01a95b9050ffcf8c5b6f636d24cf) |
+| Job | Outcome          | Terminal transaction                                                                                                       |
+| --- | ---------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 7   | Completed        | [c19c9537...](https://stellar.expert/explorer/testnet/tx/c19c9537840b7e519611ae87c734ca64eb9345756298867ede3a49ae216906fc) |
+| 8   | Funded rejection | [1d3ba42f...](https://stellar.expert/explorer/testnet/tx/1d3ba42fc846d25dfbafba455ec524c4b1c457046cbc50fa60fb06a341520782) |
+| 9   | Expired refund   | [80ca579e...](https://stellar.expert/explorer/testnet/tx/80ca579eda979bba2d2eca301cd981e5238d34cb692b79eda526d6ad1d8e8b67) |
+| 10  | Completed        | [a762fea5...](https://stellar.expert/explorer/testnet/tx/a762fea5578c5cbf1b0fa6480723d2b65c15928a7087d16d24635747b4667d80) |
+| 11  | Funded rejection | [641cb4d1...](https://stellar.expert/explorer/testnet/tx/641cb4d1876deabd6263ad9e82ed44c5b54059418c9c9f9f2bfde2117149c0fc) |
+| 12  | Expired refund   | [0ea9af17...](https://stellar.expert/explorer/testnet/tx/0ea9af178155ea207e1fcde1839ab30b3e6f01a95b9050ffcf8c5b6f636d24cf) |
 
-The final source-bound browser run used the hosted Console built from
-`2e779aca87dbe1f34d7abb954a599855261f87e0`. It verified every hosted file
-against the local production build before signing and produced these additional
-author-controlled jobs:
+The latest source-bound browser run used the locally built Console from
+`dfc993333893ec731622670589cec5499edaeee9`. It hashed every production file
+before signing and produced these additional author-controlled jobs:
 
-| Job | Outcome | Terminal transaction |
-| --- | --- | --- |
-| 18 | Completed | [e426ce69...](https://stellar.expert/explorer/testnet/tx/e426ce69026acd3a88adf21a9258371b21aee653059988af9e72fabec4d7b2ce) |
-| 19 | Funded rejection | [dc882cca...](https://stellar.expert/explorer/testnet/tx/dc882ccac7520e55db06bee85a6dbf1fad561a800f2d682193f86a7948bf5398) |
-| 20 | Expired refund | [c67e6dc6...](https://stellar.expert/explorer/testnet/tx/c67e6dc6b21a6cd7cd05abfecac07420a33ec9e9d44d8a2ae13ac2caa0a4bb47) |
+| Job | Outcome          | Terminal transaction                                                                                                       |
+| --- | ---------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 21  | Completed        | [1c7d52f7...](https://stellar.expert/explorer/testnet/tx/1c7d52f7cd78cc389266323a8fdc8d973c65352dd3c0ec4364d48febcc3f1c84) |
+| 22  | Funded rejection | [7ec381d7...](https://stellar.expert/explorer/testnet/tx/7ec381d79f7cc4bab7e5362a60d99b6b0b31a233c8c4d9522e824b4edb4b082b) |
+| 23  | Expired refund   | [1debdcdd...](https://stellar.expert/explorer/testnet/tx/1debdcdd146bee14e9ac094aeb2d6f01864d910749956abf592ecca0a1b5fe5b) |
 
 `browser-author-run.json` records the application hashes, wallet boundary,
 submitted methods, and portable receipts. It explicitly says this is not an

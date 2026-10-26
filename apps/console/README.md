@@ -99,6 +99,50 @@ registry is unavailable. Import is optional; no 8004 website, indexer, SDK,
 contract, or repository is modified. Arbitrary registration metadata/URIs are
 not fetched or rendered.
 
+## Transaction recovery
+
+A confirmed transaction and a successful follow-up job read are separate
+results. If the read fails, the Console saves the known job ID and transaction
+pointer and offers Load confirmed job. It does not invent a job state or ask
+you to repeat the confirmed action.
+
+If signing succeeds but confirmation is unavailable, the public transaction
+hash is tracked in a separate network/kernel/token-scoped journal. Check
+transaction verifies the envelope and loads its result. `NOT_FOUND` remains
+unknown; it is never treated as proof of failure. Pending creation blocks a
+duplicate creation from that wallet, and a pending job action blocks further
+actions for that job. Unrelated jobs and their refunds remain available.
+
+Stop local tracking requires an explicit acknowledgement and downloads an
+unverified public reference. It does not cancel a transaction. Inspect wallet
+activity and Stellar Expert before preparing another action; a duplicate job
+can result if the first creation actually succeeded. Storage failure leaves
+tracking in memory only, with a warning to retain public IDs/hashes.
+
+## Live browser integration (author-run)
+
+The optional suite uses the installed Freighter API's actual window-message
+protocol, real RPC, and dedicated author-controlled testnet signers behind a
+Node callback. No secret enters the page. It does not exercise the real
+Freighter extension approval UI or count as an independent customer session.
+
+After preparing the dedicated testnet deployment and committing the reviewed
+application inputs:
+
+```sh
+RUN_LIVE_TESTNET=1 corepack pnpm@11.9.0 --filter @trionlabs/8183-console test:live
+```
+
+It builds a static preview, then tests rejected approval, changed account,
+wrong network, three terminal outcomes, receipt export/verification, reload,
+and injected confirmation/read failures without duplicate creation. It checks
+client/provider balance deltas and writes a public report under ignored
+`artifacts/month-two/browser-live/` with source and application-file hashes.
+
+`CONSOLE_LIVE_URL` selects a hosted preview instead. Hosted checks require its
+`build.json` source commit to equal the checked-out commit and every deployed
+application file to match the local build before any signing occurs.
+
 ## Receipt format and verification
 
 The format is `stellar-8183/outcome/v1`. Decimal integers use strings, all
@@ -150,6 +194,12 @@ re-fetches successful funding and payout events; observed snapshots alone are
 not treated as proof of payment. Historical absolute balance snapshots are
 captured observations, not independently authenticated ledger proofs; the
 verifier authenticates the referenced transfers and checks snapshot arithmetic.
+Source, Wasm hashes, compiler/CLI identities, and build inputs must also match
+the trusted reviewed v0.1 profile in `tools/provenance.ts`. An alternative source
+commit is accepted only if available in local Git and its contract/build input
+objects match that profile exactly. Fetch the declared commit before verifying
+such a manifest. A new contract build profile requires separate review; hashes
+supplied by an untrusted manifest are not themselves a provenance anchor.
 
 ```sh
 corepack pnpm@11.9.0 --filter @trionlabs/8183-console verify:canary canary-evidence.json PUBLIC_G_ACCOUNT

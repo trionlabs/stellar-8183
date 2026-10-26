@@ -33,8 +33,9 @@ refer to their own commit; inspect the hashes when comparing older run results.
 
 ## Verification
 
-The final local checks cover 29 Rust tests, 123 JavaScript/TypeScript tests,
-and six browser tests, including the hosted GitHub Pages application. Formatting,
+The current checks cover 29 Rust tests, 152 JavaScript/TypeScript tests,
+and eight browser tests. An additional opt-in author-run browser suite executes
+three real testnet jobs and injects RPC recovery failures. Formatting,
 Clippy, type checks, SDK packaging, generated
 bindings, reproducible Wasm builds, and secret scans are included. Live evidence
 was re-fetched from Stellar RPC; the bundle is in `deployments/month-two/`.

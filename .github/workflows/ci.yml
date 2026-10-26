@@ -57,6 +57,8 @@ jobs:
           node-version: 22
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
+      - name: Verify Console test bootstrap from a clean checkout
+        run: pnpm console:test
       - run: pnpm bindings:check
       - run: pnpm check
       - name: Install browser for Console integration tests

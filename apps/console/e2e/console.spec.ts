@@ -33,6 +33,10 @@ test("client, provider, and evaluator complete a job and export a verifiable reh
   await page.getByLabel("Rehearsal role").selectOption("evaluator");
   await act(page, "complete");
   await expect(page.locator(".detail-head .badge")).toHaveText("Completed");
+  await expect(page.locator(".terminal-outcome")).toHaveText(
+    "Final outcome: Completed",
+  );
+  await expect(page.locator(".progress")).toHaveCount(0);
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download outcome receipt" }).click();
   const path = await (await download).path();
@@ -64,6 +68,11 @@ test("funded rejection refunds and expired refund can be triggered by the provid
   await page.getByLabel("Rehearsal role").selectOption("evaluator");
   await act(page, "reject");
   await expect(page.locator(".detail-head .badge")).toHaveText("Rejected");
+  await expect(page.locator(".terminal-outcome")).toHaveText(
+    "Final outcome: Rejected",
+  );
+  await expect(page.locator(".progress")).toHaveCount(0);
+  await expect(page.locator(".commitment")).toHaveCount(0);
   await page.getByLabel("Rehearsal role").selectOption("client");
   await createJob(page, "Review the research report");
   await act(page, "set_budget");
@@ -72,7 +81,26 @@ test("funded rejection refunds and expired refund can be triggered by the provid
   await page.getByLabel("Rehearsal role").selectOption("provider");
   await act(page, "claim_refund");
   await expect(page.locator(".detail-head .badge")).toHaveText("Expired");
+  await expect(page.locator(".terminal-outcome")).toHaveText(
+    "Final outcome: Expired",
+  );
+  await expect(page.locator(".progress")).toHaveCount(0);
   await expect(page.locator("#action-form")).toHaveCount(0);
+});
+
+test("Open cancellation displays its outcome without claiming funding or submission", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await createJob(page, "Cancel before funding");
+  await expect(page.locator(".progress .done")).toHaveText(["1. Open"]);
+  await act(page, "reject");
+  await expect(page.locator(".detail-head .badge")).toHaveText("Rejected");
+  await expect(page.locator(".terminal-outcome")).toHaveText(
+    "Final outcome: Rejected",
+  );
+  await expect(page.locator(".progress")).toHaveCount(0);
+  await expect(page.locator(".commitment")).toHaveCount(0);
 });
 
 test("descriptions render as text and the mobile workspace does not overflow", async ({
@@ -181,4 +209,44 @@ test("exports desktop and mobile rehearsal previews", async ({ page }) => {
     path: "../../artifacts/month-two/console-mobile-job.png",
     fullPage: false,
   });
+});
+
+test("removing an unresolved tracking reminder requires a saved reference and does not claim cancellation", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "Network settings" }).click();
+  await page
+    .getByRole("button", { name: "Load verified testnet profile" })
+    .click();
+  const kernel = await page.getByLabel("Kernel contract").inputValue();
+  const token = await page.getByLabel("Immutable payment token").inputValue();
+  const hash = "ab".repeat(32);
+  const source = "GC2OHQG6JNXJYV36A4Q7NOUIVEUZZYPFYH747H6C3AWXQII2WCOVSFSS";
+  await page.evaluate(
+    ({ kernel, token, hash, source }) =>
+      localStorage.setItem(
+        `8183:v1:testnet:${kernel}:${token}:pending`,
+        JSON.stringify([{ hash, source, method: "create_job" }]),
+      ),
+    { kernel, token, hash, source },
+  );
+  await page.getByRole("button", { name: "Use deployment" }).click();
+  await page.getByRole("button", { name: "Stop local tracking" }).click();
+  await expect(page.locator("dialog")).toContainText(
+    "does not cancel the transaction or prove it failed",
+  );
+  const download = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Save reference and stop tracking" })
+    .click();
+  const path = await (await download).path();
+  const { readFile } = await import("node:fs/promises");
+  const reference = JSON.parse(await readFile(path!, "utf8"));
+  expect(reference.submission.hash).toBe(hash);
+  expect(reference.status).toBe("unverified-reference");
+  await expect(page.locator(".recovery-panel")).toHaveCount(0);
+  await expect(page.locator("#notice")).toContainText(
+    "did not cancel the transaction or verify its outcome",
+  );
 });

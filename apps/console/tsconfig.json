@@ -9,5 +9,5 @@
     "declaration": false,
     "declarationMap": false
   },
-  "include": ["src", "test", "tools", "*.ts", "e2e"]
+  "include": ["src", "test", "tools", "*.ts", "e2e", "live-e2e"]
 }

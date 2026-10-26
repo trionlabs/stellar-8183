@@ -144,6 +144,7 @@ export async function parseReceipt(text: string): Promise<ReceiptFile> {
   uint(r.jobId);
   uint(r.expiresAt);
   if (
+    typeof r.budget !== "string" ||
     !/^(0|[1-9][0-9]*)$/.test(r.budget) ||
     BigInt(r.budget) > (1n << 127n) - 1n
   )

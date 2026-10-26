@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import {
   Account,
   Address,
@@ -16,6 +17,7 @@ import {
   hasSettlementEvent,
 } from "../src/live.js";
 import { digest } from "../src/receipt.js";
+import { verifyBuildProvenance } from "./provenance.js";
 
 const [evidencePath, readerAddress] = process.argv.slice(2);
 if (!evidencePath || !readerAddress)
@@ -25,6 +27,7 @@ if (!evidencePath || !readerAddress)
 const evidence = await parseCanaryEvidence(
   await readFile(evidencePath, "utf8"),
 );
+await verifyBuildProvenance(evidence, resolve(import.meta.dirname, "../../.."));
 const reader = new LiveCommerce(evidence.profile, {
   address: readerAddress,
   sign: async () => {

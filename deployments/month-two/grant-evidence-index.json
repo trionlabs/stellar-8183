@@ -1,0 +1,35 @@
+{
+  "schema": "stellar-8183/grant-evidence-index/v1",
+  "project": "Soroban Agentic Commerce - Mainnet Pilot",
+  "generatedAt": "2026-10-27T15:04:46Z",
+  "console": {
+    "url": "https://trionlabs.github.io/stellar-8183/",
+    "sourceCommit": "963c4c551139ce90a671ee46e94b7586749ff2ca",
+    "ciUrl": "https://github.com/trionlabs/stellar-8183/actions/runs/40521999444"
+  },
+  "testnetEngineeringDemo": {
+    "status": "complete",
+    "evidencePath": "deployments/month-two/testnet-demo-evidence.json",
+    "evidenceSha256": "1406ceef65dbfc33f35cae8587ccabb24b9c6c9644041de50408a0be0629e9d4",
+    "independentParticipant": false,
+    "terminalPaths": ["completion", "funded-rejection", "expired-refund"]
+  },
+  "mainnetCanary": {
+    "status": "complete",
+    "evidencePath": "artifacts/mainnet-canary/canary-evidence.json",
+    "evidenceSha256": "60a9b9e4756f5caba2f6d8e40dbd94e74c71994096a3a01e10322c09871f01d2",
+    "transactionArchivePath": "artifacts/mainnet-canary/transaction-archive.json",
+    "transactionArchiveSha256": "1eeeef81a1248fbc213973927b216d6d48c6bcb19a706538330c7441c89ddaf8",
+    "network": "mainnet-canary",
+    "asset": "DEMO8183",
+    "assetHasClaimedValue": false
+  },
+  "independentPilot": {
+    "status": "participant-confirmed-sessions-pending",
+    "participantReference": "pilot-participant-01",
+    "confirmation": "Reported by the project lead; original confirmation remains access-controlled",
+    "requiredEvidencePath": "docs/month-two-pilot.md",
+    "independentParticipant": null,
+    "warning": "Do not mark complete until the participant controls the wallet, signs the required Testnet transactions, and the observed sessions and interviews are recorded."
+  }
+}

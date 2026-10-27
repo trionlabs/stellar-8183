@@ -1,4 +1,21 @@
-# Month-two author-run testnet evidence
+# Month-two grant evidence
+
+Start with `grant-evidence-index.json`. It separates the current source-bound
+Testnet engineering demo, the verified Mainnet canary, and the independent pilot
+that is recruited but not yet conducted. This distinction prevents an
+author-controlled wallet from being misrepresented as customer evidence.
+
+`testnet-demo-evidence.json` records the deployed Console at commit
+`963c4c551139ce90a671ee46e94b7586749ff2ca` and jobs 31-33. The job states were
+read directly from the Testnet contract again on 2026-10-27. The recording hash
+is included, but its `publicUrl` remains null until the approved video is uploaded
+and anonymous access is verified.
+
+The Mainnet bundle is tracked at
+`../../artifacts/mainnet-canary/canary-evidence.json`; its archive and verifier
+instructions are documented in `../../docs/mainnet-canary-evidence.md`.
+
+## Historical author-run Testnet evidence
 
 Network: Stellar testnet. Asset: non-redeemable DEMO8183. All roles in this
 technical run were author-controlled. Independent customer participation and

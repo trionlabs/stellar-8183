@@ -25,8 +25,9 @@ refer to their own commit; inspect the hashes when comparing older run results.
   local history, not a complete wallet index. Receipts can be checked separately.
 - Fresh DEMO8183 testnet deployment of the existing kernel and SLA hook, with
   fetched Wasm matching two clean, byte-identical builds.
-- Twelve author-run on-chain jobs across two runs. The published evidence uses
-  the final six: two completions, two funded rejections, two expired refunds.
+- Multiple author-run on-chain jobs cover all terminal paths. The canonical
+  Testnet bundle contains jobs 7-12, while the current source-bound browser demo
+  contains jobs 31-33 in `deployments/month-two/testnet-demo-evidence.json`.
 - A separate mainnet-canary evidence format and read-only verifier, including
   build versions, contract hashes, deployment references, exact-budget transfers,
   and arithmetic over captured balance observations.
@@ -44,15 +45,14 @@ refer to their own commit; inspect the hashes when comparing older run results.
 
 ## Verification
 
-The current checks cover 29 Rust tests, 176 JavaScript/TypeScript tests,
+The current checks cover 29 Rust tests, 179 JavaScript/TypeScript and evidence tests,
 and six browser tests. An additional opt-in author-run browser suite executes
-three real testnet jobs and injects RPC recovery failures. The latest local
-source-bound run used commit `dfc993333893ec731622670589cec5499edaeee9` and
-produced independently rechecked jobs 21-23; every job 1-23 is terminal and the
-kernel holds no DEMO8183. Formatting, Clippy, type checks, SDK packaging,
+three real Testnet jobs and injects RPC recovery failures. The latest
+source-bound run used commit `963c4c551139ce90a671ee46e94b7586749ff2ca`
+and produced live-read-verified jobs 31-33. Formatting, Clippy, type checks, SDK packaging,
 generated bindings, reproducible Wasm builds, and secret scans are included.
-Live evidence was re-fetched from Stellar RPC; the bundle is in
-`deployments/month-two/`.
+Live evidence was re-fetched from Stellar RPC; the Testnet demo, Mainnet canary,
+and grant evidence index are linked from `deployments/month-two/`.
 
 The full npm audit now reports zero findings after pinning the installable
 `smol-toml` 1.9.1 patch. A local HTTP integration test covers the SDK's real
@@ -85,9 +85,10 @@ Mainnet canary is verified but is not a production deployment or audit.
 
 ## Required external work
 
-1. Conduct the independent pilot using `docs/month-two-pilot.md`. No participant
-   confirmation, interview, consent, independent signature, usability metric, or
-   adoption decision has been invented. Author-run jobs do not count toward it.
+1. Conduct the independent pilot using `docs/month-two-pilot.md`. One participant
+   has confirmed willingness to participate, but no interview, consent record,
+   independent signature, usability metric, or adoption decision has been
+   published. Author-run jobs do not count toward it.
 2. Supply the actual submission/start dates and send the final SOW/CDP through
    the agreed coordinator process. Nothing has been messaged or submitted to
    Irem or the grant team by this implementation.

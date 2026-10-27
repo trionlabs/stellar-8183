@@ -1,8 +1,11 @@
 # Independent client pilot runbook
 
-Status: not conducted. These are instructions and blank recording fields, not
-customer evidence. Recruit one unaffiliated client with a recurring digital-work
-need, including nontechnical work such as translation, design, or research.
+Status: participant confirmed; sessions not conducted. The project lead reported
+written confirmation from one unaffiliated participant on 2026-10-27. The
+original confirmation remains access-controlled. These instructions and blank
+recording fields are not customer evidence. The participant must still complete
+the observed sessions and sign the required Testnet transactions using a wallet
+they control.
 
 ## Before the session
 

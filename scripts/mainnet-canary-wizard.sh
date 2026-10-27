@@ -184,43 +184,50 @@ finish() {
 # Replace the example below. Set TOTAL_STAGES to match the stages you write.
 # ──────────────────────────────────────────────────────────────────────────
 
-TOTAL_STAGES=7
+TOTAL_STAGES=9
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 REPO_ROOT=$(cd "$SCRIPT_DIR/.." && pwd)
 CONFIG_DIR="$REPO_ROOT/.stellar/mainnet-canary"
-AUTHORIZATION="$REPO_ROOT/deployments/private/mainnet-authorization.json"
 cd "$REPO_ROOT"
 
 banner "Stellar 8183 Mainnet canary"
 
-stage "Validate release authorization"
-say "This rebuilds the pinned contracts and validates the coordinator, independent-audit, and threat-model records."
-pnpm --filter @trionlabs/8183-console preflight:mainnet review "$AUTHORIZATION"
-
-stage "Create or import secure-store roles"
-say "Four distinct accounts are required. Secrets stay in the OS credential store and are never written to .env or the repository."
+stage "Import the funded Mainnet account"
+say "The funded account becomes canary-admin and pays only role funding, reserves, and canary fees."
+say "Enter the key only into the hidden Stellar CLI prompt. Never paste it into chat or .env."
 mkdir -p "$CONFIG_DIR"
-for alias in canary-admin canary-client canary-provider canary-evaluator; do
+if stellar --config-dir "$CONFIG_DIR" keys address canary-admin >/dev/null 2>&1; then
+  note "canary-admin already exists: $(stellar --config-dir "$CONFIG_DIR" keys address canary-admin)"
+elif confirm "Do you have a 12-24 word seed phrase?"; then
+  stellar --config-dir "$CONFIG_DIR" keys add canary-admin --secure-store
+else
+  warn "A raw S... key will be stored in the ignored, permission-restricted .stellar directory because Stellar CLI secure-store import currently supports seed phrases only."
+  stellar --config-dir "$CONFIG_DIR" keys add canary-admin --secret-key
+fi
+
+stage "Create isolated role accounts"
+say "The client, provider, and evaluator keys are generated directly in the OS credential store."
+for alias in canary-client canary-provider canary-evaluator; do
   if stellar --config-dir "$CONFIG_DIR" keys address "$alias" >/dev/null 2>&1; then
     note "$alias already exists: $(stellar --config-dir "$CONFIG_DIR" keys address "$alias")"
     continue
   fi
-  if confirm "Import an existing seed phrase for $alias?"; then
-    step "Enter it only into the Stellar CLI secure prompt."
-    stellar --config-dir "$CONFIG_DIR" keys add "$alias" --secure-store
-  else
-    stellar --config-dir "$CONFIG_DIR" keys generate "$alias" --secure-store
-  fi
+  stellar --config-dir "$CONFIG_DIR" keys generate "$alias" --secure-store
 done
 
 stage "Fund role accounts"
-say "Send real XLM only for reserves and fees. Recommended starting amounts: admin 5 XLM; client, provider, and evaluator 2 XLM each."
+say "The admin account will create or top up the three role accounts to 2 XLM each and retain at least 6 XLM."
 for alias in canary-admin canary-client canary-provider canary-evaluator; do
   printf '  %-20s %s\n' "$alias" "$(stellar --config-dir "$CONFIG_DIR" keys address "$alias")"
 done
-pause "Fund all four accounts, then press Enter to verify them."
-pnpm --filter @trionlabs/8183-console preflight:mainnet check "$AUTHORIZATION"
+warn "This stage submits Mainnet transactions and spends real XLM."
+confirm "Create or fund the three isolated role accounts now?" || exit 1
+pnpm --filter @trionlabs/8183-console setup:mainnet --fund-mainnet-roles
+
+stage "Validate the pinned canary build"
+say "This checks a clean source commit, rebuilds both Wasm files, checks hashes, verifies Mainnet health, and confirms all four accounts."
+pnpm --filter @trionlabs/8183-console preflight:mainnet check
 
 stage "Prepare deterministic deployment plan"
 pnpm --filter @trionlabs/8183-console deploy:mainnet --prepare-plan

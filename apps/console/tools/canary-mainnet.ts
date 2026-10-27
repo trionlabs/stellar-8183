@@ -19,10 +19,6 @@ const execute = promisify(execFile);
 const root = resolve(import.meta.dirname, "../../..");
 const base = resolve(root, "artifacts/mainnet-canary");
 const out = resolve(base, "canary");
-const authorization = resolve(
-  root,
-  "deployments/private/mainnet-authorization.json",
-);
 const acknowledgement = "--execute-valueless-mainnet-canary";
 
 if (process.argv[2] !== acknowledgement)
@@ -32,13 +28,7 @@ if (process.argv[2] !== acknowledgement)
 assertNoSecretEnvironment(process.env);
 await execute(
   "pnpm",
-  [
-    "--filter",
-    "@trionlabs/8183-console",
-    "preflight:mainnet",
-    "check",
-    authorization,
-  ],
+  ["--filter", "@trionlabs/8183-console", "preflight:mainnet", "check"],
   { cwd: root, timeout: 900_000, maxBuffer: 10_000_000 },
 );
 

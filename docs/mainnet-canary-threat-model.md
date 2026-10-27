@@ -1,10 +1,9 @@
 # Mainnet canary threat-model update
 
-Status: preparation only. No mainnet contract, asset, signer, or transaction has
-been created by the month-two implementation. This document does not override
-`AGENTS.md` or `docs/security.md`: an independent audit and explicit threat-model
-review remain prerequisites. The Chapter Lead must separately accept whether a
-valueless canary satisfies the grant's mainnet deliverable.
+Status: approved scope, pending execution. The Chapter Lead has accepted a
+valueless Mainnet canary as the grant deliverable. This is a narrow exception to
+the production policy: an independent audit remains mandatory before USDC,
+redeemable assets, third-party funds, or any production-safety claim.
 
 ## Boundary and purpose
 
@@ -24,7 +23,7 @@ arbitration, reputation writeback, or third-party website integration is added.
 | --- | --- | --- |
 | Asset selection | Valuable token bound permanently, misleading symbol, or accidental valuable transfer | Independently verify the SAC contract ID from asset code, issuer, and public network; inspect issuer flags; use a dedicated asset with no sale, redemption, distribution, or monetary claim. A symbol is not proof. Never use USDC or an existing valuable asset. |
 | Source and Wasm | Stale/local input or different deployed code | Pin source and toolchain; reject changed/untracked build inputs; reproduce optimized bytes twice; compare local and fetched kernel/hook SHA-256 hashes. Retain deployment creation transactions. |
-| Wallet and network | Wrong account, network, terms, or excessive fees signed | Use four fresh, distinct Mainnet-only canary accounts in the OS secure store, an explicitly acknowledged network profile, exact invocation/source/argument checks, bounded fees and time, and a deterministic predeployment plan. Keep secrets outside the app, environment, logs, and evidence. Budget XLM fees/reserves separately. |
+| Wallet and network | Wrong account, network, terms, or excessive fees signed | Use four fresh, distinct Mainnet-only canary accounts through named local CLI identities, with generated role keys in the OS secure store. Use an explicitly acknowledged network profile, exact invocation/source/argument checks, bounded fees and time, and a deterministic predeployment plan. Keep secrets outside the app, environment, logs, and evidence. Budget XLM fees/reserves separately. |
 | Evaluator | Bad approval, malicious rejection, or inactivity | Disclose the evaluator's unilateral authority. Use operator roles for compatibility testing; do not claim independent evaluation. Test expired refund separately. |
 | Hook | Hook failure, wrong kernel binding, or excessive resources | Deploy the pinned SLA hook, verify `get_core`, admit only that hook for the canary, record admission, and inspect its review window. Refund dispatch must remain outside hooks. |
 | Recipient and issuer | Removed trustline, authorization revocation, freeze, or blocked payout | Verify client/provider trustlines and authorization before funding and before the outcome. Preserve the client's ability to receive a refund. Permissionless invocation does not bypass token restrictions. |
@@ -39,25 +38,21 @@ transfers, not the absolute historical balance observations.
 
 ## Predeployment record
 
-The operator/reviewer must supply actual references for:
+The operator must record and verify:
 
-- Independent audit and threat-model review, including unresolved findings.
-- Chapter Lead acceptance of the valueless-canary deliverable.
 - Pinned source commit, toolchain, reproducible build outputs, and secret scans.
 - Asset code, issuer, SAC ID, network, flags, distribution boundary, and purpose.
 - Dedicated public role addresses, trustlines, and fee/reserve budget.
 - Kernel/hook IDs, constructor arguments, fetched hashes, and hook admission.
 - A separate acknowledged `mainnet-canary` Console profile.
 
-Use `docs/mainnet-independent-review-request.md` as the independent review
-scope. After committing the exact candidate source, run
-`preflight:mainnet prepare`, add the real approval/review references to the
-ignored authorization record, and run `preflight:mainnet check`. The gate binds
-those references to the clean commit and reproducible Wasm hashes and refuses
+After committing the exact candidate source, run `preflight:mainnet check` and
+review the deterministic deployment plan before confirming writes. The preflight
+binds execution to a clean commit and reproducible Wasm hashes and refuses
 environment-based signing material. It does not submit a transaction.
 
-Do not infer approval from blank fields, a successful build, an author-run test,
-or the fact that the app supports a mainnet profile.
+Use `docs/mainnet-independent-review-request.md` before any later production or
+valuable-asset deployment. A successful canary is compatibility evidence only.
 
 ## Completion evidence and failure response
 

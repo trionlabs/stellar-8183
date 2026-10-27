@@ -1,13 +1,13 @@
 # Mainnet Canary Runbook
 
-This procedure deploys and exercises the pinned 8183 kernel and SLA hook from a local terminal. It does not use the Console UI or a browser wallet. Mainnet operations remain blocked until the source-bound authorization record contains real Chapter Lead, independent-audit, and threat-model references.
+This procedure deploys and exercises the pinned 8183 kernel and SLA hook from a local terminal. It does not use the Console UI or a browser wallet. The Chapter Lead has accepted a valueless Mainnet canary as the month-two deliverable; this exception does not authorize valuable assets or production use.
 
 ## Safety Boundary
 
 - Real XLM is used only for account reserves and transaction fees.
 - `DEMO8183` is a new, non-redeemable asset with no claim of value.
 - Do not use USDC, distribute `DEMO8183`, or reuse production accounts.
-- Signing keys must be OS secure-store identities named `canary-admin`, `canary-client`, `canary-provider`, and `canary-evaluator`.
+- Signing identities are named `canary-admin`, `canary-client`, `canary-provider`, and `canary-evaluator`. Generated role keys use the OS secure store. An imported raw `S...` admin key uses Stellar CLI's permission-restricted, ignored identity file because secure-store import currently accepts seed phrases only.
 - Never place a seed, secret key, or signing command in `.env`.
 
 ## Recommended Procedure
@@ -18,12 +18,12 @@ From the repository root, run:
 ./scripts/mainnet-canary-wizard.sh
 ```
 
-The wizard validates authorization before credential setup, guides secure-store identity creation/import, verifies funding, presents a deterministic plan before any deployment, requires confirmation for each group of Mainnet writes, and verifies the final public evidence.
+The wizard imports one funded admin identity through a hidden CLI prompt, generates three isolated role identities, funds them from the admin, validates the reproducible build, presents a deterministic plan before deployment, requires confirmation for each group of Mainnet writes, and verifies the final public evidence.
 
 For manual operation, use the same sequence:
 
 ```bash
-pnpm --filter @trionlabs/8183-console preflight:mainnet review
+pnpm --filter @trionlabs/8183-console setup:mainnet --fund-mainnet-roles
 pnpm --filter @trionlabs/8183-console preflight:mainnet check
 pnpm --filter @trionlabs/8183-console deploy:mainnet --prepare-plan
 pnpm --filter @trionlabs/8183-console deploy:mainnet --execute-valueless-mainnet-canary
@@ -36,4 +36,4 @@ The deployment command creates trustlines, issues exactly enough `DEMO8183` to b
 
 ## Outputs
 
-Private authorization stays under `deployments/private/`. Local deployment material and captured evidence are written under `artifacts/mainnet-canary/`; both locations are ignored by Git. Review the evidence before publishing selected files. The generated evidence is explicitly `author-run` and must not be represented as independent customer-pilot evidence.
+Local identities, deployment material, and captured evidence are written under `.stellar/mainnet-canary/` and `artifacts/mainnet-canary/`; both locations are ignored by Git. Review the evidence before publishing selected files. The generated evidence is explicitly `author-run` and must not be represented as independent customer-pilot evidence.

@@ -4,10 +4,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { Horizon } from "@stellar/stellar-sdk";
 import { digest } from "../src/receipt.js";
-import {
-  assertNoSecretEnvironment,
-  parseMainnetAuthorization,
-} from "../src/mainnet-authorization.js";
+import { assertNoSecretEnvironment } from "../src/mainnet-authorization.js";
 import { assertBuildSource } from "./source.js";
 
 const execute = promisify(execFile);
@@ -113,40 +110,19 @@ async function prepare(path: string): Promise<void> {
   );
 }
 
-async function review(path: string): Promise<{
+async function review(): Promise<{
   sourceCommit: string;
   kernelWasmSha256: string;
   hookWasmSha256: string;
-  authorization: {
-    chapterLead: string;
-    independentAudit: string;
-    threatModel: string;
-  };
 }> {
   assertNoSecretEnvironment(process.env);
-  const authorization = parseMainnetAuthorization(await readFile(path, "utf8"));
   const build = await sourceAndBuild();
-  if (
-    authorization.sourceCommit !== build.sourceCommit ||
-    authorization.kernelWasmSha256 !== build.kernelWasmSha256 ||
-    authorization.hookWasmSha256 !== build.hookWasmSha256
-  )
-    throw new Error(
-      "Reviewed source or Wasm does not match the current reproducible build.",
-    );
   await cli(["network", "health", "--network", "mainnet"]);
-  return {
-    ...build,
-    authorization: {
-      chapterLead: authorization.chapterLeadApproval.reference,
-      independentAudit: authorization.independentAudit.reference,
-      threatModel: authorization.threatModelReview.reference,
-    },
-  };
+  return build;
 }
 
-async function check(path: string): Promise<void> {
-  const reviewed = await review(path);
+async function check(): Promise<void> {
+  const reviewed = await review();
   const accounts: Record<string, { address: string; nativeXlm: string }> = {};
   const addresses = new Set<string>();
   const horizon = new Horizon.Server("https://horizon.stellar.org");
@@ -174,7 +150,7 @@ async function check(path: string): Promise<void> {
         ...reviewed,
         accounts,
         nextStep:
-          "Review public accounts and balances, then use the separately reviewed interactive deployment procedure. Preflight does not submit transactions.",
+          "Review public accounts and balances, then prepare the deterministic valueless-canary deployment plan. Preflight does not submit transactions.",
       },
       null,
       2,
@@ -186,15 +162,15 @@ const [mode, suppliedPath] = process.argv.slice(2);
 const path = suppliedPath ? resolve(suppliedPath) : defaultAuthorization;
 if (mode === "prepare") await prepare(path);
 else if (mode === "review") {
-  const result = await review(path);
+  const result = await review();
   console.log(
     JSON.stringify(
-      { status: "REVIEWS_VALID", network: "mainnet", ...result },
+      { status: "CANARY_BUILD_VALID", network: "mainnet", ...result },
       null,
       2,
     ),
   );
-} else if (mode === "check") await check(path);
+} else if (mode === "check") await check();
 else
   throw new Error(
     "Usage: pnpm preflight:mainnet prepare|review|check [authorization.json]",

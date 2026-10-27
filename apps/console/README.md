@@ -172,45 +172,33 @@ acknowledgement, and checks the immutable token's symbol/decimals before
 funding. The canary symbol is DEMO8183. A symbol alone is not an asset safety
 proof; the operator must verify issuer, token ID, and non-redeemability.
 
-No mainnet deployer is run automatically. `AGENTS.md` and `docs/security.md`
-require an independent audit before wider deployment, and the proposal still
-requires the Chapter Lead to accept the valueless-canary boundary. There is
-also no funded mainnet deployment signer in this workflow. Valuable-asset
-deployment is not permitted by this implementation.
+No Mainnet deployer runs automatically. The Chapter Lead-approved exception is
+strictly limited to the non-redeemable DEMO8183 compatibility canary. An
+independent audit remains mandatory before USDC, redeemable assets, third-party
+funds, production use, or a production-safety claim.
 
-After the Chapter Lead accepts the valueless-canary boundary, prepare a
-source-bound authorization record for independent review:
+Run the local terminal wizard:
 
 ```sh
-corepack pnpm@11.9.0 --filter @trionlabs/8183-console \
-  preflight:mainnet prepare
+./scripts/mainnet-canary-wizard.sh
 ```
 
-The command refuses a dirty worktree, rebuilds the release twice, and writes an
-ignored, owner-readable template to
-`deployments/private/mainnet-authorization.json`. Fill it with the actual
-Chapter Lead approval, independent audit, and threat-model review references.
-It deliberately rejects placeholders, unresolved critical/high findings, or a
-review that is not independent from the builder.
-
-Provision four distinct, minimally funded `canary-admin`, `canary-client`,
-`canary-provider`, and `canary-evaluator` identities in the Stellar CLI OS
-secure store or on a hardware wallet. Never place signing material in `.env`.
-Then run the read-only gate:
+The wizard imports one funded `canary-admin` identity through a hidden Stellar
+CLI prompt, generates three isolated secure-store role identities, funds them,
+and requires confirmation before every group of Mainnet writes. Never place
+signing material in `.env` or chat. The read-only gate can also be run directly:
 
 ```sh
 corepack pnpm@11.9.0 --filter @trionlabs/8183-console \
   preflight:mainnet check
 ```
 
-It checks the exact reviewed commit and Wasm hashes, Mainnet health, public
+It checks the exact clean commit and Wasm hashes, Mainnet health, public
 role addresses, account separation, and XLM availability. It does not sign or
-submit a transaction. A successful preflight is readiness evidence, not a
-deployment or permission to skip human transaction review.
+submit a transaction. A successful preflight is readiness evidence only.
 
 See `docs/mainnet-canary-threat-model.md` for the prepared threat model,
-predeployment record, evidence requirements, and failure response. Its blank
-approval references are not deployment authorization.
+predeployment record, evidence requirements, and failure response.
 
 `src/canary.ts` defines the separate strict evidence profile, and
 `tools/verify-canary.ts` checks deployed Wasm, token metadata, creation and hook

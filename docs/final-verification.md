@@ -81,8 +81,9 @@ reports label author control and do not present it as customer validation.
 - Balance snapshots are captured observations with arithmetic/transfer checks;
   absolute historical balances are not authenticated by ledger proofs.
 - 8004 bindings are advisory pre-funding snapshots, not atomic ownership proofs.
-- Mainnet deployment remains pending the repository audit prerequisite and
-  coordinator acceptance. No valuable-asset safety claim is made.
+- The coordinator-approved, valueless Mainnet canary remains pending execution.
+  An audit is still required for valuable assets or production use, and no such
+  safety claim is made.
 
 Standards: 1 confirmed finding corrected; Spec: 2 corrected, with live-browser
 coverage added; Evidence: 2 corrected. No unresolved blocking defect was found

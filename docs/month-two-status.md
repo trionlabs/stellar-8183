@@ -28,8 +28,8 @@ refer to their own commit; inspect the hashes when comparing older run results.
   build versions, contract hashes, deployment references, exact-budget transfers,
   and arithmetic over captured balance observations.
 - A mainnet-canary threat-model update in `docs/mainnet-canary-threat-model.md`,
-  with explicit prerequisites and failure handling; no approval is inferred.
-- A terminal-only Mainnet canary runner with OS secure-store signing,
+  with explicit prerequisites and failure handling.
+- A terminal-only Mainnet canary runner with named local CLI signing,
   deterministic planning, deployment recovery, three lifecycle paths, and
   public evidence assembly in `scripts/mainnet-canary-wizard.sh`.
 - Browser lifecycle tests, wallet/security regression tests, static build and
@@ -80,10 +80,10 @@ authenticated by ledger proofs. Customer validation and mainnet remain pending.
 1. Conduct the independent pilot using `docs/month-two-pilot.md`. No participant
    confirmation, interview, consent, independent signature, usability metric, or
    adoption decision has been invented. Author-run jobs do not count toward it.
-2. Resolve the audit requirement in the repository's security policy and obtain
-   the Chapter Lead's acceptance of the valueless-mainnet-canary boundary before
-   deployment. No mainnet signer has been provisioned or funded in this work.
-3. Once permitted, deploy the same pinned Wasm with a dedicated non-redeemable
+2. Use the Chapter Lead-approved valueless-canary boundary and the local
+   terminal runbook. No Mainnet signer, asset, contract, or transaction is
+   claimed until public evidence exists.
+3. Deploy the same pinned Wasm with a dedicated non-redeemable
    asset, capture mainnet-specific evidence, and verify it with `verify:canary`.
    The testnet snapshot must not be relabeled as mainnet evidence.
 4. Supply the actual submission/start dates and send the final SOW/CDP through

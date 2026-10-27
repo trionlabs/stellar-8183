@@ -55,7 +55,12 @@ async function fileHashes(directory) {
   return Object.fromEntries(
     await Promise.all(
       (await files(directory))
-        .filter((path) => path !== "build.json")
+        .filter(
+          (path) =>
+            path !== "build.json" &&
+            path !== ".git" &&
+            !path.startsWith(".git/"),
+        )
         .map(async (path) => [
           path,
           sha256(await readFile(join(directory, path))),

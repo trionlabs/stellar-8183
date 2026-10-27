@@ -6,6 +6,7 @@ import { Horizon } from "@stellar/stellar-sdk";
 import { digest } from "../src/receipt.js";
 import { assertNoSecretEnvironment } from "../src/mainnet-authorization.js";
 import { assertBuildSource } from "./source.js";
+import { ensureMainnetNetwork } from "./mainnet-cli.js";
 
 const execute = promisify(execFile);
 const root = resolve(import.meta.dirname, "../../..");
@@ -116,6 +117,7 @@ async function review(): Promise<{
   hookWasmSha256: string;
 }> {
   assertNoSecretEnvironment(process.env);
+  await ensureMainnetNetwork(root);
   const build = await sourceAndBuild();
   await cli(["network", "health", "--network", "mainnet"]);
   return build;

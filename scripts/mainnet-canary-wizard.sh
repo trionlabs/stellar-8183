@@ -197,6 +197,9 @@ stage "Import the funded Mainnet account"
 say "The funded account is funding-only. It transfers a capped 16 XLM to fresh canary accounts and is never the contract admin, issuer, client, provider, or evaluator."
 say "Enter the key only into the hidden Stellar CLI prompt. Never paste it into chat or .env."
 mkdir -p "$CONFIG_DIR"
+stellar --config-dir "$CONFIG_DIR" --quiet network add mainnet \
+  --rpc-url https://mainnet.sorobanrpc.com/ \
+  --network-passphrase 'Public Global Stellar Network ; September 2015'
 if stellar --config-dir "$CONFIG_DIR" keys address canary-admin >/dev/null 2>&1; then
   note "canary-admin already exists: $(stellar --config-dir "$CONFIG_DIR" keys address canary-admin)"
 elif confirm "Do you have a 12-24 word seed phrase?"; then

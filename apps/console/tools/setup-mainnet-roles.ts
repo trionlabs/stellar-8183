@@ -2,6 +2,7 @@ import { Horizon } from "@stellar/stellar-sdk";
 import { resolve } from "node:path";
 import {
   MAINNET_ALIASES,
+  ensureMainnetNetwork,
   mainnetAddresses,
   stellarCli,
 } from "./mainnet-cli.js";
@@ -16,6 +17,7 @@ if (process.argv[2] !== acknowledgement)
 assertNoSecretEnvironment(process.env);
 
 const horizon = new Horizon.Server("https://horizon.stellar.org");
+await ensureMainnetNetwork(root);
 const addresses = await mainnetAddresses(root);
 const fundingAlias = "canary-admin";
 const fundingAddress = await stellarCli(root, [

@@ -26,6 +26,28 @@ export function mainnetConfigDir(repositoryRoot: string): string {
   return resolve(repositoryRoot, ".stellar/mainnet-canary");
 }
 
+export async function ensureMainnetNetwork(
+  repositoryRoot: string,
+): Promise<void> {
+  assertNoSecretEnvironment(process.env);
+  await execute(
+    "stellar",
+    [
+      "--config-dir",
+      mainnetConfigDir(repositoryRoot),
+      "--quiet",
+      "network",
+      "add",
+      "mainnet",
+      "--rpc-url",
+      "https://mainnet.sorobanrpc.com/",
+      "--network-passphrase",
+      Networks.PUBLIC,
+    ],
+    { cwd: repositoryRoot, timeout: 30_000, maxBuffer: 1_000_000 },
+  );
+}
+
 export async function stellarCli(
   repositoryRoot: string,
   args: string[],
@@ -50,7 +72,13 @@ export async function stellarCli(
         ? error.stderr
             .split("\n")
             .filter((line) => !/\bS[A-Z2-7]{55}\b/.test(line))
-            .slice(-4)
+            .filter(
+              (line) =>
+                !line.includes("A local config was found") &&
+                !line.includes("Run `stellar config migrate`") &&
+                !line.includes("A new release of Stellar CLI is available"),
+            )
+            .slice(-12)
             .join("\n")
             .trim()
         : "";

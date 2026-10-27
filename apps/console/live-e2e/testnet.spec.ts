@@ -399,8 +399,13 @@ test("author-run live browser settlement through Freighter's message protocol", 
   await otherTab.evaluate((key) => localStorage.removeItem(key), pendingKey);
   await otherTab.close();
   const receipts: ReceiptFile[] = [];
+  const demoDescriptions = {
+    complete: "Demo [demo-completion]: Deliverable approved",
+    reject: "Demo [demo-rejection]: Funded job rejected",
+    claim_refund: "Demo [demo-refund]: Expired escrow returned",
+  } as const;
   for (const path of ["complete", "reject", "claim_refund"] as const) {
-    const description = `Author-run browser ${path}; not independent customer evidence`;
+    const description = demoDescriptions[path];
     const initialClient = await reader.tokenBalance(keys.client.publicKey());
     const initialProvider = await reader.tokenBalance(
       keys.provider.publicKey(),
@@ -488,7 +493,7 @@ test("author-run live browser settlement through Freighter's message protocol", 
     const receipt = await parseReceipt(text);
     receipts.push(receipt);
     console.info(
-      `Author-run browser job ${receipt.receipt.jobId}: ${receipt.receipt.state} receipt verified.`,
+      `Demo job ${receipt.receipt.jobId}: ${receipt.receipt.state} receipt verified.`,
     );
     const budget = BigInt(receipt.receipt.budget);
     expect(await reader.tokenBalance(keys.client.publicKey())).toBe(

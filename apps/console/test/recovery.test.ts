@@ -9,7 +9,7 @@ import {
   nativeToScVal,
   rpc,
 } from "@stellar/stellar-sdk";
-import { Ok } from "@stellar/stellar-sdk/contract";
+import { Ok, SentTransaction } from "@stellar/stellar-sdk/contract";
 import {
   AgenticCommerce,
   type Job,
@@ -19,6 +19,7 @@ import {
 import {
   ConfirmedJobReadError,
   LiveCommerce,
+  RejectedTransactionError,
   UnconfirmedTransactionError,
   type PendingSubmission,
 } from "../src/live.js";
@@ -134,7 +135,7 @@ function prepared<T>(
   tx: Transaction,
   method: PendingSubmission["method"],
   value: T,
-  mode: "success" | "sdk-throw" | "not-found" = "success",
+  mode: "success" | "sdk-throw" | "send-rejected" | "not-found" = "success",
 ): PreparedContractInvocation<T> {
   const op = tx.operations[0];
   if (op?.type !== "invokeHostFunction")
@@ -146,6 +147,10 @@ function prepared<T>(
       throw new Error("Missing signer callback");
     const signed = await signer(tx.toXDR());
     if (mode === "sdk-throw") throw new Error("RPC unavailable after signing");
+    if (mode === "send-rejected")
+      throw new SentTransaction.Errors.SendFailed(
+        'Sending the transaction to the network failed!\n{"status":"ERROR"}',
+      );
     const envelope = TransactionBuilder.fromXDR(
       signed.signedTxXdr,
       profile.networkPassphrase,
@@ -237,6 +242,26 @@ describe("confirmed transactions survive failed follow-up reads", () => {
 });
 
 describe("signed transactions with unknown final status", () => {
+  it("reports a definitive network rejection without journaling it as pending", async () => {
+    const { live, key, core, sign } = fixture(),
+      tx = transaction(key, "create_job");
+    vi.spyOn(core, "createJob").mockResolvedValue(
+      prepared(tx, "create_job", 42n, "send-rejected"),
+    );
+    const read = vi.spyOn(live, "read");
+    const attempt = live.create({
+      description: "Research report",
+      evaluator: accounts.evaluator,
+      expiresAt: BigInt(Math.floor(Date.now() / 1000) + 3600),
+    });
+    await expect(attempt).rejects.toBeInstanceOf(RejectedTransactionError);
+    await expect(attempt).rejects.toMatchObject({
+      submission: pending(tx, "create_job"),
+    });
+    expect(sign).toHaveBeenCalledOnce();
+    expect(read).not.toHaveBeenCalled();
+  });
+
   it.each(["denied", "unsigned"] as const)(
     "does not journal an action when the wallet returns %s",
     async (mode) => {

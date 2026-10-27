@@ -7,7 +7,7 @@ This procedure deploys and exercises the pinned 8183 kernel and SLA hook from a 
 - Real XLM is used only for account reserves and transaction fees.
 - `DEMO8183` is a new, non-redeemable asset with no claim of value.
 - Do not use USDC, distribute `DEMO8183`, or reuse production accounts.
-- The recovered account is retained as the funding-only `canary-admin` alias. It transfers at most 16 XLM to fresh `canary-deployer`, `canary-client`, `canary-provider`, and `canary-evaluator` accounts and is never assigned a contract or job role. Generated canary keys use the OS secure store. Imported raw `S...` keys and 32-byte hexadecimal Ed25519 seeds use Stellar CLI's permission-restricted, ignored identity file because secure-store import currently accepts seed phrases only. Ethereum/secp256k1 private keys are not Stellar account keys.
+- The recovered account is retained as the funding-only `canary-admin` alias. It transfers at most 58 XLM to fresh `canary-deployer`, `canary-client`, `canary-provider`, and `canary-evaluator` accounts and is never assigned a contract or job role. The allocation is 50 XLM for deployment rent and administration, 4 XLM for client calls, and 2 XLM each for the provider and evaluator. Generated canary keys use the OS secure store. Imported raw `S...` keys and 32-byte hexadecimal Ed25519 seeds use Stellar CLI's permission-restricted, ignored identity file because secure-store import currently accepts seed phrases only. Ethereum/secp256k1 private keys are not Stellar account keys.
 - Never place a seed, secret key, or signing command in `.env`.
 
 ## Recommended Procedure
@@ -18,7 +18,7 @@ From the repository root, run:
 ./scripts/mainnet-canary-wizard.sh
 ```
 
-The wizard imports one funding identity through a hidden CLI prompt, generates four isolated canary identities, transfers a capped 16 XLM into them, validates the reproducible build, presents a deterministic plan before deployment, requires confirmation for each group of Mainnet writes, and verifies the final public evidence.
+The wizard imports one funding identity through a hidden CLI prompt, generates four isolated canary identities, transfers at most 58 XLM into them, validates the reproducible build, presents a deterministic plan before deployment, requires confirmation for each group of Mainnet writes, and verifies the final public evidence.
 
 For manual operation, use the same sequence:
 

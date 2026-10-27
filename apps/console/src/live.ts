@@ -9,6 +9,7 @@ import {
   rpc,
   scValToNative,
 } from "@stellar/stellar-sdk";
+import { SentTransaction } from "@stellar/stellar-sdk/contract";
 import {
   AgenticCommerce,
   commitmentFromHex,
@@ -113,6 +114,26 @@ export class UnconfirmedTransactionError extends Error {
     );
     this.name = "UnconfirmedTransactionError";
   }
+}
+
+export class RejectedTransactionError extends Error {
+  constructor(
+    readonly submission: PendingSubmission,
+    cause?: unknown,
+  ) {
+    super(
+      "The network rejected the signed transaction before ledger inclusion. It is safe to correct the reported problem and retry.",
+      { cause },
+    );
+    this.name = "RejectedTransactionError";
+  }
+}
+
+function isDefinitiveSendRejection(cause: unknown): boolean {
+  return (
+    cause instanceof SentTransaction.Errors.SendFailed &&
+    /"status"\s*:\s*"ERROR"/.test(cause.message)
+  );
 }
 
 export type SubmissionRecovery =
@@ -366,6 +387,8 @@ export class LiveCommerce {
         },
       })
       .catch((cause: unknown) => {
+        if (context.submission && isDefinitiveSendRejection(cause))
+          throw new RejectedTransactionError(context.submission, cause);
         if (context.submission)
           throw new UnconfirmedTransactionError(context.submission, cause);
         throw cause;

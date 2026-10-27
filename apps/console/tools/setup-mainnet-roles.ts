@@ -63,8 +63,12 @@ const waitFor = async (address: string, minimum: bigint): Promise<void> => {
 };
 
 const targets = {
-  admin: 100_000_000n,
-  client: 20_000_000n,
+  // Mainnet upload rent observed for the pinned 17 KiB kernel and 7.4 KiB
+  // hook is roughly 33 XLM. Keep a bounded reserve for both constructors,
+  // hook admission, and the post-deployment five-XLM preflight floor.
+  admin: 500_000_000n,
+  // Three full canary paths require nine client-signed contract calls.
+  client: 40_000_000n,
   provider: 20_000_000n,
   evaluator: 20_000_000n,
 } as const;
@@ -127,7 +131,7 @@ console.log(
       status: "MAINNET_CANARY_ROLES_FUNDED",
       fundingAccount: fundingAddress,
       accounts: addresses,
-      balancesXlm: { admin: 10, client: 2, provider: 2, evaluator: 2 },
+      balancesXlm: { admin: 50, client: 4, provider: 2, evaluator: 2 },
       next: "Run the Mainnet preflight, then prepare the deterministic deployment plan.",
     },
     null,

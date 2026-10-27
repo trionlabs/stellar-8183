@@ -194,7 +194,7 @@ cd "$REPO_ROOT"
 banner "Stellar 8183 Mainnet canary"
 
 stage "Import the funded Mainnet account"
-say "The funded account is funding-only. It transfers a capped 16 XLM to fresh canary accounts and is never the contract admin, issuer, client, provider, or evaluator."
+say "The funded account is funding-only. It transfers at most 58 XLM to fresh canary accounts and is never the contract admin, issuer, client, provider, or evaluator."
 say "Enter the key only into the hidden Stellar CLI prompt. Never paste it into chat or .env."
 mkdir -p "$CONFIG_DIR"
 stellar --config-dir "$CONFIG_DIR" --quiet network add mainnet \
@@ -235,12 +235,12 @@ for alias in canary-deployer canary-client canary-provider canary-evaluator; do
 done
 
 stage "Fund role accounts"
-say "The funding-only account will provision the deployer with 10 XLM and the three job roles with 2 XLM each."
+say "The funding-only account will provision the deployer with 50 XLM, the client with 4 XLM, and the provider and evaluator with 2 XLM each."
 for alias in canary-admin canary-deployer canary-client canary-provider canary-evaluator; do
   printf '  %-20s %s\n' "$alias" "$(stellar --config-dir "$CONFIG_DIR" keys address "$alias")"
 done
 warn "This stage submits Mainnet transactions and spends real XLM."
-confirm "Transfer at most 16 XLM into the four isolated canary accounts now?" || exit 1
+confirm "Transfer at most 58 XLM into the four isolated canary accounts now?" || exit 1
 pnpm --filter @trionlabs/8183-console setup:mainnet --fund-mainnet-roles
 
 stage "Validate the pinned canary build"

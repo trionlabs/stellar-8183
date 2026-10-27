@@ -15,3 +15,10 @@ regexTarget = "match"
 regexes = [
   '''CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J''',
 ]
+
+[[allowlists]]
+description = "Public Stellar contract ID of the valueless Mainnet canary asset"
+regexTarget = "match"
+regexes = [
+  '''CCXWE2KE3Z7JZ6W5HVCUT42R4UPRLTYKBPUZEIJSRQQCSBN3ZI7U4PIZ''',
+]

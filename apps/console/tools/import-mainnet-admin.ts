@@ -13,6 +13,20 @@ export function stellarSecretFromHex(value: string): string {
   return StrKey.encodeEd25519SecretSeed(Buffer.from(hex, "hex"));
 }
 
+export function normalizeMnemonic(value: string): string {
+  const words = value
+    .normalize("NFKD")
+    .replace(/(?:^|\s)\d{1,2}[.)]\s*/g, " ")
+    .replace(/[,\r\n\t]+/g, " ")
+    .trim()
+    .split(/\s+/)
+    .map((word) => word.replace(/^["'“”‘’]+|["'“”‘’]+$/g, "").toLowerCase())
+    .filter(Boolean);
+  if (words.length !== 12 && words.length !== 24)
+    throw new Error("Recovery phrase must contain exactly 12 or 24 words.");
+  return words.join(" ");
+}
+
 async function readStandardInput(): Promise<string> {
   const chunks: Buffer[] = [];
   for await (const chunk of process.stdin)
@@ -23,8 +37,14 @@ async function readStandardInput(): Promise<string> {
 async function main(): Promise<void> {
   assertNoSecretEnvironment(process.env);
   const root = resolve(import.meta.dirname, "../../..");
-  const secret = stellarSecretFromHex(await readStandardInput());
-  const address = Keypair.fromSecret(secret).publicKey();
+  const input = await readStandardInput();
+  const mnemonic = process.argv[2] === "mnemonic";
+  if (!mnemonic && process.argv[2] !== "hex")
+    throw new Error("Import mode must be mnemonic or hex.");
+  const secret = mnemonic
+    ? normalizeMnemonic(input)
+    : stellarSecretFromHex(input);
+  const address = mnemonic ? undefined : Keypair.fromSecret(secret).publicKey();
   const child = spawn(
     "stellar",
     [
@@ -33,7 +53,7 @@ async function main(): Promise<void> {
       "keys",
       "add",
       "canary-admin",
-      "--secret-key",
+      mnemonic ? "--secure-store" : "--secret-key",
     ],
     { cwd: root, stdio: ["pipe", "inherit", "inherit"] },
   );
@@ -43,7 +63,11 @@ async function main(): Promise<void> {
     child.once("close", done);
   });
   if (code !== 0) throw new Error("Stellar CLI did not import canary-admin.");
-  console.log(`Imported canary-admin address: ${address}`);
+  if (address) console.log(`Imported canary-admin address: ${address}`);
+  else
+    console.log(
+      "Imported canary-admin recovery phrase into the OS secure store.",
+    );
 }
 
 if (process.argv[1]?.endsWith("import-mainnet-admin.ts")) await main();

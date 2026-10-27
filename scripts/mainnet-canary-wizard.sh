@@ -200,7 +200,13 @@ mkdir -p "$CONFIG_DIR"
 if stellar --config-dir "$CONFIG_DIR" keys address canary-admin >/dev/null 2>&1; then
   note "canary-admin already exists: $(stellar --config-dir "$CONFIG_DIR" keys address canary-admin)"
 elif confirm "Do you have a 12-24 word seed phrase?"; then
-  stellar --config-dir "$CONFIG_DIR" keys add canary-admin --secure-store
+  say "Paste all words in one entry. Capitalization, commas, quotes, line breaks, and copied list numbering will be normalized locally."
+  printf '  %sPaste the recovery phrase:%s ' "$BOLD" "$RESET"
+  read -rs ADMIN_MNEMONIC
+  printf '\n'
+  printf '%s\n' "$ADMIN_MNEMONIC" | \
+    pnpm --filter @trionlabs/8183-console import:mainnet-admin mnemonic
+  unset ADMIN_MNEMONIC
 elif confirm "Does your key start with S?"; then
   warn "The raw S... key will be stored in the ignored, permission-restricted .stellar directory."
   stellar --config-dir "$CONFIG_DIR" keys add canary-admin --secret-key
@@ -211,7 +217,7 @@ else
   read -rs ADMIN_HEX
   printf '\n'
   printf '%s\n' "$ADMIN_HEX" | \
-    pnpm --filter @trionlabs/8183-console import:mainnet-admin
+    pnpm --filter @trionlabs/8183-console import:mainnet-admin hex
   unset ADMIN_HEX
 fi
 

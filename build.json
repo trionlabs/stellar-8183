@@ -1,17 +1,18 @@
 {
   "project": "stellar-8183",
-  "sourceCommit": "47ee1f0f973e4e18421612c1150f9912180c86b0",
+  "sourceCommit": "eb601c3cd8f4c638b0cfd55b038f52ee09a71407",
   "sourceBranch": "feat/agent-commerce-console",
-  "publishedAt": "2026-10-26T14:31:27.441Z",
+  "publishedAt": "2026-10-27T12:37:30.927Z",
   "network": "testnet-preview",
+  "mainnetCanaryImportSupported": true,
   "independentPilotCompleted": false,
-  "ciRun": "https://github.com/trionlabs/stellar-8183/actions/runs/40339685214",
+  "ciRun": "https://github.com/trionlabs/stellar-8183/actions/runs/40503357860",
   "files": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "assets/index-CgGfgvgW.js": "94982c0c223fba6800c2cdc01aa5caf57878c4d34c2a6a94c5f2d6c35419cb32",
     "assets/index-CmtL-AMd.css": "39d9ca7d6aa0386eba31fe70832d24eee3f817bdc7dedf568f388fdd9d1c2f13",
-    "assets/index-D7FA4L0x.js": "6e900b52d95d1672e8f8f94d00c5200c42eae1623744ce416836c49272597d43",
     "assets/sac-spec-DbwpsrbI.js": "f3979a3032eff914bd4337b4d04f68f9e07844a9fcb00c259fe379f57b440827",
-    "index.html": "3bca10bbcd681b5130e915ef119648cdc9b00079b48b7e742c1df48297fa0a26",
+    "index.html": "5b2aeeb5cdfa213c80d050b1bf1d4be7dd2a7d2085e24a17105126ea7073bc88",
     "mark.svg": "5662be9ad6c6fb05ecade8237640964025a32cea5a684b19046c95419b52755f",
     "testnet-profile.json": "f46fbb5d43d5a99739b00b083f05bc998f8b1ab1cc9fa6840fe9ff9a07163ecc"
   }

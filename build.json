@@ -1,12 +1,12 @@
 {
   "project": "stellar-8183",
-  "sourceCommit": "2307b0aa04d2152ad96301b91cb50e1fce80c8eb",
+  "sourceCommit": "963c4c551139ce90a671ee46e94b7586749ff2ca",
   "sourceBranch": "feat/agent-commerce-console",
-  "publishedAt": "2026-10-27T14:19:04.058Z",
+  "publishedAt": "2026-10-27T14:35:48.842Z",
   "network": "testnet-preview",
   "mainnetCanaryImportSupported": true,
   "independentPilotCompleted": false,
-  "ciRun": "https://github.com/trionlabs/stellar-8183/actions/runs/40519348176",
+  "ciRun": "https://github.com/trionlabs/stellar-8183/actions/runs/40521999444",
   "files": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "assets/index-B9Dsrb_l.css": "907fb7534f4e66a8e1df5f6b7b6c5c2994288a48fc141b8adfdb51fb96daa84f",

@@ -7,7 +7,11 @@ import {
 } from "@stellar/stellar-sdk";
 import { LiveCommerce, verifyOnChain } from "../src/live.js";
 import { assertReviewedJob } from "../src/model.js";
-import { resolveAgent } from "../src/identity.js";
+import {
+  defaultIdentityRegistry,
+  resolveAgent,
+  STELLAR_8004_IDENTITY_REGISTRIES,
+} from "../src/identity.js";
 import { JobMemory, type LocalStorage } from "../src/storage.js";
 import { verifyBalanceAccounting } from "../src/accounting.js";
 import { makeReceipt } from "../src/receipt.js";
@@ -136,6 +140,16 @@ describe("persistent identity snapshots", () => {
 });
 
 describe("8004 contract reads", () => {
+  it("defaults each network to the canonical Stellar8004 identity registry", () => {
+    expect(defaultIdentityRegistry("testnet")).toBe(
+      "CDE3K4COIAGWNNJQQLL26SYI3KBJF5FUDHXG5FA6GYDJCG7T5V7FIWZH",
+    );
+    expect(defaultIdentityRegistry("mainnet-canary")).toBe(
+      "CBGPDCJIHQ32G42BE7F2CIT3YW6XRN5ED6GQJHCRZSNAYH6TGMCL6X35",
+    );
+    expect(Object.isFrozen(STELLAR_8004_IDENTITY_REGISTRIES)).toBe(true);
+  });
+
   it("encodes the real u32 profile and records wallet and ledger", async () => {
     const simulation = vi
       .spyOn(rpc.Server.prototype, "simulateTransaction")

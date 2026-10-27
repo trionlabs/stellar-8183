@@ -1,6 +1,10 @@
 import { Buffer } from "buffer";
 import { commitmentBytes, commitmentToHex } from "@trionlabs/stellar-8183";
-import { resolveAgent } from "./identity.js";
+import {
+  assertBinding,
+  defaultIdentityRegistry,
+  resolveAgent,
+} from "./identity.js";
 import {
   LiveCommerce,
   ConfirmedJobReadError,
@@ -29,7 +33,6 @@ import {
 import { encodeReceipt, makeReceipt, parseReceipt } from "./receipt.js";
 import { connectWallet } from "./wallet.js";
 import { JobMemory } from "./storage.js";
-import { assertBinding } from "./identity.js";
 import { RecoveryJournal } from "./recovery.js";
 import { VERIFIED_TESTNET_PROFILE } from "./deployment.js";
 import "./style.css";
@@ -702,9 +705,10 @@ function importIdentity(): void {
     );
     return;
   }
+  const registry = defaultIdentityRegistry(profile.id);
   const dialog = modal(
     "Import an 8004 provider",
-    `<form><p class="hint">Reads the Stellar 8004 v0.1 get_agent_wallet(u32) profile. Identity is not proof of work quality. You will review and sign a separate set-provider action.</p><label>Identity Registry contract<input name="registry" required placeholder="C..." /></label><label>Agent ID<input name="agentId" required inputmode="numeric" /></label><button class="primary full">Resolve wallet</button></form>`,
+    `<form><p class="hint">Reads <code>get_agent_wallet(u32)</code> directly from the canonical Stellar8004 v0.1 registry for this network. No explorer API or website is required. Identity is not proof of work quality.</p><label>Identity Registry contract<input name="registry" required value="${esc(registry)}" aria-describedby="registry-help" /></label><p id="registry-help" class="hint">Canonical registry selected by default. Change this only for a reviewed alternate deployment. <a href="${explorer(profile, "contract", registry)}" target="_blank" rel="noopener noreferrer">Verify registry &nearr;</a></p><label>Agent ID<input name="agentId" required inputmode="numeric" /></label><button class="primary full">Resolve wallet</button></form>`,
   );
   dialog.querySelector("form")!.addEventListener("submit", (event) => {
     event.preventDefault();

@@ -15,6 +15,17 @@ import {
   type Profile,
 } from "./model.js";
 
+// Canonical Stellar8004 v0.1 deployments from the upstream SDK config at
+// trionlabs/stellar-8004 commit 5920792f5fd1467c9bb9f9f801ac579dbfdf59e3.
+export const STELLAR_8004_IDENTITY_REGISTRIES = Object.freeze({
+  testnet: "CDE3K4COIAGWNNJQQLL26SYI3KBJF5FUDHXG5FA6GYDJCG7T5V7FIWZH",
+  "mainnet-canary": "CBGPDCJIHQ32G42BE7F2CIT3YW6XRN5ED6GQJHCRZSNAYH6TGMCL6X35",
+}) satisfies Readonly<Record<Profile["id"], string>>;
+
+export function defaultIdentityRegistry(network: Profile["id"]): string {
+  return contract(STELLAR_8004_IDENTITY_REGISTRIES[network]);
+}
+
 export async function resolveAgent(
   profile: Profile,
   reference: AgentRef,

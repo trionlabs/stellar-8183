@@ -75,10 +75,20 @@ Do not publish `.stellar/`, signing traces, or raw key command output.
 
 ## Optional Stellar 8004 identity import
 
-Select an Open job, then Import provider from 8004. Supply the network's
-Identity Registry and numeric agent ID. The pinned Stellar v0.1 profile calls
-`get_agent_wallet(u32)` directly through RPC. An absent wallet or archived
-registry fails before funding. The proposed provider is shown before signing.
+Select an Open job, then Import provider from 8004 and supply the numeric agent
+ID. The Console preselects the canonical Stellar8004 v0.1 Identity Registry for
+the active network and permits an explicit override for a reviewed alternate
+deployment. It calls `get_agent_wallet(u32)` directly through Stellar RPC. An
+absent wallet or archived registry fails before funding. The proposed provider
+is shown before signing.
+
+The pinned defaults are testnet
+`CDE3K4COIAGWNNJQQLL26SYI3KBJF5FUDHXG5FA6GYDJCG7T5V7FIWZH` and mainnet
+`CBGPDCJIHQ32G42BE7F2CIT3YW6XRN5ED6GQJHCRZSNAYH6TGMCL6X35`. They match the
+upstream SDK configuration at `trionlabs/stellar-8004` commit
+`5920792f5fd1467c9bb9f9f801ac579dbfdf59e3`. Both live contracts report version
+`0.1.0` and the recorded deployment Wasm hash
+`f25af88f3e26f603a6569b2554b3f85ccc8af9a88f3b904fba873637c64eb2ab`.
 
 Recent live job IDs, terminal transaction pointers, and advisory identity
 snapshots persist in local browser storage, scoped by network, kernel, and
@@ -184,7 +194,7 @@ Run the local terminal wizard:
 ```
 
 The wizard imports one funded identity through a hidden Stellar CLI prompt and
-uses it only to transfer a capped 16 XLM into four isolated, generated
+uses it only to transfer at most 58 XLM into four isolated, generated
 secure-store canary accounts. The recovered account never becomes the contract
 admin, issuer, or a job role. The wizard requires confirmation before every
 group of Mainnet writes. Never place signing material in `.env` or chat. The

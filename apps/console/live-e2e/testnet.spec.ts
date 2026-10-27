@@ -12,6 +12,7 @@ import {
   TransactionBuilder,
 } from "@stellar/stellar-sdk";
 import { inspectInvocation } from "@trionlabs/stellar-8183";
+import { defaultIdentityRegistry } from "../src/identity.js";
 import { LiveCommerce } from "../src/live.js";
 import { parseReceipt, type ReceiptFile } from "../src/receipt.js";
 import { validateProfile, type Profile } from "../src/model.js";
@@ -420,6 +421,18 @@ test("author-run live browser settlement through Freighter's message protocol", 
       await expect(page.locator("#notice")).toContainText("Job created", {
         timeout: 60_000,
       });
+    }
+    if (path === "complete") {
+      await page
+        .getByRole("button", { name: "Import provider from 8004" })
+        .click();
+      await expect(page.getByLabel("Identity Registry contract")).toHaveValue(
+        defaultIdentityRegistry("testnet"),
+      );
+      await expect(page.getByRole("dialog")).toContainText(
+        "Canonical registry selected by default",
+      );
+      await page.getByRole("button", { name: "Close dialog" }).click();
     }
     if (path === "complete") await recoverProviderAssignment(description);
     else await act("set_provider", "Open");

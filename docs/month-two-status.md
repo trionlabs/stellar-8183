@@ -1,8 +1,9 @@
 # Month-two implementation status
 
-This is a testnet implementation and technical validation report. It is not a
-claim that the follow-on grant, customer discovery, or mainnet milestone is
-complete. The historical v0.1 release and immutable contracts are unchanged.
+This is a follow-on implementation and technical validation report. The
+Mainnet compatibility canary is complete, but the independent customer pilot
+and follow-on grant are not. The historical v0.1 release and immutable contract
+profile are unchanged.
 
 The [hosted Console](https://trionlabs.github.io/stellar-8183/) is available for
 review. Its [build metadata](https://trionlabs.github.io/stellar-8183/build.json)
@@ -16,8 +17,10 @@ refer to their own commit; inspect the hashes when comparing older run results.
   bounded fees, local file hashing, and portable receipts. Mainnet requires an
   explicitly reviewed canary profile; no local job or balance substitute exists.
 - Optional direct-contract Stellar 8004 lookup using `get_agent_wallet(u32)`.
-  The wallet is rechecked before funding; settlement does not read the registry.
-  A provider address can be supplied directly. No external project is modified.
+  The canonical identity registry is selected by network by default and may be
+  explicitly overridden. The wallet is rechecked before funding; settlement
+  does not read the registry. A provider address can be supplied directly. No
+  external project is modified.
 - Public job pointers and advisory bindings survive browser reloads. This is
   local history, not a complete wallet index. Receipts can be checked separately.
 - Fresh DEMO8183 testnet deployment of the existing kernel and SLA hook, with
@@ -32,12 +35,16 @@ refer to their own commit; inspect the hashes when comparing older run results.
 - A terminal-only Mainnet canary runner with named local CLI signing,
   deterministic planning, deployment recovery, three lifecycle paths, and
   public evidence assembly in `scripts/mainnet-canary-wizard.sh`.
+- A verified Mainnet canary using the valueless `DEMO8183` asset, with public
+  contract IDs, reproducible Wasm hashes, decoded transactions, portable
+  receipts, and completion, rejection, and expired-refund evidence in
+  `docs/mainnet-canary-evidence.md`.
 - Browser lifecycle tests, wallet/security regression tests, static build and
-  browser tests in CI, and a first-publication GitHub Pages script.
+  browser tests in CI, and a fail-closed, repeatable GitHub Pages publisher.
 
 ## Verification
 
-The current checks cover 29 Rust tests, 161 JavaScript/TypeScript tests,
+The current checks cover 29 Rust tests, 176 JavaScript/TypeScript tests,
 and six browser tests. An additional opt-in author-run browser suite executes
 three real testnet jobs and injects RPC recovery failures. The latest local
 source-bound run used commit `dfc993333893ec731622670589cec5499edaeee9` and
@@ -73,20 +80,15 @@ tests cover the fixes, including ignored/untracked Cargo build inputs.
 Funding review, identity persistence, and toolchain/balance evidence gaps were
 corrected. Balance snapshots remain captured observations; arithmetic and
 referenced transfers are verified, but absolute historical balances are not
-authenticated by ledger proofs. Customer validation and mainnet remain pending.
+authenticated by ledger proofs. Customer validation remains pending. The
+Mainnet canary is verified but is not a production deployment or audit.
 
 ## Required external work
 
 1. Conduct the independent pilot using `docs/month-two-pilot.md`. No participant
    confirmation, interview, consent, independent signature, usability metric, or
    adoption decision has been invented. Author-run jobs do not count toward it.
-2. Use the Chapter Lead-approved valueless-canary boundary and the local
-   terminal runbook. No Mainnet signer, asset, contract, or transaction is
-   claimed until public evidence exists.
-3. Deploy the same pinned Wasm with a dedicated non-redeemable
-   asset, capture mainnet-specific evidence, and verify it with `verify:canary`.
-   The testnet snapshot must not be relabeled as mainnet evidence.
-4. Supply the actual submission/start dates and send the final SOW/CDP through
+2. Supply the actual submission/start dates and send the final SOW/CDP through
    the agreed coordinator process. Nothing has been messaged or submitted to
    Irem or the grant team by this implementation.
 

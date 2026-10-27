@@ -40,8 +40,9 @@ opens on the verified Stellar Testnet deployment. See the
 [implementation status](docs/month-two-status.md) and
 [public testnet evidence](deployments/month-two/README.md).
 It adds wallet-based job actions, optional read-only Stellar 8004 identity
-import, deterministic outcome receipts, receipt verification, local opt-in
-metrics, and browser tests. The v0.1 contract ABI is unchanged.
+import with canonical network defaults and an explicit registry override,
+deterministic outcome receipts, receipt verification, local opt-in metrics, and
+browser tests. The v0.1 contract ABI is unchanged.
 
 ```sh
 corepack pnpm@11.9.0 install --frozen-lockfile
@@ -53,10 +54,10 @@ without a wallet; creating or changing a job requires Freighter approval. The
 connected wallet signs and pays its own transaction fees. See the Console guide for
 testnet setup, pilot instructions, and the local Mainnet canary runbook.
 
-The mainnet-canary evidence profile is implemented separately from v0.1's
-testnet release schema. No Mainnet deployment or independent customer pilot is
-claimed until public evidence is produced. The audit restriction still applies
-to valuable assets and production use.
+The [verified Mainnet canary](docs/mainnet-canary-evidence.md) uses the
+non-redeemable `DEMO8183` asset and is recorded separately from v0.1's Testnet
+release schema. It proves Mainnet compatibility, not production readiness or
+audit coverage. The independent customer pilot remains pending.
 
 ## Live submission demo
 

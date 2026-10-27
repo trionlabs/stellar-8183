@@ -201,9 +201,18 @@ if stellar --config-dir "$CONFIG_DIR" keys address canary-admin >/dev/null 2>&1;
   note "canary-admin already exists: $(stellar --config-dir "$CONFIG_DIR" keys address canary-admin)"
 elif confirm "Do you have a 12-24 word seed phrase?"; then
   stellar --config-dir "$CONFIG_DIR" keys add canary-admin --secure-store
-else
-  warn "A raw S... key will be stored in the ignored, permission-restricted .stellar directory because Stellar CLI secure-store import currently supports seed phrases only."
+elif confirm "Does your key start with S?"; then
+  warn "The raw S... key will be stored in the ignored, permission-restricted .stellar directory."
   stellar --config-dir "$CONFIG_DIR" keys add canary-admin --secret-key
+else
+  say "Hex import accepts exactly 64 hexadecimal characters (32 bytes), optionally prefixed with 0x."
+  warn "This must be an Ed25519 seed for the funded Stellar account. An Ethereum/secp256k1 private key does not control the same Stellar address."
+  printf '  %sPaste the hexadecimal Ed25519 seed:%s ' "$BOLD" "$RESET"
+  read -rs ADMIN_HEX
+  printf '\n'
+  printf '%s\n' "$ADMIN_HEX" | \
+    pnpm --filter @trionlabs/8183-console import:mainnet-admin
+  unset ADMIN_HEX
 fi
 
 stage "Create isolated role accounts"

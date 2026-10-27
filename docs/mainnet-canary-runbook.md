@@ -7,7 +7,7 @@ This procedure deploys and exercises the pinned 8183 kernel and SLA hook from a 
 - Real XLM is used only for account reserves and transaction fees.
 - `DEMO8183` is a new, non-redeemable asset with no claim of value.
 - Do not use USDC, distribute `DEMO8183`, or reuse production accounts.
-- Signing identities are named `canary-admin`, `canary-client`, `canary-provider`, and `canary-evaluator`. Generated role keys use the OS secure store. An imported raw `S...` admin key uses Stellar CLI's permission-restricted, ignored identity file because secure-store import currently accepts seed phrases only.
+- Signing identities are named `canary-admin`, `canary-client`, `canary-provider`, and `canary-evaluator`. Generated role keys use the OS secure store. Imported raw `S...` keys and 32-byte hexadecimal Ed25519 seeds use Stellar CLI's permission-restricted, ignored identity file because secure-store import currently accepts seed phrases only. Ethereum/secp256k1 private keys are not Stellar account keys.
 - Never place a seed, secret key, or signing command in `.env`.
 
 ## Recommended Procedure

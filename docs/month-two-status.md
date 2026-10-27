@@ -1,9 +1,10 @@
 # Month-two implementation status
 
-This is a follow-on implementation and technical validation report. The
-Mainnet compatibility canary is complete, but the independent customer pilot
-and follow-on grant are not. The historical v0.1 release and immutable contract
-profile are unchanged.
+This is a follow-on implementation and technical validation report. The Mainnet
+compatibility canary and coordinator-approved independent-pilot proxy
+transactions are complete. Direct customer interviews, observed onboarding, and
+the adoption decision remain pending. The historical v0.1 release and immutable
+contract profile are unchanged.
 
 The [hosted Console](https://trionlabs.github.io/stellar-8183/) is available for
 review. Its [build metadata](https://trionlabs.github.io/stellar-8183/build.json)
@@ -40,12 +41,16 @@ refer to their own commit; inspect the hashes when comparing older run results.
   contract IDs, reproducible Wasm hashes, decoded transactions, portable
   receipts, and completion, rejection, and expired-refund evidence in
   `docs/mainnet-canary-evidence.md`.
+- Pseudonymous independent-pilot transaction evidence for jobs 34-39, using a
+  fresh disposable Testnet wallet and the coordinator-approved proxy execution
+  exception. The evidence explicitly records that the participant did not
+  personally sign and publishes no participant name or secret.
 - Browser lifecycle tests, wallet/security regression tests, static build and
   browser tests in CI, and a fail-closed, repeatable GitHub Pages publisher.
 
 ## Verification
 
-The current checks cover 29 Rust tests, 179 JavaScript/TypeScript and evidence tests,
+The current checks cover 29 Rust tests, 180 JavaScript/TypeScript and evidence tests,
 and six browser tests. An additional opt-in author-run browser suite executes
 three real Testnet jobs and injects RPC recovery failures. The latest
 source-bound run used commit `963c4c551139ce90a671ee46e94b7586749ff2ca`
@@ -85,10 +90,10 @@ Mainnet canary is verified but is not a production deployment or audit.
 
 ## Required external work
 
-1. Conduct the independent pilot using `docs/month-two-pilot.md`. One participant
-   has confirmed willingness to participate, but no interview, consent record,
-   independent signature, usability metric, or adoption decision has been
-   published. Author-run jobs do not count toward it.
+1. Complete the customer-development portion of `docs/month-two-pilot.md`. The
+   coordinator-approved proxy transaction paths are published, but interviews,
+   observed onboarding metrics, blocker findings, and a continue/change/stop
+   decision have not been invented and remain pending.
 2. Supply the actual submission/start dates and send the final SOW/CDP through
    the agreed coordinator process. Nothing has been messaged or submitted to
    Irem or the grant team by this implementation.

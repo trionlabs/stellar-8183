@@ -1,9 +1,9 @@
 # Month-two grant evidence
 
 Start with `grant-evidence-index.json`. It separates the current source-bound
-Testnet engineering demo, the verified Mainnet canary, and the independent pilot
-that is recruited but not yet conducted. This distinction prevents an
-author-controlled wallet from being misrepresented as customer evidence.
+Testnet engineering demo, the verified Mainnet canary, and the pseudonymous
+independent pilot. The pilot evidence discloses the coordinator-approved proxy
+execution mode and does not claim that the participant personally signed.
 
 `testnet-demo-evidence.json` records the deployed Console at commit
 `963c4c551139ce90a671ee46e94b7586749ff2ca` and jobs 31-33. The job states were
@@ -14,6 +14,13 @@ and anonymous access is verified.
 The Mainnet bundle is tracked at
 `../../artifacts/mainnet-canary/canary-evidence.json`; its archive and verifier
 instructions are documented in `../../docs/mainnet-canary-evidence.md`.
+
+`independent-pilot-evidence.json` contains six real Testnet jobs from a fresh
+disposable participant-reference wallet: two completions, two funded rejections,
+and two expired refunds. The unaffiliated participant and coordinator approvals
+were reported by the project lead and remain access-controlled. The public JSON
+contains no participant name or secret. The proxy transaction paths are complete;
+interviews, observed onboarding metrics, and the adoption decision are not.
 
 ## Historical author-run Testnet evidence
 

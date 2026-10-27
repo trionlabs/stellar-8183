@@ -25,11 +25,22 @@
     "assetHasClaimedValue": false
   },
   "independentPilot": {
-    "status": "participant-confirmed-sessions-pending",
+    "status": "proxy-transaction-paths-complete",
     "participantReference": "pilot-participant-01",
     "confirmation": "Reported by the project lead; original confirmation remains access-controlled",
-    "requiredEvidencePath": "docs/month-two-pilot.md",
-    "independentParticipant": null,
-    "warning": "Do not mark complete until the participant controls the wallet, signs the required Testnet transactions, and the observed sessions and interviews are recorded."
+    "evidencePath": "deployments/month-two/independent-pilot-evidence.json",
+    "evidenceSha256": "cd7a43e24e3ef304eeafd3396984ffe7b823367020d7ef82670c4f711a94bbf2",
+    "independentParticipant": true,
+    "publicParticipantName": null,
+    "unaffiliatedWithTrionLabs": true,
+    "executionMode": "coordinator-approved-proxy",
+    "participantPersonallySignedTransactions": false,
+    "transactionPathsComplete": true,
+    "customerObservationComplete": false,
+    "remainingEvidence": [
+      "customer interviews",
+      "observed onboarding measurements",
+      "continue/change/stop decision"
+    ]
   }
 }

@@ -25,6 +25,7 @@ test("grant index authenticates the published Testnet and Mainnet JSON", () => {
   const index = read("deployments/month-two/grant-evidence-index.json");
   const testnet = read(index.testnetEngineeringDemo.evidencePath);
   const mainnet = read(index.mainnetCanary.evidencePath);
+  const pilot = read(index.independentPilot.evidencePath);
 
   assert.equal(
     sha256(index.testnetEngineeringDemo.evidencePath),
@@ -38,14 +39,63 @@ test("grant index authenticates the published Testnet and Mainnet JSON", () => {
     sha256(index.mainnetCanary.transactionArchivePath),
     index.mainnetCanary.transactionArchiveSha256,
   );
+  assert.equal(
+    sha256(index.independentPilot.evidencePath),
+    index.independentPilot.evidenceSha256,
+  );
   assert.equal(testnet.independentParticipant, false);
   assert.equal(mainnet.independentParticipant, false);
   assert.equal(mainnet.profile.id, "mainnet-canary");
-  assert.equal(index.independentPilot.independentParticipant, null);
+  assert.equal(index.independentPilot.independentParticipant, true);
   assert.equal(
     index.independentPilot.status,
-    "participant-confirmed-sessions-pending",
+    "proxy-transaction-paths-complete",
   );
+  assert.equal(pilot.publicParticipantName, null);
+  assert.equal(pilot.executionMode, "coordinator-approved-proxy");
+  assert.equal(pilot.participantPersonallySignedTransactions, false);
+});
+
+test("independent pilot JSON discloses proxy custody and verifies six receipts", () => {
+  const evidence = read(
+    "deployments/month-two/independent-pilot-evidence.json",
+  );
+  assert.equal(evidence.independentParticipant, true);
+  assert.equal(evidence.unaffiliatedWithTrionLabs, true);
+  assert.equal(evidence.keyCustody.generatedByProjectOperator, true);
+  assert.equal(evidence.keyCustody.secretPublished, false);
+  assert.equal(evidence.scenarios.length, 6);
+  assert.deepEqual(
+    evidence.scenarios.map(({ path, receipt }) => [
+      path,
+      receipt.receipt.state,
+      receipt.receipt.terminalTransaction.method,
+    ]),
+    [
+      ["completion", "Completed", "complete"],
+      ["funded-rejection", "Rejected", "reject"],
+      ["expired-refund", "Expired", "claim_refund"],
+      ["completion", "Completed", "complete"],
+      ["funded-rejection", "Rejected", "reject"],
+      ["expired-refund", "Expired", "claim_refund"],
+    ],
+  );
+
+  for (const scenario of evidence.scenarios) {
+    assert.equal(scenario.balanceAccounting.terminal.escrow, "0");
+    assert.equal(scenario.jobId, scenario.receipt.receipt.jobId);
+    assert.equal(
+      createHash("sha256")
+        .update(canonical(scenario.receipt.receipt))
+        .digest("hex"),
+      scenario.receipt.sha256,
+    );
+    assert.ok(
+      evidence.explorerLinks.jobs[scenario.jobId].endsWith(
+        scenario.receipt.receipt.terminalTransaction.hash,
+      ),
+    );
+  }
 });
 
 test("Testnet demo receipts cover each terminal path without a pilot claim", () => {

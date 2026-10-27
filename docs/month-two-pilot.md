@@ -1,11 +1,12 @@
 # Independent client pilot runbook
 
-Status: participant confirmed; sessions not conducted. The project lead reported
-written confirmation from one unaffiliated participant on 2026-10-27. The
-original confirmation remains access-controlled. These instructions and blank
-recording fields are not customer evidence. The participant must still complete
-the observed sessions and sign the required Testnet transactions using a wallet
-they control.
+Status: coordinator-approved proxy transaction paths complete; customer sessions
+not conducted. The project lead reported written confirmation from one
+unaffiliated participant and coordinator approval for pseudonymous proxy
+execution on 2026-10-27. The original confirmations remain access-controlled.
+Jobs 34-39 cover two completions, two funded rejections, and two expired refunds
+from a fresh disposable Testnet wallet. The public evidence explicitly records
+that the participant did not personally sign the transactions.
 
 ## Before the session
 
@@ -60,14 +61,22 @@ should be able to distinguish participant actions from team actions.
 
 ## Session record
 
-- Date / participant reference / consent reference:
-- Workflow and agreed evaluation criteria:
-- Public client wallet (only with permission):
-- Session type: baseline / final:
-- First funded job time; metric export reference:
-- Six job IDs, paths, transaction/receipt references:
-- Failures, assistance provided, and issue-to-fix references:
-- Continue / change / stop decision and participant's reason:
+- Date / participant reference / consent reference: 2026-10-27 /
+  `pilot-participant-01` / private confirmation reported by project lead.
+- Workflow and agreed evaluation criteria: coordinator-approved proxy execution
+  of all three escrow terminal paths; no participant usability observation.
+- Public client wallet (pseudonymous):
+  `GDV2GOFQB2VPZBRC3TBLSYAGYFJYQI5KQ3OPELMG55NVWA4Y73BJ5VXR`.
+- Session type: proxy transaction execution; baseline and final customer sessions
+  remain pending.
+- First funded job time; metric export reference: not measured because proxy
+  execution is not an onboarding session.
+- Six job IDs, paths, transaction/receipt references: jobs 34-39 in
+  `deployments/month-two/independent-pilot-evidence.json`.
+- Failures, assistance provided, and issue-to-fix references: no protocol failure
+  occurred; customer assistance and usability blockers were not measured.
+- Continue / change / stop decision and participant's reason: pending direct
+  participant feedback.
 
 Export metrics locally and share only with consent. Record interviews and session
 evidence in access-controlled storage when appropriate. Leave the Ambassador's

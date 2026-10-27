@@ -194,7 +194,7 @@ cd "$REPO_ROOT"
 banner "Stellar 8183 Mainnet canary"
 
 stage "Import the funded Mainnet account"
-say "The funded account becomes canary-admin and pays only role funding, reserves, and canary fees."
+say "The funded account is funding-only. It transfers a capped 16 XLM to fresh canary accounts and is never the contract admin, issuer, client, provider, or evaluator."
 say "Enter the key only into the hidden Stellar CLI prompt. Never paste it into chat or .env."
 mkdir -p "$CONFIG_DIR"
 if stellar --config-dir "$CONFIG_DIR" keys address canary-admin >/dev/null 2>&1; then
@@ -221,9 +221,9 @@ else
   unset ADMIN_HEX
 fi
 
-stage "Create isolated role accounts"
-say "The client, provider, and evaluator keys are generated directly in the OS credential store."
-for alias in canary-client canary-provider canary-evaluator; do
+stage "Create isolated canary accounts"
+say "The deployer, client, provider, and evaluator keys are generated directly in the OS credential store."
+for alias in canary-deployer canary-client canary-provider canary-evaluator; do
   if stellar --config-dir "$CONFIG_DIR" keys address "$alias" >/dev/null 2>&1; then
     note "$alias already exists: $(stellar --config-dir "$CONFIG_DIR" keys address "$alias")"
     continue
@@ -232,12 +232,12 @@ for alias in canary-client canary-provider canary-evaluator; do
 done
 
 stage "Fund role accounts"
-say "The admin account will create or top up the three role accounts to 2 XLM each and retain at least 6 XLM."
-for alias in canary-admin canary-client canary-provider canary-evaluator; do
+say "The funding-only account will provision the deployer with 10 XLM and the three job roles with 2 XLM each."
+for alias in canary-admin canary-deployer canary-client canary-provider canary-evaluator; do
   printf '  %-20s %s\n' "$alias" "$(stellar --config-dir "$CONFIG_DIR" keys address "$alias")"
 done
 warn "This stage submits Mainnet transactions and spends real XLM."
-confirm "Create or fund the three isolated role accounts now?" || exit 1
+confirm "Transfer at most 16 XLM into the four isolated canary accounts now?" || exit 1
 pnpm --filter @trionlabs/8183-console setup:mainnet --fund-mainnet-roles
 
 stage "Validate the pinned canary build"

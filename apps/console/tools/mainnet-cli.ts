@@ -14,7 +14,7 @@ import { assertNoSecretEnvironment } from "../src/mainnet-authorization.js";
 const execute = promisify(execFile);
 
 export const MAINNET_ALIASES = {
-  admin: "canary-admin",
+  admin: "canary-deployer",
   client: "canary-client",
   provider: "canary-provider",
   evaluator: "canary-evaluator",

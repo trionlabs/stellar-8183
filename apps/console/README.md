@@ -183,10 +183,12 @@ Run the local terminal wizard:
 ./scripts/mainnet-canary-wizard.sh
 ```
 
-The wizard imports one funded `canary-admin` identity through a hidden Stellar
-CLI prompt, generates three isolated secure-store role identities, funds them,
-and requires confirmation before every group of Mainnet writes. Never place
-signing material in `.env` or chat. The read-only gate can also be run directly:
+The wizard imports one funded identity through a hidden Stellar CLI prompt and
+uses it only to transfer a capped 16 XLM into four isolated, generated
+secure-store canary accounts. The recovered account never becomes the contract
+admin, issuer, or a job role. The wizard requires confirmation before every
+group of Mainnet writes. Never place signing material in `.env` or chat. The
+read-only gate can also be run directly:
 
 ```sh
 corepack pnpm@11.9.0 --filter @trionlabs/8183-console \

@@ -13,7 +13,7 @@ const configDir = resolve(root, ".stellar/mainnet-canary");
 const privateDir = resolve(root, "deployments/private");
 const defaultAuthorization = resolve(privateDir, "mainnet-authorization.json");
 const aliases = [
-  "canary-admin",
+  "canary-deployer",
   "canary-client",
   "canary-provider",
   "canary-evaluator",

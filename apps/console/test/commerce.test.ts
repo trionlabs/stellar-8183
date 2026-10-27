@@ -7,7 +7,12 @@ import {
   TransactionBuilder,
 } from "@stellar/stellar-sdk";
 import { commitmentToHex, commitmentBytes } from "@trionlabs/stellar-8183";
-import { availableActions, amount, validateProfile } from "../src/model.js";
+import {
+  availableActions,
+  amount,
+  recommendedAction,
+  validateProfile,
+} from "../src/model.js";
 import { assertBinding } from "../src/identity.js";
 import { assertSignedTransaction } from "../src/live.js";
 import {
@@ -39,6 +44,46 @@ function setup() {
 const hash = commitmentToHex(commitmentBytes("artifact bytes"));
 
 describe("job lifecycle and role permissions", () => {
+  it("recommends the clearest safe action for each lifecycle step", async () => {
+    const { r, id } = setup();
+    let job = r.read(id).job;
+    expect(
+      recommendedAction(job, availableActions(job, accounts.client, r.now)),
+    ).toBe("set_budget");
+
+    await r.act(id, "set_budget", accounts.client, { budget: 10n });
+    job = r.read(id).job;
+    expect(
+      recommendedAction(job, availableActions(job, accounts.client, r.now)),
+    ).toBe("fund");
+
+    await r.act(id, "fund", accounts.client);
+    job = r.read(id).job;
+    expect(
+      recommendedAction(job, availableActions(job, accounts.provider, r.now)),
+    ).toBe("submit");
+
+    await r.act(id, "submit", accounts.provider, { commitment: hash });
+    job = r.read(id).job;
+    expect(
+      recommendedAction(job, availableActions(job, accounts.evaluator, r.now)),
+    ).toBe("complete");
+
+    const expired = setup();
+    await expired.r.act(expired.id, "set_budget", accounts.client, {
+      budget: 10n,
+    });
+    await expired.r.act(expired.id, "fund", accounts.client);
+    expired.r.now += 60;
+    job = expired.r.read(expired.id).job;
+    expect(
+      recommendedAction(
+        job,
+        availableActions(job, accounts.provider, expired.r.now),
+      ),
+    ).toBe("claim_refund");
+  });
+
   it.each(["complete", "reject", "claim_refund"] as const)(
     "conserves funds through %s, then forbids reuse",
     async (final) => {

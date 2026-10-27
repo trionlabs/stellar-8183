@@ -31,6 +31,15 @@ declare global {
 const execute = promisify(execFile);
 const root = resolve(import.meta.dirname, "../../..");
 type Role = "client" | "provider" | "evaluator";
+const actionNames = {
+  set_provider: "Set provider",
+  set_budget: "Set budget",
+  fund: "Fund escrow",
+  submit: "Submit work",
+  complete: "Approve & pay",
+  reject: "Reject job",
+  claim_refund: "Claim expired refund",
+} as const;
 
 test("author-run live browser settlement through Freighter's message protocol", async ({
   page,
@@ -290,7 +299,12 @@ test("author-run live browser settlement through Freighter's message protocol", 
     await page.getByRole("button", { name: "Continue to wallet" }).click();
   };
   const act = async (action: string, state: string) => {
-    await page.getByLabel("Next step").selectOption(action);
+    await page
+      .getByRole("button", {
+        name: actionNames[action as keyof typeof actionNames],
+        exact: true,
+      })
+      .click();
     if (action === "set_provider")
       await page
         .getByLabel("Provider address", { exact: true })
@@ -306,7 +320,9 @@ test("author-run live browser settlement through Freighter's message protocol", 
   };
   const recoverProviderAssignment = async (description: string) => {
     dropConfirmation = true;
-    await page.getByLabel("Next step").selectOption("set_provider");
+    await page
+      .getByRole("button", { name: "Set provider", exact: true })
+      .click();
     await page
       .getByLabel("Provider address", { exact: true })
       .fill(keys.provider.publicKey());
@@ -324,7 +340,9 @@ test("author-run live browser settlement through Freighter's message protocol", 
     await page.reload();
     await configure();
     await connect("client", description);
-    await expect(page.getByLabel("Next step")).toHaveCount(0);
+    await expect(
+      page.getByRole("group", { name: "Choose next action" }),
+    ).toHaveCount(0);
     await expect(
       page.getByRole("button", { name: "Import provider from 8004" }),
     ).toHaveCount(0);

@@ -22,6 +22,7 @@ import {
   contract,
   displayAmount,
   explorer,
+  recommendedAction,
   terminal,
   uint,
   validateProfile,
@@ -107,6 +108,36 @@ const labels: Record<Action, string> = {
   reject: "Reject job",
   claim_refund: "Claim expired refund",
 };
+const actionDescriptions: Record<Action, string> = {
+  set_provider: "Choose the wallet that will deliver this job.",
+  set_budget: "Agree the amount before any funds move.",
+  fund: "Lock the agreed amount in the escrow contract.",
+  submit: "Commit the delivered work hash for evaluation.",
+  complete: "Accept the delivery and pay the provider.",
+  reject: "Reject the job and return any funded escrow.",
+  claim_refund: "Return expired escrow to the recorded client.",
+};
+
+function actorRole(job: RecordJob["job"]): string {
+  const roles = [
+    actor() === job.client ? "Client" : "",
+    actor() === job.provider ? "Provider" : "",
+    actor() === job.evaluator ? "Evaluator" : "",
+  ].filter(Boolean);
+  return roles.length ? roles.join(" + ") : "Public caller";
+}
+
+function actionPanel(record: RecordJob, actions: Action[]): string {
+  const choice = recommendedAction(record.job, actions);
+  return `<form id="action-form" class="action-panel"><div class="action-heading"><div><span class="eyebrow">CONNECTED AS ${esc(actorRole(record.job).toUpperCase())}</span><h3>Choose the next on-chain action</h3></div><span class="signer" title="${esc(actor())}">${esc(short(actor()))}</span></div><div class="action-choices" role="group" aria-label="Choose next action">${actions
+    .map(
+      (action) =>
+        `<button type="button" class="action-choice${action === choice ? " selected" : ""}" data-action-choice="${action}" aria-label="${esc(labels[action])}" aria-pressed="${action === choice}"><span><strong>${esc(labels[action])}</strong>${action === choice ? "<em>Recommended</em>" : ""}</span><small>${esc(actionDescriptions[action])}</small></button>`,
+    )
+    .join(
+      "",
+    )}</div><input type="hidden" name="action" id="action" value="${choice}" /><div id="action-inputs"></div><button class="primary full" id="review-action" type="submit">Review ${esc(labels[choice])} <span>&rarr;</span></button></form>`;
+}
 
 function notify(message: string, error = false): void {
   const target = document.querySelector<HTMLElement>("#notice")!;
@@ -327,7 +358,12 @@ function detail(): string {
   const actions = availableActions(j, actor(), clock());
   const expiry = new Date(Number(j.expires_at) * 1000).toLocaleString();
   const expired = BigInt(clock()) >= j.expires_at;
-  return `<div class="detail-head"><span class="eyebrow">JOB ${j.id}</span><span class="badge ${state.toLowerCase()}">${state}</span></div><h2>${esc(j.desc)}</h2><div class="budget"><span>${esc(displayAmount(j.budget, profile.decimals))}</span> ${esc(profile.symbol)}</div>${lifecycleProgress(state)}<dl class="terms"><dt>Client</dt><dd title="${j.client}">${esc(short(j.client))}${actor() === j.client ? " (you)" : ""}</dd><dt>Provider</dt><dd title="${esc(j.provider)}">${j.provider ? esc(short(j.provider)) : "Unassigned"}${actor() === j.provider ? " (you)" : ""}</dd><dt>Evaluator</dt><dd title="${j.evaluator}">${esc(short(j.evaluator))}${actor() === j.evaluator ? " (you)" : ""}</dd><dt>Expiry</dt><dd>${esc(expiry)}${expired ? " (passed)" : ""}</dd><dt>Policy hook</dt><dd>${j.hook ? esc(short(j.hook)) : "None"}</dd></dl>${record.binding ? `<p class="hint">Imported agent ${esc(record.binding.agentId)}. Wallet observed at ledger ${record.binding.resolvedAtLedger}. This is a client snapshot.</p>` : ""}${j.work_hash ? `<div class="commitment"><span class="eyebrow">WORK SHA-256</span><code>${esc(commitmentToHex(j.work_hash))}</code></div>` : ""}${actions.length ? `<form id="action-form"><label>Next step<select name="action" id="action">${actions.map((a) => `<option value="${a}">${labels[a]}</option>`).join("")}</select></label><div id="action-inputs"></div><button class="primary full" type="submit">Review action <span>&rarr;</span></button></form>` : `<p class="hint">${terminal(state) ? "This job is settled. No further payment can be released." : "The next action belongs to a different wallet. Refresh the job after they act."}</p>`}${!terminal(state) && expired ? `<p class="hint">After expiry, a valid decision and refund can race. The first successful transaction wins.</p>` : ""}${record.outcome ? `<a class="text-link" href="${explorer(profile, "tx", record.outcome.hash)}" target="_blank" rel="noopener noreferrer">View latest transaction &nearr;</a>` : ""}${terminal(state) ? `<button class="secondary full" data-click="receipt">Download outcome receipt</button>` : ""}<button class="text-button" data-click="refresh">Refresh job</button>`;
+  const actionView = actions.length
+    ? wallet
+      ? actionPanel(record, actions)
+      : `<section class="action-prompt"><strong>A wallet is required for the next transaction.</strong><p>Public jobs are readable without a wallet. Connect Freighter only when you are ready to review and sign.</p><button class="primary full" data-click="connect">Connect wallet to continue</button></section>`
+    : `<p class="hint">${terminal(state) ? "This job is settled. No further payment can be released." : "The next action belongs to a different wallet. Refresh the job after they act."}</p>`;
+  return `<div class="detail-head"><span class="eyebrow">JOB ${j.id}</span><span class="badge ${state.toLowerCase()}">${state}</span></div><h2>${esc(j.desc)}</h2><div class="budget"><span>${esc(displayAmount(j.budget, profile.decimals))}</span> ${esc(profile.symbol)}</div>${lifecycleProgress(state)}<dl class="terms"><dt>Client</dt><dd title="${j.client}">${esc(short(j.client))}${actor() === j.client ? " (you)" : ""}</dd><dt>Provider</dt><dd title="${esc(j.provider)}">${j.provider ? esc(short(j.provider)) : "Unassigned"}${actor() === j.provider ? " (you)" : ""}</dd><dt>Evaluator</dt><dd title="${j.evaluator}">${esc(short(j.evaluator))}${actor() === j.evaluator ? " (you)" : ""}</dd><dt>Expiry</dt><dd>${esc(expiry)}${expired ? " (passed)" : ""}</dd><dt>Policy hook</dt><dd>${j.hook ? esc(short(j.hook)) : "None"}</dd></dl>${record.binding ? `<p class="hint">Imported agent ${esc(record.binding.agentId)}. Wallet observed at ledger ${record.binding.resolvedAtLedger}. This is a client snapshot.</p>` : ""}${j.work_hash ? `<div class="commitment"><span class="eyebrow">WORK SHA-256</span><code>${esc(commitmentToHex(j.work_hash))}</code></div>` : ""}${actionView}${!terminal(state) && expired ? `<p class="hint">After expiry, a valid decision and refund can race. The first successful transaction wins.</p>` : ""}${record.outcome ? `<a class="text-link" href="${explorer(profile, "tx", record.outcome.hash)}" target="_blank" rel="noopener noreferrer">View latest transaction &nearr;</a>` : ""}${terminal(state) ? `<button class="secondary full" data-click="receipt">Download outcome receipt</button>` : ""}<button class="text-button" data-click="refresh">Refresh job</button>`;
 }
 
 function render(): void {
@@ -508,7 +544,7 @@ function newJob(): void {
   });
 }
 function actionInputs(): void {
-  const action = document.querySelector<HTMLSelectElement>("#action")?.value as
+  const action = document.querySelector<HTMLInputElement>("#action")?.value as
     Action | undefined;
   const target = document.querySelector("#action-inputs");
   if (!target || !action) return;
@@ -538,6 +574,29 @@ function actionInputs(): void {
           notify("File hashed locally. Its contents were not uploaded.");
         });
     });
+}
+
+function chooseAction(action: Action): void {
+  const input = document.querySelector<HTMLInputElement>("#action");
+  if (!input) return;
+  input.value = action;
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-action-choice]")
+    .forEach((button) => {
+      const selected = button.dataset.actionChoice === action;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+      button.querySelector("em")?.remove();
+      if (selected) {
+        const badge = document.createElement("em");
+        badge.textContent = "Selected";
+        button.querySelector("span")!.append(badge);
+      }
+    });
+  const review = document.querySelector<HTMLButtonElement>("#review-action");
+  if (review)
+    review.innerHTML = `Review ${esc(labels[action])} <span>&rarr;</span>`;
+  actionInputs();
 }
 
 function settings(): void {
@@ -949,7 +1008,13 @@ function bind(): void {
       render();
     }),
   );
-  document.querySelector("#action")?.addEventListener("change", actionInputs);
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-action-choice]")
+    .forEach((button) =>
+      button.addEventListener("click", () =>
+        chooseAction(button.dataset.actionChoice as Action),
+      ),
+    );
   document
     .querySelector("#action-form")
     ?.addEventListener("submit", (event) => {

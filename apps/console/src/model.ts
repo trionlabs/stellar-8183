@@ -167,6 +167,22 @@ export function availableActions(
     actions.push("claim_refund");
   return actions;
 }
+export function recommendedAction(job: Job, actions: Action[]): Action {
+  if (actions.length === 0)
+    throw new Error("A recommendation requires an available action.");
+  if (job.state.tag === "Open") {
+    if (!job.provider && actions.includes("set_provider"))
+      return "set_provider";
+    if (job.budget === 0n && actions.includes("set_budget"))
+      return "set_budget";
+    if (actions.includes("fund")) return "fund";
+  }
+  if (actions.includes("claim_refund")) return "claim_refund";
+  if (job.state.tag === "Funded" && actions.includes("submit")) return "submit";
+  if (job.state.tag === "Submitted" && actions.includes("complete"))
+    return "complete";
+  return actions[0]!;
+}
 export function assertAction(
   job: Job,
   action: Action,

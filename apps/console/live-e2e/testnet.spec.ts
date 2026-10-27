@@ -311,7 +311,7 @@ test("author-run live browser settlement through Freighter's message protocol", 
         .fill(keys.provider.publicKey());
     if (action === "submit")
       await page.getByLabel("Work SHA-256 (required)").fill("cd".repeat(32));
-    await page.getByRole("button", { name: "Review action" }).click();
+    await page.getByRole("button", { name: /^Review / }).click();
     await page.getByRole("button", { name: "Continue to wallet" }).click();
     await expect(page.locator("#notice")).toContainText("confirmed.", {
       timeout: 60_000,
@@ -326,7 +326,7 @@ test("author-run live browser settlement through Freighter's message protocol", 
     await page
       .getByLabel("Provider address", { exact: true })
       .fill(keys.provider.publicKey());
-    await page.getByRole("button", { name: "Review action" }).click();
+    await page.getByRole("button", { name: /^Review / }).click();
     await page.getByRole("button", { name: "Continue to wallet" }).click();
     await expect(page.locator("#notice")).toContainText("unknown outcome", {
       timeout: 60_000,

@@ -6,7 +6,10 @@ An immutable Soroban job-escrow kernel based on
 [ERC-8183 Agentic Commerce](https://github.com/ethereum/ERCs/blob/a078cab5cc8e9581c15f76c091ed96eed28f02f7/ERCS/erc-8183.md),
 with allowlisted policy hooks and a relayed-auth TypeScript SDK.
 
-This project is testnet-only and unaudited. Do not use it with mainnet funds.
+This project is unaudited and must not custody valuable Mainnet assets. A
+grant-approved, operator-funded Mainnet compatibility canary may use real XLM
+only for reserves and fees with the non-redeemable `DEMO8183` asset. This narrow
+exception is not a production deployment or an audit substitute.
 An official release deployment is valid only when its contract IDs, fetched
 Wasm hashes, transactions, and source commit appear in a schema-valid evidence
 manifest whose status is `verified`. A `deployment` manifest proves the on-chain
@@ -28,6 +31,33 @@ source/build/deployment commit. `v0.1.0` names its evidence-only child commit,
 whose diff is exactly `deployments/testnet.json` and
 `deployments/testnet.raw.json`; the release workflow enforces that relationship
 before building or publishing.
+
+## Agent Commerce Console (month-two implementation)
+
+The standalone Console lives in [apps/console](apps/console/README.md).
+Try the [hosted Console preview](https://trionlabs.github.io/stellar-8183/), which
+opens on the verified Stellar Testnet deployment. See the
+[implementation status](docs/month-two-status.md) and
+[public testnet evidence](deployments/month-two/README.md).
+It adds wallet-based job actions, optional read-only Stellar 8004 identity
+import with canonical network defaults and an explicit registry override,
+deterministic outcome receipts, receipt verification, local opt-in metrics, and
+browser tests. The v0.1 contract ABI is unchanged.
+
+```sh
+corepack pnpm@11.9.0 install --frozen-lockfile
+corepack pnpm@11.9.0 console:dev
+```
+
+Open `http://127.0.0.1:4173`. Public Testnet jobs and receipts can be read
+without a wallet; creating or changing a job requires Freighter approval. The
+connected wallet signs and pays its own transaction fees. See the Console guide for
+testnet setup, pilot instructions, and the local Mainnet canary runbook.
+
+The [verified Mainnet canary](docs/mainnet-canary-evidence.md) uses the
+non-redeemable `DEMO8183` asset and is recorded separately from v0.1's Testnet
+release schema. It proves Mainnet compatibility, not production readiness or
+audit coverage. The independent customer pilot remains pending.
 
 ## Live submission demo
 

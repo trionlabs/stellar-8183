@@ -172,8 +172,9 @@ snapshots immediately after the testnet run.
 
 ## Operational controls
 
-- No mainnet deployment before an independent audit and explicit production
-  threat-model review.
+- No valuable-asset or production Mainnet deployment before an independent
+  audit and explicit production threat-model review. The month-two exception is
+  limited to the documented, grant-approved, non-redeemable DEMO8183 canary.
 - Release only byte-reproducible optimized Wasm whose local hash matches Wasm
   fetched from the deployed contract.
 - Pin the source commit and toolchain; attest release artifacts using SEP-55

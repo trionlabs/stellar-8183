@@ -1,0 +1,552 @@
+{
+  "schema": "stellar-8183/independent-pilot/v1",
+  "status": "proxy-transaction-paths-complete",
+  "generatedAt": "2026-10-27T15:38:17.013Z",
+  "startedAt": "2026-10-27T15:34:05.479Z",
+  "sourceCommit": "84fcd9ae79cfa2993cdca3f77dba34d54da23367",
+  "participantReference": "pilot-participant-01",
+  "publicParticipantName": null,
+  "independentParticipant": true,
+  "unaffiliatedWithTrionLabs": true,
+  "executionMode": "coordinator-approved-proxy",
+  "participantPersonallySignedTransactions": false,
+  "coordinatorException": {
+    "approved": true,
+    "approvalDate": "2026-10-27",
+    "source": "Private coordinator confirmation reported by the project lead",
+    "publicNameDisclosureRequired": false
+  },
+  "participantConsent": {
+    "confirmed": true,
+    "source": "Private participant confirmation reported by the project lead"
+  },
+  "keyCustody": {
+    "kind": "disposable-shared-testnet-key",
+    "generatedByProjectOperator": true,
+    "network": "testnet",
+    "containsMonetaryValue": false,
+    "secretPublished": false
+  },
+  "limitations": [
+    "Proxy execution does not measure participant onboarding time.",
+    "Proxy execution does not prove that the participant personally approved each wallet prompt.",
+    "Interview findings and a continue/change/stop decision require separate participant input."
+  ],
+  "participantWallet": "GDV2GOFQB2VPZBRC3TBLSYAGYFJYQI5KQ3OPELMG55NVWA4Y73BJ5VXR",
+  "providerWallet": "GANCJRKFVQBWGT4BFVSH2SWUCMAFTAPKVLFM4HFVTW7G3OWXANUSH7EL",
+  "evaluatorWallet": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
+  "profile": {
+    "id": "testnet",
+    "rpcUrl": "https://soroban-testnet.stellar.org",
+    "networkPassphrase": "Test SDF Network ; September 2015",
+    "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+    "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
+    "symbol": "DEMO8183",
+    "decimals": 7,
+    "maxFee": "10000000",
+    "canaryAcknowledged": false
+  },
+  "setupTransactions": {
+    "friendbot": "44de4e623846765edd41dcad196d44d3f5c59a99bf685564fd73005b217554d1",
+    "trustline": "414bb27206de86b8c06e49f399503f3a9ca14acd20538312d4ab93360fc7bff1",
+    "assetFunding": "b89f8023f6eac4f281710e7d969bc8f35d92ff71f1035e060701326860e86637"
+  },
+  "scenarios": [
+    {
+      "jobId": "34",
+      "path": "completion",
+      "ordinal": 1,
+      "transactions": [
+        {
+          "hash": "19363fe57a5fb418c11a20b9bdead8f06fcd7b1ae50fc059f9e4b1e6e012607f",
+          "ledger": 5418322,
+          "method": "create_job"
+        },
+        {
+          "hash": "3cac687fd6e1cdee937fd11abc3d7057a3179d59323e3d7af90270d6325685d4",
+          "ledger": 5418323,
+          "method": "set_budget"
+        },
+        {
+          "hash": "a7591558dee56b90d517d9c93d60d719f7ad1780e1a70a762fd60bd8c8bd91ae",
+          "ledger": 5418324,
+          "method": "fund"
+        },
+        {
+          "hash": "c54d43ff1af697771d3d250eff49d94a4820b91666a903780c993b8859506e56",
+          "ledger": 5418325,
+          "method": "submit"
+        },
+        {
+          "hash": "e1bcd44eb171ebec80b3bc61494b31377b0401d80ace0d89c7fb574254d5705b",
+          "ledger": 5418326,
+          "method": "complete"
+        }
+      ],
+      "balanceAccounting": {
+        "jobId": "34",
+        "fundingTransaction": "a7591558dee56b90d517d9c93d60d719f7ad1780e1a70a762fd60bd8c8bd91ae",
+        "initial": {
+          "client": "200000000",
+          "provider": "110000000",
+          "evaluator": "0",
+          "escrow": "0"
+        },
+        "funded": {
+          "client": "190000000",
+          "provider": "110000000",
+          "evaluator": "0",
+          "escrow": "10000000"
+        },
+        "terminal": {
+          "client": "190000000",
+          "provider": "120000000",
+          "evaluator": "0",
+          "escrow": "0"
+        }
+      },
+      "receipt": {
+        "receipt": {
+          "schema": "stellar-8183/outcome/v1",
+          "network": "testnet",
+          "networkPassphrase": "Test SDF Network ; September 2015",
+          "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+          "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
+          "jobId": "34",
+          "client": "GDV2GOFQB2VPZBRC3TBLSYAGYFJYQI5KQ3OPELMG55NVWA4Y73BJ5VXR",
+          "provider": "GANCJRKFVQBWGT4BFVSH2SWUCMAFTAPKVLFM4HFVTW7G3OWXANUSH7EL",
+          "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
+          "budget": "10000000",
+          "expiresAt": "1793116146",
+          "description": "Independent pilot [participant-01 completion 1]; coordinator-approved proxy",
+          "hook": "CBWMY236VV2HVQOZKXYPW6UMNC3H2W4WLGVJSHALNCYC7IDT27NKXWW7",
+          "state": "Completed",
+          "workHash": "27065d3e8bef6ba770fe3553eda0bf300260b5889b238c78b3e9be7256efb5aa",
+          "decision": null,
+          "terminalTransaction": {
+            "hash": "e1bcd44eb171ebec80b3bc61494b31377b0401d80ace0d89c7fb574254d5705b",
+            "ledger": 5418326,
+            "method": "complete"
+          },
+          "agentBinding": null,
+          "evidenceType": "on-chain"
+        },
+        "sha256": "8a3b723aed49467ae05eea73208a0823c7642b176e203b6dda32f1d4cbeb3571"
+      },
+      "verification": "Verified terminal job and settlement transaction. Any 8004 binding is a client snapshot, not an on-chain identity attestation. This does not verify work quality.",
+      "proxyExecutionDurationSeconds": 29
+    },
+    {
+      "jobId": "35",
+      "path": "funded-rejection",
+      "ordinal": 1,
+      "transactions": [
+        {
+          "hash": "07dc6f11a5266c2e163310a67f456eaea01ef3ff3ab91d39a573540c7bb6a6fe",
+          "ledger": 5418328,
+          "method": "create_job"
+        },
+        {
+          "hash": "cfc2c45b29a0cc2355c754d928d2480881aac2f827c4956a13b3ea71a97a567a",
+          "ledger": 5418330,
+          "method": "set_budget"
+        },
+        {
+          "hash": "386affc7007fec29aef07602032f215229421508a620855b0e625db8404e0c0f",
+          "ledger": 5418332,
+          "method": "fund"
+        },
+        {
+          "hash": "e02ebeb7971fe2c6d9c8d7363ecf754c884a5e30aa3e8bbbc0f96ff9f190e4cd",
+          "ledger": 5418334,
+          "method": "reject"
+        }
+      ],
+      "balanceAccounting": {
+        "jobId": "35",
+        "fundingTransaction": "386affc7007fec29aef07602032f215229421508a620855b0e625db8404e0c0f",
+        "initial": {
+          "client": "190000000",
+          "provider": "120000000",
+          "evaluator": "0",
+          "escrow": "0"
+        },
+        "funded": {
+          "client": "180000000",
+          "provider": "120000000",
+          "evaluator": "0",
+          "escrow": "10000000"
+        },
+        "terminal": {
+          "client": "190000000",
+          "provider": "120000000",
+          "evaluator": "0",
+          "escrow": "0"
+        }
+      },
+      "receipt": {
+        "receipt": {
+          "schema": "stellar-8183/outcome/v1",
+          "network": "testnet",
+          "networkPassphrase": "Test SDF Network ; September 2015",
+          "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+          "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
+          "jobId": "35",
+          "client": "GDV2GOFQB2VPZBRC3TBLSYAGYFJYQI5KQ3OPELMG55NVWA4Y73BJ5VXR",
+          "provider": "GANCJRKFVQBWGT4BFVSH2SWUCMAFTAPKVLFM4HFVTW7G3OWXANUSH7EL",
+          "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
+          "budget": "10000000",
+          "expiresAt": "1793116175",
+          "description": "Independent pilot [participant-01 funded-rejection 1]; coordinator-approved proxy",
+          "hook": "CBWMY236VV2HVQOZKXYPW6UMNC3H2W4WLGVJSHALNCYC7IDT27NKXWW7",
+          "state": "Rejected",
+          "workHash": null,
+          "decision": null,
+          "terminalTransaction": {
+            "hash": "e02ebeb7971fe2c6d9c8d7363ecf754c884a5e30aa3e8bbbc0f96ff9f190e4cd",
+            "ledger": 5418334,
+            "method": "reject"
+          },
+          "agentBinding": null,
+          "evidenceType": "on-chain"
+        },
+        "sha256": "bd95a42d821df91c7458ad1038bfe7d1015553c763302fbb9d50fca742f68eb1"
+      },
+      "verification": "Verified terminal job and settlement transaction. Any 8004 binding is a client snapshot, not an on-chain identity attestation. This does not verify work quality.",
+      "proxyExecutionDurationSeconds": 39
+    },
+    {
+      "jobId": "36",
+      "path": "expired-refund",
+      "ordinal": 1,
+      "transactions": [
+        {
+          "hash": "a4ed46d19e67614487f77f50477223ccc60d4d8f85f97a7c4ccc9a5bf4fc8dbd",
+          "ledger": 5418336,
+          "method": "create_job"
+        },
+        {
+          "hash": "b9a77b41aa5d6264125b271c6536703885f9b9d63ef01c5006ed98debc3b423e",
+          "ledger": 5418337,
+          "method": "set_budget"
+        },
+        {
+          "hash": "00269a961add0631fcac82267b68a5690cc3ec5fa15e0085265f21f5070ca15b",
+          "ledger": 5418338,
+          "method": "fund"
+        },
+        {
+          "hash": "1b31021a5c9572b6f82515d7d9837a99b9ffeb72f4ad25fd8548e23d29456124",
+          "ledger": 5418346,
+          "method": "claim_refund"
+        }
+      ],
+      "balanceAccounting": {
+        "jobId": "36",
+        "fundingTransaction": "00269a961add0631fcac82267b68a5690cc3ec5fa15e0085265f21f5070ca15b",
+        "initial": {
+          "client": "190000000",
+          "provider": "120000000",
+          "evaluator": "0",
+          "escrow": "0"
+        },
+        "funded": {
+          "client": "180000000",
+          "provider": "120000000",
+          "evaluator": "0",
+          "escrow": "10000000"
+        },
+        "terminal": {
+          "client": "190000000",
+          "provider": "120000000",
+          "evaluator": "0",
+          "escrow": "0"
+        }
+      },
+      "receipt": {
+        "receipt": {
+          "schema": "stellar-8183/outcome/v1",
+          "network": "testnet",
+          "networkPassphrase": "Test SDF Network ; September 2015",
+          "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+          "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
+          "jobId": "36",
+          "client": "GDV2GOFQB2VPZBRC3TBLSYAGYFJYQI5KQ3OPELMG55NVWA4Y73BJ5VXR",
+          "provider": "GANCJRKFVQBWGT4BFVSH2SWUCMAFTAPKVLFM4HFVTW7G3OWXANUSH7EL",
+          "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
+          "budget": "10000000",
+          "expiresAt": "1793115358",
+          "description": "Independent pilot [participant-01 expired-refund 1]; coordinator-approved proxy",
+          "hook": "CBWMY236VV2HVQOZKXYPW6UMNC3H2W4WLGVJSHALNCYC7IDT27NKXWW7",
+          "state": "Expired",
+          "workHash": null,
+          "decision": null,
+          "terminalTransaction": {
+            "hash": "1b31021a5c9572b6f82515d7d9837a99b9ffeb72f4ad25fd8548e23d29456124",
+            "ledger": 5418346,
+            "method": "claim_refund"
+          },
+          "agentBinding": null,
+          "evidenceType": "on-chain"
+        },
+        "sha256": "db9750162ef60a5d02e5310a1c1b63caca24b307923f21204a6bb4a31940b4a1"
+      },
+      "verification": "Verified terminal job and settlement transaction. Any 8004 binding is a client snapshot, not an on-chain identity attestation. This does not verify work quality.",
+      "proxyExecutionDurationSeconds": 60
+    },
+    {
+      "jobId": "37",
+      "path": "completion",
+      "ordinal": 2,
+      "transactions": [
+        {
+          "hash": "433d0c10e614146094ac8a675f8934a5ef0a8c8c61b310fb6b8b7f2f3a6d9f6d",
+          "ledger": 5418348,
+          "method": "create_job"
+        },
+        {
+          "hash": "123de6d97f93e4a1c6827f08315b180072bd362737ba4be1b5ffd9b61e4b21ab",
+          "ledger": 5418349,
+          "method": "set_budget"
+        },
+        {
+          "hash": "9fb46a66ba5d39175d36587d72a801523de484824057cd5f1ac49e563e3a9ca2",
+          "ledger": 5418350,
+          "method": "fund"
+        },
+        {
+          "hash": "1cb597a9f3f3e00b4730dbb857edc40cd445e220d845c2dfcb76400262c187e3",
+          "ledger": 5418352,
+          "method": "submit"
+        },
+        {
+          "hash": "4b440dc17758de53725fdfb320093b20006eb0597ca64b1c3a7d1f04d3b5dca1",
+          "ledger": 5418353,
+          "method": "complete"
+        }
+      ],
+      "balanceAccounting": {
+        "jobId": "37",
+        "fundingTransaction": "9fb46a66ba5d39175d36587d72a801523de484824057cd5f1ac49e563e3a9ca2",
+        "initial": {
+          "client": "190000000",
+          "provider": "120000000",
+          "evaluator": "0",
+          "escrow": "0"
+        },
+        "funded": {
+          "client": "180000000",
+          "provider": "120000000",
+          "evaluator": "0",
+          "escrow": "10000000"
+        },
+        "terminal": {
+          "client": "180000000",
+          "provider": "130000000",
+          "evaluator": "0",
+          "escrow": "0"
+        }
+      },
+      "receipt": {
+        "receipt": {
+          "schema": "stellar-8183/outcome/v1",
+          "network": "testnet",
+          "networkPassphrase": "Test SDF Network ; September 2015",
+          "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+          "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
+          "jobId": "37",
+          "client": "GDV2GOFQB2VPZBRC3TBLSYAGYFJYQI5KQ3OPELMG55NVWA4Y73BJ5VXR",
+          "provider": "GANCJRKFVQBWGT4BFVSH2SWUCMAFTAPKVLFM4HFVTW7G3OWXANUSH7EL",
+          "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
+          "budget": "10000000",
+          "expiresAt": "1793116273",
+          "description": "Independent pilot [participant-01 completion 2]; coordinator-approved proxy",
+          "hook": "CBWMY236VV2HVQOZKXYPW6UMNC3H2W4WLGVJSHALNCYC7IDT27NKXWW7",
+          "state": "Completed",
+          "workHash": "22732f8ba2cc924edd66a1485aec148b00d6025a3f910ae1dfb65b5a239c1238",
+          "decision": null,
+          "terminalTransaction": {
+            "hash": "4b440dc17758de53725fdfb320093b20006eb0597ca64b1c3a7d1f04d3b5dca1",
+            "ledger": 5418353,
+            "method": "complete"
+          },
+          "agentBinding": null,
+          "evidenceType": "on-chain"
+        },
+        "sha256": "cb4109e471bf00a3b0c1f1fab78338d5988862d5fcfb49a7f06a8c9871477cd8"
+      },
+      "verification": "Verified terminal job and settlement transaction. Any 8004 binding is a client snapshot, not an on-chain identity attestation. This does not verify work quality.",
+      "proxyExecutionDurationSeconds": 35
+    },
+    {
+      "jobId": "38",
+      "path": "funded-rejection",
+      "ordinal": 2,
+      "transactions": [
+        {
+          "hash": "0f434638bc206c1d144eb42fbd640ce6324ab9b77583b21cf332a0e89461eba3",
+          "ledger": 5418355,
+          "method": "create_job"
+        },
+        {
+          "hash": "82d045c7be741deb1143eb27fe9b2e019feaea8cf9134b4bcb217107d42ec730",
+          "ledger": 5418357,
+          "method": "set_budget"
+        },
+        {
+          "hash": "bb4d90c4eddbf7e99a03cf911fabffa05412d7fc54414bef2175a3808d7dc301",
+          "ledger": 5418358,
+          "method": "fund"
+        },
+        {
+          "hash": "fbb00e7f07eca366264bb12f78f9f8dd6cf6ff0c52cbadaaf43bc9d2356c9952",
+          "ledger": 5418359,
+          "method": "reject"
+        }
+      ],
+      "balanceAccounting": {
+        "jobId": "38",
+        "fundingTransaction": "bb4d90c4eddbf7e99a03cf911fabffa05412d7fc54414bef2175a3808d7dc301",
+        "initial": {
+          "client": "180000000",
+          "provider": "130000000",
+          "evaluator": "0",
+          "escrow": "0"
+        },
+        "funded": {
+          "client": "170000000",
+          "provider": "130000000",
+          "evaluator": "0",
+          "escrow": "10000000"
+        },
+        "terminal": {
+          "client": "180000000",
+          "provider": "130000000",
+          "evaluator": "0",
+          "escrow": "0"
+        }
+      },
+      "receipt": {
+        "receipt": {
+          "schema": "stellar-8183/outcome/v1",
+          "network": "testnet",
+          "networkPassphrase": "Test SDF Network ; September 2015",
+          "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+          "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
+          "jobId": "38",
+          "client": "GDV2GOFQB2VPZBRC3TBLSYAGYFJYQI5KQ3OPELMG55NVWA4Y73BJ5VXR",
+          "provider": "GANCJRKFVQBWGT4BFVSH2SWUCMAFTAPKVLFM4HFVTW7G3OWXANUSH7EL",
+          "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
+          "budget": "10000000",
+          "expiresAt": "1793116308",
+          "description": "Independent pilot [participant-01 funded-rejection 2]; coordinator-approved proxy",
+          "hook": "CBWMY236VV2HVQOZKXYPW6UMNC3H2W4WLGVJSHALNCYC7IDT27NKXWW7",
+          "state": "Rejected",
+          "workHash": null,
+          "decision": null,
+          "terminalTransaction": {
+            "hash": "fbb00e7f07eca366264bb12f78f9f8dd6cf6ff0c52cbadaaf43bc9d2356c9952",
+            "ledger": 5418359,
+            "method": "reject"
+          },
+          "agentBinding": null,
+          "evidenceType": "on-chain"
+        },
+        "sha256": "a7da987c3b25f0a36ed9aac416a8c4e5d75d6bc598a7d391045317da022af3fb"
+      },
+      "verification": "Verified terminal job and settlement transaction. Any 8004 binding is a client snapshot, not an on-chain identity attestation. This does not verify work quality.",
+      "proxyExecutionDurationSeconds": 30
+    },
+    {
+      "jobId": "39",
+      "path": "expired-refund",
+      "ordinal": 2,
+      "transactions": [
+        {
+          "hash": "6d6391ce5ad88b3be1c789701f311a65baa8913465d9fa74aa47515bad2dc4fd",
+          "ledger": 5418361,
+          "method": "create_job"
+        },
+        {
+          "hash": "791784960776654260132a1d3c19ad1351331eb50885518a2c324f5b81e8378c",
+          "ledger": 5418362,
+          "method": "set_budget"
+        },
+        {
+          "hash": "ef74efe6f12632428e0fa4d9d8e54b09b70888f63feec28f86266aa2a7060158",
+          "ledger": 5418363,
+          "method": "fund"
+        },
+        {
+          "hash": "80318e96c2c521a2da3a3c7611453991c64d9cf7fce5745028120e91fe403060",
+          "ledger": 5418371,
+          "method": "claim_refund"
+        }
+      ],
+      "balanceAccounting": {
+        "jobId": "39",
+        "fundingTransaction": "ef74efe6f12632428e0fa4d9d8e54b09b70888f63feec28f86266aa2a7060158",
+        "initial": {
+          "client": "180000000",
+          "provider": "130000000",
+          "evaluator": "0",
+          "escrow": "0"
+        },
+        "funded": {
+          "client": "170000000",
+          "provider": "130000000",
+          "evaluator": "0",
+          "escrow": "10000000"
+        },
+        "terminal": {
+          "client": "180000000",
+          "provider": "130000000",
+          "evaluator": "0",
+          "escrow": "0"
+        }
+      },
+      "receipt": {
+        "receipt": {
+          "schema": "stellar-8183/outcome/v1",
+          "network": "testnet",
+          "networkPassphrase": "Test SDF Network ; September 2015",
+          "kernel": "CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+          "token": "CCIXERXUWARCM244A2JFJ3FIRW5CMX23JP3IWTTMDW3QYERRJAPAEQ2J",
+          "jobId": "39",
+          "client": "GDV2GOFQB2VPZBRC3TBLSYAGYFJYQI5KQ3OPELMG55NVWA4Y73BJ5VXR",
+          "provider": "GANCJRKFVQBWGT4BFVSH2SWUCMAFTAPKVLFM4HFVTW7G3OWXANUSH7EL",
+          "evaluator": "GC25MTMB4R5B7ZCND2KZAK6MYXKYT7LBK335P5RMGDFZGPIGXL3CQGFZ",
+          "budget": "10000000",
+          "expiresAt": "1793115482",
+          "description": "Independent pilot [participant-01 expired-refund 2]; coordinator-approved proxy",
+          "hook": "CBWMY236VV2HVQOZKXYPW6UMNC3H2W4WLGVJSHALNCYC7IDT27NKXWW7",
+          "state": "Expired",
+          "workHash": null,
+          "decision": null,
+          "terminalTransaction": {
+            "hash": "80318e96c2c521a2da3a3c7611453991c64d9cf7fce5745028120e91fe403060",
+            "ledger": 5418371,
+            "method": "claim_refund"
+          },
+          "agentBinding": null,
+          "evidenceType": "on-chain"
+        },
+        "sha256": "91df9895f43567d8bcf4c8c3b94cbc3e4c17700c3b3c89735103678b81b9c8de"
+      },
+      "verification": "Verified terminal job and settlement transaction. Any 8004 binding is a client snapshot, not an on-chain identity attestation. This does not verify work quality.",
+      "proxyExecutionDurationSeconds": 60
+    }
+  ],
+  "explorerLinks": {
+    "participantAccount": "https://stellar.expert/explorer/testnet/account/GDV2GOFQB2VPZBRC3TBLSYAGYFJYQI5KQ3OPELMG55NVWA4Y73BJ5VXR",
+    "kernel": "https://stellar.expert/explorer/testnet/contract/CDQQSBNGKJ6CR2VG65P73OJUIMHOLYNFJWXCLKANOACJ4MXXQDJVFUNW",
+    "jobs": {
+      "34": "https://stellar.expert/explorer/testnet/tx/e1bcd44eb171ebec80b3bc61494b31377b0401d80ace0d89c7fb574254d5705b",
+      "35": "https://stellar.expert/explorer/testnet/tx/e02ebeb7971fe2c6d9c8d7363ecf754c884a5e30aa3e8bbbc0f96ff9f190e4cd",
+      "36": "https://stellar.expert/explorer/testnet/tx/1b31021a5c9572b6f82515d7d9837a99b9ffeb72f4ad25fd8548e23d29456124",
+      "37": "https://stellar.expert/explorer/testnet/tx/4b440dc17758de53725fdfb320093b20006eb0597ca64b1c3a7d1f04d3b5dca1",
+      "38": "https://stellar.expert/explorer/testnet/tx/fbb00e7f07eca366264bb12f78f9f8dd6cf6ff0c52cbadaaf43bc9d2356c9952",
+      "39": "https://stellar.expert/explorer/testnet/tx/80318e96c2c521a2da3a3c7611453991c64d9cf7fce5745028120e91fe403060"
+    }
+  }
+}

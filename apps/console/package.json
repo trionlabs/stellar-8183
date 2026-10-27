@@ -15,6 +15,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "pilot": "tsx tools/pilot.ts",
+    "pilot:facilitated": "tsx tools/facilitated-pilot.ts",
     "deploy:testnet": "tsx tools/deploy-testnet.ts",
     "deploy:mainnet": "tsx tools/deploy-mainnet.ts",
     "canary:mainnet": "tsx tools/canary-mainnet.ts",
